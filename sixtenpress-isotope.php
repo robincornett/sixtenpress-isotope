@@ -63,6 +63,7 @@ function sixtenpress_enqueue_isotope() {
  * Wraps articles/posts in a div. Required for isotope.
  */
 function sixtenpress_open_div() {
+	do_action( 'sixtenpress_before_isotope' );
 	echo '<div class="isotope">';
 }
 
@@ -72,6 +73,7 @@ function sixtenpress_open_div() {
  */
 function sixtenpress_close_div() {
 	echo '</div>';
+	do_action( 'sixtenpress_after_isotope' );
 }
 
 /**
