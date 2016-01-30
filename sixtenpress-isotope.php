@@ -80,14 +80,15 @@ function sixtenpress_close_div() {
  * @param string $filter_name string What to name the filter heading (optional)
  */
 function sixtenpress_do_isotope_filter( $select_options, $filter_name = '' ) {
-	echo '<div class="main-filter">';
+	$output = '<div class="main-filter">';
 	$filter_text = sprintf( __( 'Filter %s By:', 'sixtenpress' ), $filter_name );
-	printf( '<h4>%s</h4>', esc_html( $filter_text ) );
+	$output .= sprintf( '<h4>%s</h4>', esc_html( $filter_text ) );
 	foreach ( $select_options as $option ) {
-		sixtenpress_do_select( $option );
+		$output .= sixtenpress_do_select( $option );
 	}
-	echo '<br clear="all" />';
-	echo '</div>';
+	$output .= '<br clear="all" />';
+	$output .= '</div>';
+	return $output;
 }
 
 /**
@@ -95,18 +96,19 @@ function sixtenpress_do_isotope_filter( $select_options, $filter_name = '' ) {
  * @param $option array
  */
 function sixtenpress_do_select( $option ) {
-	printf( '<select name="%1$s" id="%1$s-filters" class="filter %2$s" data-filter-group="%1$s">',
+	$output = sprintf( '<select name="%1$s" id="%1$s-filters" class="filter %2$s" data-filter-group="%1$s">',
 		esc_attr( strtolower( $option['name'] ) ),
 		esc_attr( $option['class'] )
 	);
-	$all_things = sprintf( __( 'All %s', 'sixtenpress' ), $option['name'] );
-	printf( '<option value="*">%s</option>', esc_html( $all_things ) );
+	$all_things = sprintf( __( 'All', 'sixtenpress' ), ' ' . $option['name'] );
+	$output .= sprintf( '<option value="*">%s</option>', esc_html( $all_things ) );
 	foreach ( $option['terms'] as $term ) {
-		printf( '<option value=".%s-%s">%s</option>',
+		$output .= sprintf( '<option value=".%s-%s">%s</option>',
 			esc_attr( $option['singular'] ),
 			esc_attr( $term->slug ),
 			esc_attr( $term->name )
 		);
 	}
-	echo '</select>';
+	$output .= '</select>';
+	return $output;
 }
