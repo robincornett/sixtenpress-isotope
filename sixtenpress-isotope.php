@@ -20,16 +20,20 @@
  */
 
 add_action( 'template_redirect', 'sixtenpress_do_isotope' );
+/**
+ * Fire up isotope work if the post type supports it.
+ */
 function sixtenpress_do_isotope() {
-	$can_do = false;
-	if ( ! is_singular() ) {
-		$can_do = true;
+	if ( is_singular() ) {
+		return;
 	}
-	$can_do = (bool) apply_filters( 'sixtenpress_do_isotope', $can_do );
-	if ( $can_do ) {
+	$post_type_name = get_post_type();
+	if ( false === get_post_type() ) {
+		$post_type_name = get_query_var( 'post_type' );
+	}
+	if ( post_type_supports( $post_type_name, 'sixtenpress-isotope' ) ) {
 		add_action( 'wp_enqueue_scripts', 'sixtenpress_enqueue_isotope' );
 	}
-	return $can_do;
 }
 
 /**
@@ -40,7 +44,9 @@ function sixtenpress_enqueue_isotope() {
 	wp_enqueue_script( 'sixtenpress-isotope-set', plugin_dir_url( __FILE__ ) . '/js/isotope-set.js', array( 'sixtenpress-isotope' ), '1.0.0', true );
 
 	$options = apply_filters( 'sixtenpress_isotope_options', array(
-		'gutter' => 0,
+		'container' => 'isotope',
+		'selector'  => 'article',
+		'gutter'    => 0,
 	) );
 	wp_localize_script( 'sixtenpress-isotope-set', 'SixTenPress', $options );
 
@@ -57,7 +63,7 @@ function sixtenpress_enqueue_isotope() {
  * Wraps articles/posts in a div. Required for isotope.
  */
 function sixtenpress_open_div() {
-	echo '<div class="masonry">';
+	echo '<div class="isotope">';
 }
 
 /**

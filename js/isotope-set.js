@@ -1,5 +1,6 @@
 /**
  * Set up the isotope script and filters.
+ * @copyright 2016 Robin Cornett
  */
 (function ( document, $, undefined ) {
 	'use strict';
@@ -25,13 +26,13 @@
 	};
 
 	function _doIsotope() {
-		var $container = $( '.masonry' );
+		var $container = $( '.' + SixTen.params.container );
 		$container.isotope( {
-			itemSelector: 'article',
+			itemSelector: SixTen.params.selector,
 			percentPosition: true,
 			masonry: {
 				isAnimated: true,
-				gutter: parseInt( SixTenPress.gutter )
+				gutter: parseInt( SixTen.params.gutter )
 			}
 		} );
 	}
@@ -44,7 +45,7 @@
 	 */
 	function _doFilter( $select ) {
 		var selector = $select.attr( 'data-filter' );
-		$( '.masonry' ).isotope( { filter: selector } );
+		$( '.' + SixTen.params.container ).isotope( { filter: selector } );
 		$select.parents( 'ul' ).find( 'a' ).removeClass( 'active' );
 		$select.addClass( 'active' );
 		return false;
@@ -62,7 +63,7 @@
 		filters[ group ] = $select.find( 'option:selected' ).attr( 'value' );
 
 		var selector = _combineFilters( filters );
-		$( '.masonry' ).isotope( {
+		$( '.' + SixTen.params.container ).isotope( {
 			filter: selector
 		} );
 
