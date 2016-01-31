@@ -82,18 +82,18 @@ function sixtenpress_close_div() {
  * @param string $filter_name string What to name the filter heading (optional)
  */
 function sixtenpress_do_isotope_select( $select_options, $filter_name = '' ) {
-	$count       = count( $select_options );
-	$class       = sixtenpress_select_class( $count );
-	$output      = '<div class="main-filter">';
-	$filter_text = sprintf( __( 'Filter %s By:', 'sixtenpress-isotope' ), esc_attr( $filter_name ) );
-	$output     .= sprintf( '<h4>%s</h4>', esc_html( $filter_text ) );
-	$i           = 0;
+	$count        = count( $select_options );
+	$column_class = sixtenpress_select_class( $count );
+	$output       = '<div class="main-filter">';
+	$filter_text  = sprintf( __( 'Filter %s By:', 'sixtenpress-isotope' ), esc_attr( $filter_name ) );
+	$output      .= sprintf( '<h4>%s</h4>', esc_html( $filter_text ) );
+	$i            = 0;
 	foreach ( $select_options as $option ) {
-		$output_class = $class;
+		$class = $column_class;
 		if ( 0 === $i ) {
-			$output_class .= ' first';
+			$class .= ' first';
 		}
-		$output .= sixtenpress_build_select( $option, $output_class );
+		$output .= sixtenpress_build_select( $option, $class );
 		$i++;
 	}
 	$output .= '<br clear="all" />';
@@ -106,7 +106,7 @@ function sixtenpress_do_isotope_select( $select_options, $filter_name = '' ) {
  * @param $option array
  */
 function sixtenpress_build_select( $option, $class ) {
-	$output = sprintf( '<select name="%1$s" id="%1$s-filters" class="filter %2$s" data-filter-group="%1$s">',
+	$output = sprintf( '<select name="%1$s" id="%1$s-filters" class="%2$s" data-filter-group="%1$s">',
 		esc_attr( strtolower( $option['taxonomy'] ) ),
 		esc_attr( $class )
 	);
@@ -132,15 +132,14 @@ function sixtenpress_build_select( $option, $class ) {
  *
  * @return string
  */
-function sixtenpress_select_class( $count, $class = '' ) {
-	if ( 1 === $count ) {
-		$class .= '';
-	} elseif ( 1 === $count % 3 ) {
-		$class .= 'one-third';
-	} elseif ( 1 === $count % 4 ) {
-		$class .= 'one-fourth';
+function sixtenpress_select_class( $count ) {
+	$class = 'filter';
+	if ( 0 === $count % 3 ) {
+		$class .= ' one-third';
+	} elseif ( 0 === $count % 4 ) {
+		$class .= ' one-fourth';
 	} elseif ( 0 === $count % 2 ) {
-		$class .= 'one-half';
+		$class .= ' one-half';
 	}
 
 	return $class;
