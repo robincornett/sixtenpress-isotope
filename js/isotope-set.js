@@ -4,7 +4,8 @@
  */
 (function ( document, $, undefined ) {
 	'use strict';
-	var SixTen = {};
+	var SixTen  = {};
+	var filters = {};
 
 	SixTen.init = function () {
 
@@ -26,8 +27,8 @@
 	};
 
 	function _doIsotope() {
-		var $container = $( '.' + SixTen.params.container );
-		$container.isotope( {
+		var _container = $( '.' + SixTen.params.container );
+		_container.isotope( {
 			itemSelector: SixTen.params.selector,
 			percentPosition: true,
 			masonry: {
@@ -58,13 +59,12 @@
 	 * @private
 	 */
 	function _doSelect( $select ) {
-		var filters      = {},
-		    group        = $select.attr( 'data-filter-group' );
-		filters[ group ] = $select.find( 'option:selected' ).attr( 'value' );
+		var group        = $select.attr( 'data-filter-group' );
+		filters[ group ] = $select.find( ':selected' ).attr( 'data-filter-value' );
 
-		var selector = _combineFilters( filters );
+		var _selector = _combineFilters( filters );
 		$( '.' + SixTen.params.container ).isotope( {
-			filter: selector
+			filter: _selector
 		} );
 
 		return false;
@@ -72,16 +72,16 @@
 
 	/**
 	 * Combine two select filters
-	 * @param obj
+	 * @param filters
 	 * @returns {string}
 	 * @private
 	 */
-	function _combineFilters( obj ) {
-		var value = '';
-		for ( var prop in obj ) {
-			value += obj[ prop ];
+	function _combineFilters( filters ) {
+		var _selector = [];
+		for ( var prop in filters ) {
+			_selector.push( filters[ prop ] );
 		}
-		return value;
+		return _selector.join( '' );
 	}
 
 	$( document ).ready( function () {

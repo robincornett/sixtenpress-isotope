@@ -103,11 +103,13 @@ function sixtenpress_do_select( $option ) {
 		esc_attr( $option['class'] )
 	);
 	$all_things = sprintf( __( 'All %s', 'sixtenpress' ), $option['name'] );
-	$output .= sprintf( '<option value="*">%s</option>', esc_html( $all_things ) );
+	$output .= sprintf( '<option value="all" data-filter-value="">%s</option>',
+		esc_html( $all_things )
+	);
 	foreach ( $option['terms'] as $term ) {
-		$output .= sprintf( '<option value=".%s-%s">%s</option>',
-			esc_attr( $option['singular'] ),
-			esc_attr( $term->slug ),
+		$class   = sprintf( '%s-%s', esc_attr( $option['singular'] ), esc_attr( $term->slug ) );
+		$output .= sprintf( '<option value="%1$s" data-filter-value=".%1$s">%2$s</option>',
+			esc_attr( $class ),
 			esc_attr( $term->name )
 		);
 	}
