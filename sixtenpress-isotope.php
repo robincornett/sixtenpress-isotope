@@ -116,3 +116,34 @@ function sixtenpress_do_select( $option ) {
 	$output .= '</select>';
 	return $output;
 }
+/**
+ * @param $taxonomy string taxonomy for which to generate buttons
+ *
+ * @return string
+ * example:
+ * function soulcarepeople_buttons() {
+ *     sixtenpress_do_isotope_buttons( 'group' );
+ * }
+ */
+function sixtenpress_do_isotope_buttons( $taxonomy ) {
+
+	$terms = get_terms( $taxonomy );
+	if ( ! $terms ) {
+		return;
+	}
+	$output  = '<div class="main-filter">';
+	$output .= sprintf( '<h4>%s</h4>', __( 'Filter By: ', 'sixtenpress-isotope' ) );
+	$output .= sprintf( '<ul id="%s" class="filter">', esc_html( $taxonomy ) );
+	$output .= sprintf( '<li><button class="active" data-filter="*">%s</button></li>', __( 'All', 'sixtenpress-isotope' ) );
+	foreach ( $terms as $term ) {
+		$output .= sprintf( '<li><button data-filter=".%s-%s">%s</button></li>',
+			esc_html( $taxonomy ),
+			esc_html( $term->slug ),
+			esc_html( $term->name )
+		);
+	}
+	$output .= '</ul>';
+	$output .= '</div>';
+
+	echo $output;
+}

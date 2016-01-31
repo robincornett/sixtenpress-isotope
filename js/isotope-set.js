@@ -14,7 +14,7 @@
 		/**
 		 * Filter using an unordered list.
 		 */
-		$( '.filter a' ).on( 'click.stp', function () {
+		$( '.filter button' ).on( 'click.stp', function () {
 			_doFilter( $( this ) );
 		} );
 
@@ -47,7 +47,7 @@
 	function _doFilter( $select ) {
 		var selector = $select.attr( 'data-filter' );
 		$( '.' + SixTen.params.container ).isotope( { filter: selector } );
-		$select.parents( 'ul' ).find( 'a' ).removeClass( 'active' );
+		$select.parents( 'ul' ).find( 'button' ).removeClass( 'active' );
 		$select.addClass( 'active' );
 		return false;
 	}
