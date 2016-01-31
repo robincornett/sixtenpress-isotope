@@ -102,7 +102,7 @@ function sixtenpress_do_select( $option ) {
 		esc_attr( strtolower( $option['name'] ) ),
 		esc_attr( $option['class'] )
 	);
-	$all_things = sprintf( __( 'All', 'sixtenpress' ), ' ' . $option['name'] );
+	$all_things = sprintf( __( 'All %s', 'sixtenpress' ), $option['name'] );
 	$output .= sprintf( '<option value="*">%s</option>', esc_html( $all_things ) );
 	foreach ( $option['terms'] as $term ) {
 		$output .= sprintf( '<option value=".%s-%s">%s</option>',
