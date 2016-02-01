@@ -110,7 +110,13 @@ function sixtenpress_build_select( $option, $class ) {
 		esc_attr( strtolower( $option['taxonomy'] ) ),
 		esc_attr( $class )
 	);
-	$all_things = sprintf( __( 'All %s', 'sixtenpress-isotope' ), $option['name'] );
+	if ( isset( $option['name'] ) ) {
+		$label = $option['name'];
+	} else {
+		$all_labels = get_taxonomy_labels( $option['taxonomy'] );
+		$label = $all_labels['name'];
+	}
+	$all_things = sprintf( __( 'All %s', 'sixtenpress-isotope' ), $label );
 	$output .= sprintf( '<option value="all" data-filter-value="">%s</option>',
 		esc_html( $all_things )
 	);
