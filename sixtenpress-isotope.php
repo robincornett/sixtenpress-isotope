@@ -76,12 +76,17 @@ function sixtenpress_close_div() {
 	do_action( 'sixtenpress_after_isotope' );
 }
 
+add_action( 'sixtenpress_before_isotope', 'sixtenpress_do_isotope_select' );
 /**
  * Build the filter(s) for the isotope.
  * @param $select_options array containing terms, name, singular name, and optional class for the select.
  * @param string $filter_name string What to name the filter heading (optional)
  */
-function sixtenpress_do_isotope_select( $select_options, $filter_name = '' ) {
+function sixtenpress_do_isotope_select( $filter_name = '' ) {
+	$select_options = apply_filters( 'sixtenpress_isotope_select_terms', array() );
+	if ( ! $select_options ) {
+		return;
+	}
 	$count        = count( $select_options );
 	$column_class = sixtenpress_select_class( $count );
 	$output       = '<div class="main-filter">';
@@ -93,7 +98,7 @@ function sixtenpress_do_isotope_select( $select_options, $filter_name = '' ) {
 		if ( 0 === $i ) {
 			$class .= ' first';
 		}
-		$output .= sixtenpress_build_select( $option, $class );
+		$output .= sixtenpress_build_taxonomy_select( $option, $class );
 		$i++;
 	}
 	$output .= '<br clear="all" />';
@@ -105,13 +110,14 @@ function sixtenpress_do_isotope_select( $select_options, $filter_name = '' ) {
  * Build a select/dropdown for isotope filtering.
  * @param $option array
  */
-function sixtenpress_build_select( $option, $class ) {
+function sixtenpress_build_taxonomy_select( $option, $class ) {
 	$output = sprintf( '<select name="%1$s" id="%1$s-filters" class="%2$s" data-filter-group="%1$s">',
 		esc_attr( strtolower( $option['taxonomy'] ) ),
 		esc_attr( $class )
 	);
-	$all_things = sprintf( __( 'All %s', 'sixtenpress-isotope' ), $option['name'] );
-	$output .= sprintf( '<option value="all" data-filter-value="">%s</option>',
+	$label      = isset( $option['name'] ) ? $option['name'] : '';
+	$all_things = sprintf( __( 'All %s', 'sixtenpress-isotope' ), $label );
+	$output    .= sprintf( '<option value="all" data-filter-value="">%s</option>',
 		esc_html( $all_things )
 	);
 	$terms = get_terms( $option['taxonomy'] );
@@ -145,6 +151,7 @@ function sixtenpress_select_class( $count ) {
 	return $class;
 }
 
+add_action( 'sixtenpress_before_isotope', 'sixtenpress_do_isotope_buttons' );
 /**
  * @param $taxonomy string taxonomy for which to generate buttons
  *
@@ -154,7 +161,11 @@ function sixtenpress_select_class( $count ) {
  *     sixtenpress_do_isotope_buttons( 'group' );
  * }
  */
-function sixtenpress_do_isotope_buttons( $taxonomy ) {
+function sixtenpress_do_isotope_buttons() {
+	$taxonomy = apply_filters( 'sixtenpress_isotope_buttons', array() );
+	if ( ! $taxonomy ) {
+		return;
+	}
 
 	$terms = get_terms( $taxonomy );
 	if ( ! $terms ) {
