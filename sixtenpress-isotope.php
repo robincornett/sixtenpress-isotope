@@ -117,7 +117,7 @@ function sixtenpress_build_taxonomy_select( $option, $class ) {
 	);
 	$label      = isset( $option['name'] ) ? $option['name'] : '';
 	$all_things = sprintf( __( 'All %s', 'sixtenpress-isotope' ), $label );
-	$output    .= sprintf( '<option value="all" data-filter-value="">%s</option>',
+	$output .= sprintf( '<option value="all" data-filter-value="">%s</option>',
 		esc_html( $all_things )
 	);
 	$terms = get_terms( $option['taxonomy'] );
