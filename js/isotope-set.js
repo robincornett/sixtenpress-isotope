@@ -36,6 +36,9 @@
 				gutter: parseInt( SixTen.params.gutter )
 			}
 		} );
+		_container.imagesLoaded( function() {
+			_container.isotope( 'layout' );
+		});
 	}
 
 	/**
