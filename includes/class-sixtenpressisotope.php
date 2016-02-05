@@ -140,7 +140,9 @@ class SixTenPressIsotope {
 		if ( is_string( $filters ) ) {
 			$hook = 'sixtenpress_isotope_buttons';
 		}
-		add_filter( $hook, array( $this, 'build_filter_array' ) );
+		if ( ! has_action( $hook ) ) {
+			add_filter( $hook, array( $this, 'build_filter_array' ) );
+		}
 	}
 
 	/**
