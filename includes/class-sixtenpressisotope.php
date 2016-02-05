@@ -30,36 +30,14 @@ class SixTenPressIsotope {
 	 * Check for post type support, etc.
 	 */
 	public function run() {
+
 		add_action( 'admin_menu', array( $this->settings, 'do_submenu_page' ) );
 		add_action( 'template_redirect', array( $this, 'do_isotope' ) );
-		add_action( 'init', array( $this, 'check_support' ), 999 );
 		add_action( 'wp_print_scripts', array( $this, 'localize' ) );
 
 		add_action( 'genesis_after_header', array( $this, 'pick_filter' ) );
 		add_action( 'sixtenpress_before_isotope', array( $this, 'do_isotope_buttons' ) );
 		add_action( 'sixtenpress_before_isotope', array( $this, 'do_isotope_select' ) );
-	}
-
-	/**
-	 * Check for post type support.
-	 */
-	public function check_support() {
-		$this->setting = get_option( 'sixtenpressisotope', false );
-		if ( ! $this->setting || is_admin() ) {
-			return;
-		}
-		$args     = array(
-			'public'      => true,
-			'_builtin'    => false,
-			'has_archive' => true,
-		);
-		$output     = 'names';
-		$post_types = get_post_types( $args, $output );
-		foreach ( $post_types as $post_type ) {
-			if ( $this->setting[ $post_type ]['support'] ) {
-				add_post_type_support( $post_type, 'sixtenpress-isotope' );
-			}
-		}
 	}
 
 	/**
@@ -69,8 +47,12 @@ class SixTenPressIsotope {
 		if ( is_singular() ) {
 			return;
 		}
-		$post_type_name = $this->check_post_type();
-		if ( post_type_supports( $post_type_name, 'sixtenpress-isotope' ) ) {
+		$this->setting = get_option( 'sixtenpressisotope', false );
+		$post_type     = $this->check_post_type();
+		if ( $this->setting[ $post_type ]['support'] ) {
+			add_post_type_support( $post_type, 'sixtenpress-isotope' );
+		}
+		if ( post_type_supports( $post_type, 'sixtenpress-isotope' ) ) {
 			add_action( 'wp_enqueue_scripts', 'sixtenpress_enqueue_isotope' );
 		}
 	}
