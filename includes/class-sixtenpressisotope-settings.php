@@ -207,6 +207,10 @@ class SixTenPressIsotopeSettings {
 	 * @since 3.0.0
 	 */
 	public function do_checkbox( $args ) {
+		$setting = isset( $this->setting[ $args['setting'] ] ) ? $this->setting[ $args['setting'] ] : 0;
+		if ( isset( $args['setting_name'] ) ) {
+			$setting = $this->setting[ $args['post_type'] ][ $args['setting_name'] ];
+		}
 		if ( ! isset( $this->setting[ $args['setting'] ] ) ) {
 			$this->setting[ $args['setting'] ] = 0;
 		}
@@ -214,7 +218,7 @@ class SixTenPressIsotopeSettings {
 		printf( '<label for="%1$s[%2$s]"><input type="checkbox" name="%1$s[%2$s]" id="%1$s[%2$s]" value="1" %3$s class="code" />%4$s</label>',
 			esc_attr( $this->page ),
 			esc_attr( $args['setting'] ),
-			checked( 1, esc_attr( $this->setting[ $args['setting'] ] ), false ),
+			checked( 1, esc_attr( $setting ), false ),
 			esc_attr( $args['label'] )
 		);
 		$this->do_description( $args['setting'] );
@@ -226,15 +230,19 @@ class SixTenPressIsotopeSettings {
 	 * @since 3.0.0
 	 */
 	public function do_number( $args ) {
-		if ( ! isset( $this->setting[ $args['setting'] ] ) ) {
-			$this->setting[ $args['setting'] ] = 0;
+		$setting = isset( $this->setting[ $args['setting'] ] ) ? $this->setting[ $args['setting'] ] : 0;
+		if ( isset( $args['setting_name'] ) ) {
+			$setting = $this->setting[ $args['post_type'] ][ $args['setting_name'] ];
+		}
+		if ( ! isset( $setting ) ) {
+			$setting = 0;
 		}
 		printf( '<label for="%s[%s]">%s</label>', esc_attr( $this->page ), esc_attr( $args['setting'] ), esc_attr( $args['label'] ) );
 		printf( '<input type="number" step="1" min="%1$s" max="%2$s" id="%5$s[%3$s]" name="%5$s[%3$s]" value="%4$s" class="small-text" />',
 			(int) $args['min'],
 			(int) $args['max'],
 			esc_attr( $args['setting'] ),
-			esc_attr( $this->setting[$args['setting']] ),
+			esc_attr( $setting ),
 			esc_attr( $this->page )
 		);
 		$this->do_description( $args['setting'] );
@@ -288,21 +296,40 @@ class SixTenPressIsotopeSettings {
 	public function set_post_type_options( $args ) {
 		$post_type = $args['post_type']->name;
 		if ( empty( $this->setting['post_type'][$post_type] ) ) {
-			$this->setting['post_type'][$post_type] = $id = '';
+			$this->setting['post_type'][$post_type] = '';
 		}
+		$setting_name = 'support';
 		$checkbox_args = array(
-			'setting' => $args['post_type']->name . '_support',
-			'label'   => __( 'Enable Isotope for this post type?', 'sixtenpress-isotope' ),
+			'setting'      => "{$post_type}][{$setting_name}",
+			'label'        => __( 'Enable Isotope for this post type?', 'sixtenpress-isotope' ),
+			'post_type'    => $post_type,
+			'setting_name' => $setting_name,
 		);
 		$this->do_checkbox( $checkbox_args );
 		echo '<br />';
+		$setting_name = 'gutter';
 		$gutter_args = array(
-			'setting' => $args['post_type']->name . '_gutter',
-			'min'     => 0,
-			'max'     => 24,
-			'label'   => __( 'Gutter Width', 'sixtenpress-isotope' ),
+			'setting'      => "{$post_type}][{$setting_name}",
+			'min'          => 0,
+			'max'          => 24,
+			'label'        => __( 'Gutter Width', 'sixtenpress-isotope' ),
+			'post_type'    => $post_type,
+			'setting_name' => $setting_name,
 		);
 		$this->do_number( $gutter_args );
+		echo '<br />';
+		$taxonomies = get_object_taxonomies( $args['post_type']->name, 'names' );
+		foreach ( $taxonomies as $taxonomy ) {
+			$tax_object = get_taxonomy( $taxonomy );
+			$tax_args   = array(
+				'setting'      => "{$post_type}][{$taxonomy}",
+				'label'        => sprintf( __( 'Add a filter for %s', 'sixtenpress-isotope' ), $tax_object->labels->name ),
+				'post_type'    => $post_type,
+				'setting_name' => $taxonomy,
+			);
+			$this->do_checkbox( $tax_args );
+			echo '<br />';
+		}
 	}
 
 	/**
