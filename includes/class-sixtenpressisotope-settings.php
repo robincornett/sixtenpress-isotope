@@ -85,7 +85,8 @@ class SixTenPressIsotopeSettings {
 	public function get_setting() {
 
 		$defaults = array(
-			'gutter' => 0,
+			'posts_per_page' => get_option( 'posts_per_page', 10 ),
+			'style'          => 1,
 		);
 
 		$setting = get_option( $this->page, $defaults );
@@ -150,15 +151,25 @@ class SixTenPressIsotopeSettings {
 
 		$this->fields = array(
 			array(
-				'id'       => 'gutter',
-				'title'    => __( 'Gutter Width', 'sixtenpress-isotope' ),
+				'id'       => 'posts_per_page',
+				'title'    => __( 'Number of Posts to Show on Isotope Archives', 'sixtenpress-isotope' ),
 				'callback' => 'do_number',
 				'section'  => 'general',
 				'args'     => array(
-					'setting' => 'gutter',
-					'min'     => 0,
-					'max'     => 24,
-					'label'   => __( 'Gutter Width', 'sixtenpress-isotope' ),
+					'setting' => 'posts_per_page',
+					'min'     => 1,
+					'max'     => 200,
+					'label'   => __( 'Posts per Page', 'sixtenpress-isotope' ),
+				),
+			),
+			array(
+				'id'       => 'style',
+				'title'    => __( 'Plugin Stylesheet', 'sixtenpress-isotope' ),
+				'callback' => 'do_checkbox',
+				'section'  => 'general',
+				'args'     => array(
+					'setting' => 'style',
+					'label'   => __( 'Use the plugin styles?', 'sixtenpress-isotope' ),
 				),
 			),
 		);
