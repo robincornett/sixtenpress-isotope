@@ -31,7 +31,9 @@ class SixTenPressIsotope {
 	 */
 	public function run() {
 
+		$this->setting = get_option( 'sixtenpressisotope', false );
 		add_action( 'admin_menu', array( $this->settings, 'do_submenu_page' ) );
+		add_action( 'pre_get_posts', array( $this, 'posts_per_page' ), 9999 );
 		add_action( 'template_redirect', array( $this, 'do_isotope' ) );
 		add_action( 'wp_print_scripts', array( $this, 'localize' ) );
 
@@ -47,14 +49,24 @@ class SixTenPressIsotope {
 		if ( is_singular() ) {
 			return;
 		}
-		$this->setting = get_option( 'sixtenpressisotope', false );
-		$post_type     = $this->check_post_type();
-		if ( $this->setting[ $post_type ]['support'] ) {
+		if ( $this->post_type_supports() ) {
+			add_action( 'wp_enqueue_scripts', 'sixtenpress_enqueue_isotope' );
+		}
+	}
+
+	/**
+	 * Check whether the current post type supports isotope.
+	 * @return bool
+	 */
+	protected function post_type_supports() {
+		$post_type = $this->check_post_type();
+		if ( isset( $this->setting[ $post_type ]['support'] ) && $this->setting[ $post_type ]['support'] ) {
 			add_post_type_support( $post_type, 'sixtenpress-isotope' );
 		}
 		if ( post_type_supports( $post_type, 'sixtenpress-isotope' ) ) {
-			add_action( 'wp_enqueue_scripts', 'sixtenpress_enqueue_isotope' );
+			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -62,8 +74,8 @@ class SixTenPressIsotope {
 	 */
 	public function localize() {
 		$post_type_name = $this->check_post_type();
-		$gutter         = $this->setting['gutter'];
-		if ( isset( $this->setting[ $post_type_name ]['gutter'] ) && $post_type_name === get_post_type() ) {
+		$gutter         = 0;
+		if ( isset( $this->setting[ $post_type_name ]['gutter'] ) ) {
 			$gutter = $this->setting[ $post_type_name]['gutter'];
 		}
 		$options = apply_filters( 'sixtenpress_isotope_options', array(
