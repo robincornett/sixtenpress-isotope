@@ -51,6 +51,7 @@ class SixTenPressIsotope {
 		}
 		if ( $this->post_type_supports() ) {
 			add_action( 'wp_enqueue_scripts', 'sixtenpress_enqueue_isotope' );
+			add_action( 'wp_head', array( $this, 'inline_style' ) );
 		}
 	}
 
@@ -96,6 +97,65 @@ class SixTenPressIsotope {
 			$post_type_name = get_query_var( 'post_type' );
 		}
 		return $post_type_name;
+	}
+
+	/**
+	 * @param $query WP_Query
+	 */
+	public function posts_per_page( $query ) {
+		if ( ! $this->post_type_supports() ) {
+			return;
+		}
+		if ( $query->is_main_query() ) {
+			$query->set( 'posts_per_page', $this->setting['posts_per_page'] );
+		}
+	}
+
+	/**
+	 * Add the inline stylesheet.
+	 */
+	public function inline_style() {
+		if ( ! $this->setting['style'] || apply_filters( 'sixtenpress_isotope_remove_inline_style', false ) ) {
+			return;
+		}
+		$post_type  = $this->check_post_type();
+		$margin     = $this->setting[ $post_type ]['gutter'];
+		$one_half   = 'width: -webkit-calc(50% - ' . $margin / 2 . 'px); width: calc(50% - ' . $margin / 2 . 'px);';
+		$one_third  = 'width: -webkit-calc(33.33333% - ' . 2 * $margin / 3 . 'px); width: calc(33.33333% - ' . 2 * $margin / 3 . 'px);';
+		$one_fourth = 'width: -webkit-calc(25% - ' . 3 * $margin / 4 . 'px); width: calc(25% - ' . 3 * $margin / 4 . 'px);';
+		$css        = sprintf( '
+			.isotope {
+				clear: both;
+				margin-bottom: 40px;
+			}
+			.isotope .entry {
+				float: left;
+				margin-bottom: %2$s;
+				%1$s
+			}
+			@media only screen and (min-width: 600px) {
+				.isotope .entry {
+					%3$s
+				}
+			}
+			@media only screen and (min-width: 1023px) {
+				.isotope .entry {
+					%4$s
+				}
+			}',
+			$one_half,
+			$margin . 'px',
+			$one_third,
+			$one_fourth
+		);
+
+		$css = apply_filters( 'sixtenpress_isotope_inline_style', $css, $post_type, $this->setting );
+		// Minify a bit
+		$css = str_replace( "\t", '', $css );
+		$css = str_replace( array( "\n", "\r" ), ' ', $css );
+
+		// Echo the CSS
+		echo '<style type="text/css" media="screen">' . $css . '</style>';
 	}
 
 	/**
