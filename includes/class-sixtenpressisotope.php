@@ -60,7 +60,7 @@ class SixTenPressIsotope {
 	 * @return bool
 	 */
 	protected function post_type_supports() {
-		$post_type = $this->check_post_type();
+		$post_type = $this->get_current_post_type();
 		if ( isset( $this->setting[ $post_type ]['support'] ) && $this->setting[ $post_type ]['support'] ) {
 			add_post_type_support( $post_type, 'sixtenpress-isotope' );
 		}
@@ -74,7 +74,7 @@ class SixTenPressIsotope {
 	 * Localize the script for isotope output.
 	 */
 	public function localize() {
-		$post_type_name = $this->check_post_type();
+		$post_type_name = $this->get_current_post_type();
 		$gutter         = 0;
 		if ( isset( $this->setting[ $post_type_name ]['gutter'] ) ) {
 			$gutter = $this->setting[ $post_type_name]['gutter'];
@@ -91,7 +91,7 @@ class SixTenPressIsotope {
 	 * Check the current post type.
 	 * @return false|mixed|string
 	 */
-	protected function check_post_type() {
+	protected function get_current_post_type() {
 		$post_type_name = get_post_type();
 		if ( false === get_post_type() ) {
 			$post_type_name = get_query_var( 'post_type' );
@@ -103,10 +103,23 @@ class SixTenPressIsotope {
 	 * @param $query WP_Query
 	 */
 	public function posts_per_page( $query ) {
-		if ( ! $this->post_type_supports() ) {
+		if ( ! $query->is_main_query() ) {
 			return;
 		}
-		if ( $query->is_main_query() ) {
+		$args     = array(
+			'public'      => true,
+			'_builtin'    => false,
+			'has_archive' => true,
+		);
+		$output     = 'names';
+		$post_types = get_post_types( $args, $output );
+		$supported  = array();
+		foreach( $post_types as $post_type ) {
+			if ( isset( $this->setting[ $post_type ]['support'] ) && $this->setting[ $post_type ]['support'] ) {
+				$supported[] = $post_type;
+			}
+		}
+		if ( is_post_type_archive( $supported ) || ( isset( $this->setting['post']['support'] ) && is_home() && $this->setting['post']['support'] ) ) {
 			$query->set( 'posts_per_page', $this->setting['posts_per_page'] );
 		}
 	}
@@ -118,7 +131,7 @@ class SixTenPressIsotope {
 		if ( ! $this->setting['style'] || apply_filters( 'sixtenpress_isotope_remove_inline_style', false ) ) {
 			return;
 		}
-		$post_type  = $this->check_post_type();
+		$post_type  = $this->get_current_post_type();
 		$margin     = $this->setting[ $post_type ]['gutter'];
 		$one_half   = 'width: -webkit-calc(50% - ' . $margin / 2 . 'px); width: calc(50% - ' . $margin / 2 . 'px);';
 		$one_third  = 'width: -webkit-calc(33.33333% - ' . 2 * $margin / 3 . 'px); width: calc(33.33333% - ' . 2 * $margin / 3 . 'px);';
@@ -132,6 +145,10 @@ class SixTenPressIsotope {
 				float: left;
 				margin-bottom: %2$s;
 				%1$s
+			}
+			.main-filter li {
+				display: inline-block;
+				margin: 1px;
 			}
 			@media only screen and (min-width: 600px) {
 				.isotope .entry {
@@ -165,7 +182,7 @@ class SixTenPressIsotope {
 	 * @return array|string
 	 */
 	public function build_filter_array( $filters = array() ) {
-		$post_type  = $this->check_post_type();
+		$post_type  = $this->get_current_post_type();
 		$taxonomies = get_object_taxonomies( $post_type, 'names' );
 		if ( ! $taxonomies ) {
 			return $filters;
@@ -212,7 +229,7 @@ class SixTenPressIsotope {
 		$count        = count( $select_options );
 		$column_class = $this->select_class( $count );
 		$output       = '<div class="main-filter">';
-		$object       = get_post_type_object( $this->check_post_type() );
+		$object       = get_post_type_object( $this->get_current_post_type() );
 		$filter_text  = sprintf( __( 'Filter %s By:', 'sixtenpress-isotope' ), esc_attr( $object->labels->name ) );
 		$output      .= sprintf( '<h4>%s</h4>', esc_html( $filter_text ) );
 		$i            = 0;
