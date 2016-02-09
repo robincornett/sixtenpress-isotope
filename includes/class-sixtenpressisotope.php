@@ -50,8 +50,6 @@ class SixTenPressIsotope {
 			add_action( 'wp_enqueue_scripts', 'sixtenpress_enqueue_isotope' );
 			add_action( 'wp_head', array( $this, 'inline_style' ) );
 			add_action( 'genesis_after_header', array( $this, 'pick_filter' ) );
-			add_action( 'sixtenpress_before_isotope', array( $this, 'do_isotope_buttons' ) );
-			add_action( 'sixtenpress_before_isotope', array( $this, 'do_isotope_select' ) );
 		}
 	}
 
@@ -180,47 +178,58 @@ class SixTenPressIsotope {
 
 	/**
 	 * Build the array/string of taxonomies to use as a filter.
-	 * @param array $filters
+	 *
+	 * @param array $tax_filters
 	 *
 	 * @return array|string
 	 */
-	public function build_filter_array( $filters = array() ) {
+	public function build_filter_array( $tax_filters = array() ) {
 		$post_type  = $this->get_current_post_type();
 		$taxonomies = get_object_taxonomies( $post_type, 'names' );
 		$taxonomies = 'post' === $post_type ? array( 'category' ) : $taxonomies;
 		if ( ! $taxonomies ) {
-			return $filters;
+			return $tax_filters;
 		}
 		if ( null === $this->setting[ $post_type ] ) {
 			$this->setting[ $post_type ] = array();
 		}
 		foreach ( $taxonomies as $taxonomy ) {
 			if ( key_exists( $taxonomy, $this->setting[ $post_type ] ) && $this->setting[ $post_type ][ $taxonomy ] ) {
-				$filters[] = $taxonomy;
+				$tax_filters[] = $taxonomy;
 			};
 		}
-		$count = count( $filters );
+		return apply_filters( 'sixtenpress_isotope_filter_terms', $tax_filters );
+	}
+
+	/**
+	 * Count the taxonomies for the filters--if one, return a string instead of an array.
+	 * @return array|string
+	 */
+	protected function updated_filters() {
+		$tax_filters = $this->build_filter_array();
+		$count       = count( $tax_filters );
 		if ( $count === 1 ) {
-			$filters = implode( $filters );
+			$tax_filters = implode( $tax_filters );
 		}
-		return $filters;
+		return $tax_filters;
 	}
 
 	/**
 	 * Determine which filter to use.
 	 */
 	public function pick_filter() {
-		$filters = $this->build_filter_array();
+		if ( ! is_post_type_archive() ) {
+			return;
+		}
+		$filters = $this->updated_filters();
 		if ( empty( $filters ) ) {
 			return;
 		}
-		$hook = 'sixtenpress_isotope_select_terms';
+		$action = 'do_isotope_select';
 		if ( is_string( $filters ) ) {
-			$hook = 'sixtenpress_isotope_buttons';
+			$action = 'do_isotope_buttons';
 		}
-		if ( ! has_action( $hook ) ) {
-			add_filter( $hook, array( $this, 'build_filter_array' ) );
-		}
+		add_action( 'sixtenpress_before_isotope', array( $this, $action ) );
 	}
 
 	/**
@@ -229,7 +238,7 @@ class SixTenPressIsotope {
 	 * @param string $filter_name string What to name the filter heading (optional)
 	 */
 	public function do_isotope_select() {
-		$select_options = apply_filters( 'sixtenpress_isotope_select_terms', array() );
+		$select_options = $this->updated_filters();
 		if ( ! $select_options ) {
 			return;
 		}
@@ -309,7 +318,7 @@ class SixTenPressIsotope {
 	 * }
 	 */
 	public function do_isotope_buttons() {
-		$taxonomy = apply_filters( 'sixtenpress_isotope_buttons', array() );
+		$taxonomy = $this->updated_filters();
 		if ( ! $taxonomy ) {
 			return;
 		}
