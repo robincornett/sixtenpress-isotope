@@ -36,10 +36,6 @@ class SixTenPressIsotope {
 		add_action( 'pre_get_posts', array( $this, 'posts_per_page' ), 9999 );
 		add_action( 'template_redirect', array( $this, 'do_isotope' ) );
 		add_action( 'wp_print_scripts', array( $this, 'localize' ) );
-
-		add_action( 'genesis_after_header', array( $this, 'pick_filter' ) );
-		add_action( 'sixtenpress_before_isotope', array( $this, 'do_isotope_buttons' ) );
-		add_action( 'sixtenpress_before_isotope', array( $this, 'do_isotope_select' ) );
 	}
 
 	/**
@@ -52,6 +48,9 @@ class SixTenPressIsotope {
 		if ( $this->post_type_supports() ) {
 			add_action( 'wp_enqueue_scripts', 'sixtenpress_enqueue_isotope' );
 			add_action( 'wp_head', array( $this, 'inline_style' ) );
+			add_action( 'genesis_after_header', array( $this, 'pick_filter' ) );
+			add_action( 'sixtenpress_before_isotope', array( $this, 'do_isotope_buttons' ) );
+			add_action( 'sixtenpress_before_isotope', array( $this, 'do_isotope_select' ) );
 		}
 	}
 
@@ -75,7 +74,10 @@ class SixTenPressIsotope {
 	 */
 	public function localize() {
 		$post_type_name = $this->get_current_post_type();
-		$gutter         = 0;
+		if ( ! $this->post_type_supports() ) {
+			return;
+		}
+		$gutter = 0;
 		if ( isset( $this->setting[ $post_type_name ]['gutter'] ) ) {
 			$gutter = $this->setting[ $post_type_name]['gutter'];
 		}
