@@ -167,8 +167,12 @@ class SixTenPressIsotope {
 	public function build_filter_array( $filters = array() ) {
 		$post_type  = $this->check_post_type();
 		$taxonomies = get_object_taxonomies( $post_type, 'names' );
+		$taxonomies = 'post' === $post_type ? array( 'category' ) : $taxonomies;
 		if ( ! $taxonomies ) {
 			return $filters;
+		}
+		if ( null === $this->setting[ $post_type ] ) {
+			$this->setting[ $post_type ] = array();
 		}
 		foreach ( $taxonomies as $taxonomy ) {
 			if ( key_exists( $taxonomy, $this->setting[ $post_type ] ) && $this->setting[ $post_type ][ $taxonomy ] ) {
