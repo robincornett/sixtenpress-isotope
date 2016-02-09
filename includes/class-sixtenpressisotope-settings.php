@@ -121,7 +121,7 @@ class SixTenPressIsotopeSettings {
 
 			$sections['cpt'] = array(
 				'id'    => 'cpt',
-				'title' => __( 'Isotope Settings for Custom Post Types', 'sixtenpress-isotope' ),
+				'title' => __( 'Isotope Settings for Content Types', 'sixtenpress-isotope' ),
 			);
 		}
 
@@ -339,6 +339,7 @@ class SixTenPressIsotopeSettings {
 		$this->do_number( $gutter_args );
 		echo '<br />';
 		$taxonomies = get_object_taxonomies( $post_type, 'names' );
+		$taxonomies = 'post' === $post_type ? array( 'category' ) : $taxonomies;
 		foreach ( $taxonomies as $taxonomy ) {
 			$tax_object = get_taxonomy( $taxonomy );
 			$tax_args   = array(
