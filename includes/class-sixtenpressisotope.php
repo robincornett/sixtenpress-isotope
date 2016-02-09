@@ -43,7 +43,7 @@ class SixTenPressIsotope {
 	 * Fire up isotope work if the post type supports it.
 	 */
 	public function do_isotope() {
-		if ( is_singular() ) {
+		if ( is_singular() || is_admin() ) {
 			return;
 		}
 		if ( $this->post_type_supports() ) {
@@ -55,27 +55,26 @@ class SixTenPressIsotope {
 
 	/**
 	 * Check whether the current post type supports isotope.
+	 * Can be modified via filter (eg on taxonomies).
 	 * @return bool
 	 */
 	protected function post_type_supports() {
+		$support   = false;
 		$post_type = $this->get_current_post_type();
-		if ( isset( $this->setting[ $post_type ]['support'] ) && $this->setting[ $post_type ]['support'] ) {
-			add_post_type_support( $post_type, 'sixtenpress-isotope' );
-		}
 		if ( post_type_supports( $post_type, 'sixtenpress-isotope' ) ) {
-			return true;
+			$support = true;
 		}
-		return false;
+		return (bool) apply_filters( 'sixtenpress_isotope_support', $support );
 	}
 
 	/**
 	 * Localize the script for isotope output.
 	 */
 	public function localize() {
-		$post_type_name = $this->get_current_post_type();
 		if ( ! $this->post_type_supports() ) {
 			return;
 		}
+		$post_type_name = $this->get_current_post_type();
 		$gutter = 0;
 		if ( isset( $this->setting[ $post_type_name ]['gutter'] ) ) {
 			$gutter = $this->setting[ $post_type_name]['gutter'];
@@ -116,11 +115,11 @@ class SixTenPressIsotope {
 		$post_types = get_post_types( $args, $output );
 		$supported  = array();
 		foreach( $post_types as $post_type ) {
-			if ( isset( $this->setting[ $post_type ]['support'] ) && $this->setting[ $post_type ]['support'] ) {
+			if ( post_type_supports( $post_type, 'sixtenpress-isotope' ) ) {
 				$supported[] = $post_type;
 			}
 		}
-		if ( is_post_type_archive( $supported ) || ( isset( $this->setting['post']['support'] ) && is_home() && $this->setting['post']['support'] ) ) {
+		if ( in_array( true, $supported, false ) ) {
 			$query->set( 'posts_per_page', $this->setting['posts_per_page'] );
 		}
 	}
