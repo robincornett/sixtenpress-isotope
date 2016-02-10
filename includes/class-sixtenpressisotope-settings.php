@@ -27,6 +27,10 @@ class SixTenPressIsotopeSettings {
 	 */
 	protected $fields;
 
+	public function __construct() {
+		$this->setting = $this->get_setting();
+	}
+
 	/**
 	 * add a submenu page under settings
 	 * @return submenu SixTen Press Isotope settings page
@@ -53,7 +57,6 @@ class SixTenPressIsotopeSettings {
 	 */
 	public function do_settings_form() {
 
-		$this->setting = $this->get_setting();
 		echo '<div class="wrap">';
 		echo '<h1>' . esc_attr( get_admin_page_title() ) . '</h1>';
 		echo '<form action="options.php" method="post">';
@@ -103,8 +106,9 @@ class SixTenPressIsotopeSettings {
 			'_builtin'    => false,
 			'has_archive' => true,
 		);
-		$output     = 'names';
-		$post_types = get_post_types( $args, $output );
+		$output       = 'names';
+		$post_types   = get_post_types( $args, $output );
+		$post_types[] = 'post';
 		foreach( $post_types as $post_type ) {
 			if ( isset( $this->setting[ $post_type ]['support'] ) && $this->setting[ $post_type ]['support'] ) {
 				add_post_type_support( $post_type, 'sixtenpress-isotope' );

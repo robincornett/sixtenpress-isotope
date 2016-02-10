@@ -33,7 +33,7 @@ class SixTenPressIsotope {
 
 		$this->setting = get_option( 'sixtenpressisotope', false );
 		add_action( 'admin_menu', array( $this->settings, 'do_submenu_page' ) );
-		add_action( 'init', array( $this->settings, 'add_post_type_support' ) );
+		add_action( 'init', array( $this->settings, 'add_post_type_support' ), 9999 );
 		add_action( 'pre_get_posts', array( $this, 'posts_per_page' ), 9999 );
 		add_action( 'template_redirect', array( $this, 'do_isotope' ) );
 		add_action( 'wp_print_scripts', array( $this, 'localize' ) );
