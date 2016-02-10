@@ -35,8 +35,8 @@ class SixTenPressIsotopeSettings {
 	public function do_submenu_page() {
 
 		add_options_page(
-			__( 'SixTen Press Isotope Settings', 'sixtenpress-isotope' ),
-			__( 'SixTen Press Isotope', 'sixtenpress-isotope' ),
+			__( '6/10 Press Isotope Settings', 'sixtenpress-isotope' ),
+			__( '6/10 Press Isotope', 'sixtenpress-isotope' ),
 			'manage_options',
 			$this->page,
 			array( $this, 'do_settings_form' )
@@ -229,7 +229,7 @@ class SixTenPressIsotopeSettings {
 	}
 
 	public function cpt_section_description() {
-		$description = __( 'Set the isotope settings for each post type.', 'sixtenpress-isotope' );
+		$description = __( 'Set the isotope settings for each content type.', 'sixtenpress-isotope' );
 		printf( '<p>%s</p>', wp_kses_post( $description ) );
 	}
 
@@ -432,56 +432,24 @@ class SixTenPressIsotopeSettings {
 	public function help() {
 		$screen = get_current_screen();
 
-		$general_help = '<h3>' . __( 'RSS/Email Image Width', 'sixtenpress-isotope' ) . '</h3>';
-		$general_help .= '<p>' . __( 'If you have customized your emails to be a nonstandard width, or you are using a template with a sidebar, you will want to change your RSS/Email Image width. The default is 560 pixels, which is the content width of a standard single column email (600 pixels wide with 20 pixels padding on the content). Mad Mimi users should set this to 530.', 'sixtenpress-isotope' ) . '</p>';
-		$general_help .= '<p class="description">' . __( 'Note: Changing the width here will not affect previously uploaded images, but it will affect the max-width applied to images\' style.', 'sixtenpress-isotope' ) . '</p>';
+		$general_help = '<h3>' . __( 'Number of Posts to Show on Isotope Archives', 'sixtenpress-isotope' ) . '</h3>';
+		$general_help .= '<p>' . __( 'Change the number of items which show on content archives, to show more or less items than your regular archives.', 'sixtenpress-isotope' ) . '</p>';
 
-		$full_text_help = '<h3>' . __( 'Simplify Feed', 'sixtenpress-isotope' ) . '</h3>';
-		$full_text_help .= '<p>' . __( 'If you are not concerned about sending your feed out over email and want only your galleries changed from thumbnails to large images, select Simplify Feed.', 'sixtenpress-isotope' ) . '</p>';
+		$general_help .= '<h3>' . __( 'Plugin Stylesheet', 'sixtenpress-isotope' ) . '</h3>';
+		$general_help .= '<p>' . __( 'The plugin adds a wee bit of styling to handle the isotope layout, but if you want to do it yourself, disable the plugin style and enjoy!', 'sixtenpress-isotope' ) . '</p>';
 
-		$full_text_help .= '<h3>' . __( 'Alternate Feed', 'sixtenpress-isotope' ) . '</h3>';
-		$full_text_help .= '<p>' . __( 'By default, the SixTen Press Isotope plugin modifies every feed from your site. If you want to leave your main feed untouched and set up a totally separate feed for emails only, select this option.', 'sixtenpress-isotope' ) . '</p>';
-		$full_text_help .= '<p>' . __( 'If you use custom post types with their own feeds, the alternate feed method will work even with them.', 'sixtenpress-isotope' ) . '</p>';
-
-		$full_text_help .= '<h3>' . __( 'Featured Image', 'sixtenpress-isotope' ) . '</h3>';
-		$full_text_help .= '<p>' . __( 'Some themes and/or plugins add the featured image to the front end of your site, but not to the feed. If you are using a full text feed and want the featured image to be added to it, use this setting. I definitely recommend double checking your feed after enabling this, in case your theme or another plugin already adds the featured image to the feed, because you may end up with duplicate images.', 'sixtenpress-isotope' ) . '</p>';
-		$full_text_help .= '<p>' . __( 'If you are using the Alternate Feed setting, the featured image will be added to both feeds, but the full size version will be used on your unprocessed feed.', 'sixtenpress-isotope' ) . '</p>';
-		if ( class_exists( 'Display_Featured_Image_Genesis' ) ) {
-			$full_text_help .= '<p class="description">' . sprintf( __( 'As a <a href="%s">Display Featured Image for Genesis</a> user, you already have the option to add featured images to your feed using that plugin. If you have both plugins set to add the featured image to your full text feed, this plugin will step aside and not output the featured image until you have deactivated that setting in the other. This plugin gives you more control over the featured image output in the feed.', 'sixtenpress-isotope' ), esc_url( admin_url( 'themes.php?page=displayfeaturedimagegenesis' ) ) ) . '</p>';
-		}
-		$full_text_help .= '<p>' . __( 'Note: the plugin will attempt to see if the image is already in your post content. If it is, the featured image will not be added to the feed as it would be considered a duplication.', 'sixtenpress-isotope' ) . '</p>';
-
-		$general_help .= '<h3>' . __( 'Featured Image Size', 'sixtenpress-isotope' ) . '</h3>';
-		$general_help .= '<p>' . __( 'Select which size image you would like to use in your excerpt/summary.', 'sixtenpress-isotope' ) . '</p>';
-
-		$general_help .= '<h3>' . __( 'Featured Image Alignment', 'sixtenpress-isotope' ) . '</h3>';
-		$general_help .= '<p>' . __( 'Set the alignment for your post\'s featured image.', 'sixtenpress-isotope' ) . '</p>';
-
-		$general_help .= '<h3>' . __( 'Process Both Feeds', 'sixtenpress-isotope' ) . '</h3>';
-		$general_help .= '<p>' . __( 'Some users like to allow subscribers who use Feedly or another RSS reader to read the full post, with images, but use the summary for email subscribers. To get images processed on both, set your feed settings to Full Text, and check this option.', 'sixtenpress-isotope' ) . '</p>';
-
-		$summary_help = '<h3>' . __( 'Excerpt Length', 'sixtenpress-isotope' ) . '</h3>';
-		$summary_help .= '<p>' . __( 'Set the target number of words you want your excerpt to generally have. The plugin will count that many words, and then add on as many as are required to ensure your summary ends in a complete sentence.', 'sixtenpress-isotope' ) . '</p>';
-
-		$summary_help .= '<h3>' . __( 'Read More Text', 'sixtenpress-isotope' ) . '</h3>';
-		$summary_help .= '<p>' . __( 'Enter the text you want your "read more" link in your feed to contain. You can use placeholders for the post title and blog name.', 'sixtenpress-isotope' ) . '</p>';
-		$summary_help .= '<p class="description">' . __( 'Hint: "Read More" is probably inadequate for your link\'s anchor text.', 'sixtenpress-isotope' ) . '</p>';
+		$cpt_help  = '<p>' . __( 'Each content type on your site will be handled uniquely. Enable Isotope, set the gutter width, and enable filters as you like.', 'sixtenpress-isotope' ) . '</p>';
 
 		$help_tabs = array(
 			array(
 				'id'      => 'sixtenpressisotope_general-help',
-				'title'   => __( 'General Image Settings', 'sixtenpress-isotope' ),
+				'title'   => __( 'General Settings', 'sixtenpress-isotope' ),
 				'content' => $general_help,
 			),
 			array(
-				'id'      => 'sixtenpressisotope_full_text-help',
-				'title'   => __( 'Full Text Settings', 'sixtenpress-isotope' ),
-				'content' => $full_text_help,
-			),
-			array(
-				'id'      => 'sixtenpressisotope_summary-help',
-				'title'   => __( 'Summary Settings', 'sixtenpress-isotope' ),
-				'content' => $summary_help,
+				'id'      => 'sixtenpressisotope_cpt-help',
+				'title'   => __( 'Isotope Settings for Content Types', 'sixtenpress-isotope' ),
+				'content' => $cpt_help,
 			),
 		);
 

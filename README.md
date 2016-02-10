@@ -4,16 +4,7 @@ SixTen Press Isotope is a little plugin which makes setting up an isotope based 
 
 ## Description
 
-This plugin doesn't do anything until you tell it to. In your theme or plugin, add this code to an archive to kick start the archive layout:
-
-```php
-add_action( 'template_redirect', 'prefix_run_isotope' );
-function prefix_run_isotope() {
-	if ( function_exists( 'sixtenpress_do_isotope' ) ) {
-		sixtenpress_do_isotope();
-	}
-}
-```
+This plugin doesn't do anything until you tell it to. Go to Settings > 6/10 Press Isotope and pick where you want the effect to happen.
 
 
 ## Requirements
@@ -42,7 +33,7 @@ Check out the Codex for more information about [installing plugins manually](htt
 
 Using git, browse to your `/wp-content/plugins/` directory and clone this repository:
 
-`git clone git@bitbucket.org:sixtenpress/sixtenpress-isotope.git`
+`git clone https://github.com/robincornett/sixtenpress-isotope.git`
 
 Then go to your Plugins screen and click __Activate__.
 
@@ -51,7 +42,7 @@ Then go to your Plugins screen and click __Activate__.
 ## Changelog
 
 ### 1.0.0
-* initial release on bitbucket
+* initial release
 
 ## Credits
 
