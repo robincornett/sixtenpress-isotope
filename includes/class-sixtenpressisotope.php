@@ -217,7 +217,7 @@ class SixTenPressIsotope {
 	 * Determine which filter to use.
 	 */
 	public function pick_filter() {
-		if ( ! is_post_type_archive() ) {
+		if ( ! is_post_type_archive() && ! is_home() ) {
 			return;
 		}
 		$filters = $this->updated_filters();
