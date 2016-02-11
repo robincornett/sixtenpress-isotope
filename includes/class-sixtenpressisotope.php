@@ -106,20 +106,7 @@ class SixTenPressIsotope {
 		if ( ! $query->is_main_query() ) {
 			return;
 		}
-		$args     = array(
-			'public'      => true,
-			'_builtin'    => false,
-			'has_archive' => true,
-		);
-		$output     = 'names';
-		$post_types = get_post_types( $args, $output );
-		$supported  = array();
-		foreach( $post_types as $post_type ) {
-			if ( post_type_supports( $post_type, 'sixtenpress-isotope' ) ) {
-				$supported[] = $post_type;
-			}
-		}
-		if ( in_array( true, $supported, false ) ) {
+		if ( post_type_supports( $this->get_current_post_type(), 'sixtenpress-isotope' ) ) {
 			$query->set( 'posts_per_page', $this->setting['posts_per_page'] );
 		}
 	}
@@ -145,6 +132,9 @@ class SixTenPressIsotope {
 				float: left;
 				margin-bottom: %2$s;
 				%1$s
+			}
+			.main-filter ul {
+				text-align: center;
 			}
 			.main-filter li {
 				display: inline-block;
