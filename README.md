@@ -39,6 +39,8 @@ Then go to your Plugins screen and click __Activate__.
 
 ## Frequently Asked Questions
 
+If you are intending to use this plugin on a commercial project (for a client), you need to [purchase a commercial license for Isotope](http://isotope.metafizzy.co/license.html). It's easy, takes just a moment, and is worth every penny. _Note: I have no affiliation with Metafizzy.
+
 ## Changelog
 
 ### 1.0.0
