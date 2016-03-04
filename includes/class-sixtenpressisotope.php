@@ -267,13 +267,16 @@ class SixTenPressIsotope {
 			esc_html( $all_things )
 		);
 		$terms = get_terms( $option );
+		$items = '';
 		foreach ( $terms as $term ) {
-			$class   = sprintf( '%s-%s', esc_attr( $option ), esc_attr( $term->slug ) );
-			$output .= sprintf( '<option value="%1$s" data-filter-value=".%1$s">%2$s</option>',
+			$class  = sprintf( '%s-%s', esc_attr( $option ), esc_attr( $term->slug ) );
+			$items .= sprintf( '<option value="%1$s" data-filter-value=".%1$s">%2$s</option>',
 				esc_attr( $class ),
 				esc_attr( $term->name )
 			);
 		}
+		var_dump( $option );
+		$output .= apply_filters( "sixtenpress_isotope_filter_{$option}_items", $items, $option, $class, $terms );
 		$output .= '</select>';
 		return $output;
 	}
