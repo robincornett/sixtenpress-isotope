@@ -106,6 +106,10 @@ class SixTenPressIsotope {
 		if ( ! $query->is_main_query() ) {
 			return;
 		}
+		// add a filter to optionally override this query
+		if ( apply_filters( 'sixtenpress_isotope_override_query', false, $this->get_current_post_type() ) ) {
+			return;
+		}
 		if ( post_type_supports( $this->get_current_post_type(), 'sixtenpress-isotope' ) ) {
 			$query->set( 'posts_per_page', $this->setting['posts_per_page'] );
 		}
@@ -119,7 +123,7 @@ class SixTenPressIsotope {
 			return;
 		}
 		$post_type  = $this->get_current_post_type();
-		$margin     = $this->setting[ $post_type ]['gutter'];
+		$margin     = isset( $this->setting[ $post_type ]['gutter'] ) ? $this->setting[ $post_type ]['gutter'] : 0;
 		$one_half   = 'width: -webkit-calc(50% - ' . $margin / 2 . 'px); width: calc(50% - ' . $margin / 2 . 'px);';
 		$one_third  = 'width: -webkit-calc(33.33333% - ' . 2 * $margin / 3 . 'px); width: calc(33.33333% - ' . 2 * $margin / 3 . 'px);';
 		$one_fourth = 'width: -webkit-calc(25% - ' . 3 * $margin / 4 . 'px); width: calc(25% - ' . 3 * $margin / 4 . 'px);';
@@ -179,7 +183,7 @@ class SixTenPressIsotope {
 		if ( ! $taxonomies ) {
 			return $tax_filters;
 		}
-		if ( null === $this->setting[ $post_type ] ) {
+		if ( ! isset( $this->setting[ $post_type ] ) || null === $this->setting[ $post_type ] ) {
 			$this->setting[ $post_type ] = array();
 		}
 		foreach ( $taxonomies as $taxonomy ) {
