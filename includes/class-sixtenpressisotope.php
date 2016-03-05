@@ -279,7 +279,6 @@ class SixTenPressIsotope {
 				esc_attr( $term->name )
 			);
 		}
-		var_dump( $option );
 		$output .= apply_filters( "sixtenpress_isotope_filter_{$option}_items", $items, $option, $class, $terms );
 		$output .= '</select>';
 		return $output;
@@ -327,13 +326,15 @@ class SixTenPressIsotope {
 		$output .= sprintf( '<h4>%s</h4>', __( 'Filter By: ', 'sixtenpress-isotope' ) );
 		$output .= sprintf( '<ul id="%s" class="filter">', esc_html( $taxonomy ) );
 		$output .= sprintf( '<li><button class="active" data-filter="*">%s</button></li>', __( 'All', 'sixtenpress-isotope' ) );
+		$items = '';
 		foreach ( $terms as $term ) {
-			$output .= sprintf( '<li><button data-filter=".%s-%s">%s</button></li>',
+			$items .= sprintf( '<li><button data-filter=".%s-%s">%s</button></li>',
 				esc_html( $taxonomy ),
 				esc_html( $term->slug ),
 				esc_html( $term->name )
 			);
 		}
+		$output .= apply_filters( "sixtenpress_isotope_filter_{$taxonomy}_items", $items, $taxonomy, $terms );
 		$output .= '</ul>';
 		$output .= '</div>';
 
