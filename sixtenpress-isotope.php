@@ -56,9 +56,9 @@ $sixtenpressisotope->run();
  * Function to enqueue isotope scripts and do the isotope things.
  */
 function sixtenpress_enqueue_isotope() {
-	wp_register_script( 'sixtenpress-isotope', plugin_dir_url( __FILE__ ) . '/js/isotope.min.js', array( 'jquery' ), '2.2.2', true );
-	wp_register_script( 'sixtenpress-isotope-images', plugin_dir_url( __FILE__ ) . '/js/imagesloaded.min.js', array(), '4.1.0', true );
-	wp_enqueue_script( 'sixtenpress-isotope-set', plugin_dir_url( __FILE__ ) . '/js/isotope-set.js', array( 'sixtenpress-isotope', 'sixtenpress-isotope-images' ), '1.0.0', true );
+	wp_register_script( 'sixtenpress-isotope', plugin_dir_url( __FILE__ ) . 'js/isotope.min.js', array( 'jquery' ), '2.2.2', true );
+	wp_register_script( 'sixtenpress-isotope-images', plugin_dir_url( __FILE__ ) . 'js/imagesloaded.min.js', array(), '4.1.0', true );
+	wp_enqueue_script( 'sixtenpress-isotope-set', plugin_dir_url( __FILE__ ) . 'js/isotope-set.js', array( 'sixtenpress-isotope', 'sixtenpress-isotope-images' ), '1.0.0', true );
 
 	add_filter( 'genesis_pre_get_option_site_layout', '__genesis_return_full_width_content' );
 	add_action( 'genesis_before_loop', 'sixtenpress_open_div', 25 );
