@@ -74,17 +74,20 @@ class SixTenPressIsotope {
 		if ( ! $this->post_type_supports() ) {
 			return;
 		}
+		$options = $this->get_isotope_options();
+		wp_localize_script( 'sixtenpress-isotope-set', 'SixTenPress', $options );
+	}
+
+	protected function get_isotope_options() {
 		$post_type_name = $this->get_current_post_type();
-		$gutter = 0;
-		if ( isset( $this->setting[ $post_type_name ]['gutter'] ) ) {
-			$gutter = $this->setting[ $post_type_name]['gutter'];
-		}
-		$options = apply_filters( 'sixtenpress_isotope_options', array(
+		$gutter         = isset( $this->setting[ $post_type_name ]['gutter'] ) ? $this->setting[ $post_type_name ]['gutter'] : 0;
+		$options        = apply_filters( 'sixtenpress_isotope_options', array(
 			'container' => 'isotope',
 			'selector'  => '.entry',
 			'gutter'    => $gutter,
 		) );
-		wp_localize_script( 'sixtenpress-isotope-set', 'SixTenPress', $options );
+
+		return $options;
 	}
 
 	/**
@@ -123,16 +126,16 @@ class SixTenPressIsotope {
 			return;
 		}
 		$post_type  = $this->get_current_post_type();
-		$margin     = isset( $this->setting[ $post_type ]['gutter'] ) ? $this->setting[ $post_type ]['gutter'] : 0;
-		$one_half   = 'width: -webkit-calc(50% - ' . $margin / 2 . 'px); width: calc(50% - ' . $margin / 2 . 'px);';
-		$one_third  = 'width: -webkit-calc(33.33333% - ' . 2 * $margin / 3 . 'px); width: calc(33.33333% - ' . 2 * $margin / 3 . 'px);';
-		$one_fourth = 'width: -webkit-calc(25% - ' . 3 * $margin / 4 . 'px); width: calc(25% - ' . 3 * $margin / 4 . 'px);';
+		$options    = $this->get_isotope_options();
+		$one_half   = 'width: -webkit-calc(50% - ' . $options['gutter'] / 2 . 'px); width: calc(50% - ' . $options['gutter'] / 2 . 'px);';
+		$one_third  = 'width: -webkit-calc(33.33333% - ' . 2 * $options['gutter'] / 3 . 'px); width: calc(33.33333% - ' . 2 * $options['gutter'] / 3 . 'px);';
+		$one_fourth = 'width: -webkit-calc(25% - ' . 3 * $options['gutter'] / 4 . 'px); width: calc(25% - ' . 3 * $options['gutter'] / 4 . 'px);';
 		$css        = sprintf( '
-			.isotope {
+			.%5$s {
 				clear: both;
 				margin-bottom: 40px;
 			}
-			.isotope .entry {
+			.%5$s %6$s {
 				float: left;
 				margin-bottom: %2$s;
 				%1$s
@@ -145,19 +148,21 @@ class SixTenPressIsotope {
 				margin: 1px;
 			}
 			@media only screen and (min-width: 600px) {
-				.isotope .entry {
+				.%5$s %6$s {
 					%3$s
 				}
 			}
 			@media only screen and (min-width: 1023px) {
-				.isotope .entry {
+				.%5$s %6$s {
 					%4$s
 				}
 			}',
 			$one_half,
-			$margin . 'px',
+			$options['gutter'],
 			$one_third,
-			$one_fourth
+			$one_fourth,
+			$options['container'],
+			$options['selector']
 		);
 
 		$css = apply_filters( 'sixtenpress_isotope_inline_style', $css, $post_type, $this->setting );
