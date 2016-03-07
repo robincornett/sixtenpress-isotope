@@ -2,8 +2,11 @@
 
 /**
  * Class for adding a new settings page to the WordPress admin, under Settings.
- *
- * @package SixTenPressIsotope
+ * @package   SixTenPressIsotope
+ * @author    Robin Cornett <hello@robincornett.com>
+ * @license   GPL-2.0+
+ * @link      http://robincornett.com
+ * @copyright 2016 Robin Cornett Creative, LLC
  */
 class SixTenPressIsotopeSettings {
 
