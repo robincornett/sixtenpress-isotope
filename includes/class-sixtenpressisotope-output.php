@@ -29,13 +29,6 @@ class SixTenPressIsotopeOutput {
 			return;
 		}
 		add_action( 'pre_get_posts', array( $this, 'posts_per_page' ), 9999 );
-		add_action( 'template_redirect', array( $this, 'do_isotope' ) );
-	}
-
-	/**
-	 * Fire up isotope work if the post type supports it.
-	 */
-	public function do_isotope() {
 		if ( is_singular() || is_admin() ) {
 			return;
 		}
