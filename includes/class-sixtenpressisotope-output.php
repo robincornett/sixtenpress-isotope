@@ -56,9 +56,9 @@ class SixTenPressIsotopeOutput {
 	 * Can be modified via filter (eg on taxonomies).
 	 * @return bool
 	 */
-	protected function post_type_supports() {
+	protected function post_type_supports( $post_type = '' ) {
 		$support   = false;
-		$post_type = $this->get_current_post_type();
+		$post_type = empty( $post_type ) ? $this->get_current_post_type() : $post_type;
 		if ( is_array( $post_type ) ) {
 			foreach( $post_type as $type ) {
 				$support = post_type_supports( $type, 'sixtenpress-isotope' ) ? true : false;
@@ -82,7 +82,6 @@ class SixTenPressIsotopeOutput {
 
 		add_action( 'wp_print_scripts', array( $this, 'localize' ) );
 	}
-
 
 	/**
 	 * Localize the script for isotope output.
@@ -125,6 +124,10 @@ class SixTenPressIsotopeOutput {
 	 */
 	public function posts_per_page( $query ) {
 		if ( ! $query->is_main_query() ) {
+			return;
+		}
+		$post_type = empty( $query->get( 'post_type' ) ) ? 'post' : $query->get( 'post_type' );
+		if ( ! $this->post_type_supports( $post_type ) ) {
 			return;
 		}
 		// add a filter to optionally override this query
