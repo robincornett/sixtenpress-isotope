@@ -28,7 +28,6 @@ class SixTenPressIsotopeOutput {
 		if ( ! $this->support ) {
 			return;
 		}
-		add_action( 'pre_get_posts', array( $this, 'posts_per_page' ), 9999 );
 		if ( is_singular() || is_admin() ) {
 			return;
 		}
@@ -129,10 +128,11 @@ class SixTenPressIsotopeOutput {
 			return;
 		}
 		// add a filter to optionally override this query
-		if ( apply_filters( 'sixtenpress_isotope_override_query', false, $this->get_current_post_type() ) ) {
+		if ( apply_filters( 'sixtenpress_isotope_override_query', false, $query->post_type ) ) {
 			return;
 		}
-		$query->set( 'posts_per_page', $this->setting['posts_per_page'] );
+		$setting = get_option( 'sixtenpressisotope', false );
+		$query->set( 'posts_per_page', $setting['posts_per_page'] );
 	}
 
 	/**
