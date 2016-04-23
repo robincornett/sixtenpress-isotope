@@ -37,6 +37,7 @@ class SixTenPressIsotopeOutput {
 	protected function do_genesis_things() {
 		add_action( 'genesis_after_header', array( $this, 'pick_filter' ) );
 		add_filter( 'genesis_pre_get_option_site_layout', '__genesis_return_full_width_content' );
+		add_filter( 'genesis_options', array( $this, 'modify_genesis_options' ), 15 );
 		remove_action( 'genesis_entry_content', 'genesis_do_post_image', 8 );
 		remove_action( 'genesis_entry_content', 'genesis_do_post_content' );
 		add_action( 'genesis_entry_header', 'genesis_do_post_image', 5 );
@@ -137,6 +138,13 @@ class SixTenPressIsotopeOutput {
 		}
 		$query->set( 'posts_per_page', $this->setting['posts_per_page'] );
 	}
+
+	public function modify_genesis_options( $args ) {
+		if ( 'default' !== $this->setting['image_size'] ) {
+			$args['image_size'] = $this->setting['image_size'];
+		}
+
+		return $args;
 	}
 
 	/**

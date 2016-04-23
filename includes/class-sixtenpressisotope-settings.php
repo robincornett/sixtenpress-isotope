@@ -96,6 +96,7 @@ class SixTenPressIsotopeSettings {
 		$defaults = array(
 			'posts_per_page' => get_option( 'posts_per_page', 10 ),
 			'style'          => 1,
+			'image_size'     => 'default',
 		);
 
 		$setting = get_option( $this->page, $defaults );
@@ -188,6 +189,16 @@ class SixTenPressIsotopeSettings {
 				'args'     => array(
 					'setting' => 'style',
 					'label'   => __( 'Use the plugin styles?', 'sixtenpress-isotope' ),
+				),
+			),
+			array(
+				'id'       => 'image_size',
+				'title'    => __( 'Featured Image Size', 'sixtenpress-isotope' ),
+				'callback' => 'do_select',
+				'section'  => 'general',
+				'args'     => array(
+					'setting' => 'image_size',
+					'options' => 'sizes',
 				),
 			),
 		);
@@ -329,6 +340,26 @@ class SixTenPressIsotopeSettings {
 		}
 		$description = $this->$function();
 		printf( '<p class="description">%s</p>', wp_kses_post( $description ) );
+	}
+
+	/**
+	 * Callback to populate the thumbnail size dropdown with available image sizes.
+	 * @return array selected sizes with names and dimensions
+	 *
+	 */
+	protected function pick_sizes() {
+		$options['default'] = __( 'Theme Default', 'sixtenpress-isotope' );
+		$intermediate_sizes = get_intermediate_image_sizes();
+		foreach ( $intermediate_sizes as $_size ) {
+			$default_sizes = apply_filters( 'sixtenpressisotope_thumbnail_size_list', array( 'thumbnail', 'medium' ) );
+			if ( in_array( $_size, $default_sizes, true ) ) {
+				$width           = get_option( $_size . '_size_w' );
+				$height          = get_option( $_size . '_size_h' );
+				$options[$_size] = sprintf( '%s ( %sx%s )', $_size, $width, $height );
+			}
+		}
+
+		return $options;
 	}
 
 	public function set_post_type_options( $args ) {
