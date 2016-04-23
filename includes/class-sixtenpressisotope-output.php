@@ -39,7 +39,9 @@ class SixTenPressIsotopeOutput {
 		add_filter( 'genesis_pre_get_option_site_layout', '__genesis_return_full_width_content' );
 		add_filter( 'genesis_options', array( $this, 'modify_genesis_options' ), 15 );
 		remove_action( 'genesis_entry_content', 'genesis_do_post_image', 8 );
-		remove_action( 'genesis_entry_content', 'genesis_do_post_content' );
+		if ( $this->setting['remove_content'] ) {
+			remove_action( 'genesis_entry_content', 'genesis_do_post_content' );
+		}
 		add_action( 'genesis_entry_header', 'genesis_do_post_image', 5 );
 		add_action( 'genesis_before_loop', array( $this, 'open_div' ), 25 );
 		add_action( 'genesis_after_endwhile', array( $this, 'close_div' ), 5 );

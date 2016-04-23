@@ -98,6 +98,7 @@ class SixTenPressIsotopeSettings {
 			'style'          => 1,
 			'image_size'     => 'default',
 			'alignment'      => 'default',
+			'remove_content' => 1,
 		);
 
 		$setting = get_option( $this->page, $defaults );
@@ -209,6 +210,16 @@ class SixTenPressIsotopeSettings {
 				'args'     => array(
 					'setting' => 'alignment',
 					'options' => 'alignment',
+				),
+			),
+			array(
+				'id'       => 'remove_content',
+				'title'    => __( 'Remove Post Content', 'sixtenpress-isotope' ),
+				'callback' => 'do_checkbox',
+				'section'  => 'general',
+				'args'     => array(
+					'setting' => 'remove_content',
+					'label'   => __( 'Remove the post/entry content on isotope archives', 'sixtenpress-isotope' ),
 				),
 			),
 		);
