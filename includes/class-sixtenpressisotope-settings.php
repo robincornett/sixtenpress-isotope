@@ -356,8 +356,10 @@ class SixTenPressIsotopeSettings {
 		);
 		$this->do_number( $gutter_args );
 		echo '<br />';
-		$taxonomies = get_object_taxonomies( $post_type, 'names' );
-		$taxonomies = 'post' === $post_type ? array( 'category' ) : $taxonomies;
+		$taxonomies = $this->get_taxonomies( $post_type );
+		if ( ! $taxonomies ) {
+			return;
+		}
 		foreach ( $taxonomies as $taxonomy ) {
 			$tax_object = get_taxonomy( $taxonomy );
 			$tax_args   = array(
@@ -369,6 +371,17 @@ class SixTenPressIsotopeSettings {
 			$this->do_checkbox( $tax_args );
 			echo '<br />';
 		}
+	}
+
+	/**
+	 * Get the taxonomies registered to a post type.
+	 * @param $post_type
+	 *
+	 * @return array
+	 */
+	protected function get_taxonomies( $post_type ) {
+		$taxonomies = get_object_taxonomies( $post_type, 'names' );
+		return 'post' === $post_type ? array( 'category' ) : $taxonomies;
 	}
 
 	/**
