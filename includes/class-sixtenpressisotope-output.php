@@ -143,6 +143,9 @@ class SixTenPressIsotopeOutput {
 		if ( 'default' !== $this->setting['image_size'] ) {
 			$args['image_size'] = $this->setting['image_size'];
 		}
+		if ( 'default' !== $this->setting['alignment'] ) {
+			$args['image_alignment'] = $this->setting['alignment'];
+		}
 
 		return $args;
 	}

@@ -97,11 +97,12 @@ class SixTenPressIsotopeSettings {
 			'posts_per_page' => get_option( 'posts_per_page', 10 ),
 			'style'          => 1,
 			'image_size'     => 'default',
+			'alignment'      => 'default',
 		);
 
 		$setting = get_option( $this->page, $defaults );
 
-		return $setting;
+		return wp_parse_args( $setting, $defaults );
 	}
 
 	/**
@@ -199,6 +200,16 @@ class SixTenPressIsotopeSettings {
 				'args'     => array(
 					'setting' => 'image_size',
 					'options' => 'sizes',
+				),
+			),
+			array(
+				'id'       => 'alignment',
+				'title'    => __( 'Featured Image Alignment', 'sixtenpress-isotope' ),
+				'callback' => 'do_select',
+				'section'  => 'general',
+				'args'     => array(
+					'setting' => 'alignment',
+					'options' => 'alignment',
 				),
 			),
 		);
@@ -362,10 +373,31 @@ class SixTenPressIsotopeSettings {
 		return $options;
 	}
 
+	/**
+	 * Callback to create a dropdown list for featured image alignment.
+	 * @return array list of alignment choices.
+	 *
+	 */
+	protected function pick_alignment() {
+		$options = array(
+			'default'      => __( 'Theme Default', 'sixtenpress-isotope' ),
+			'alignleft'    => __( 'Left', 'sixtenpress-isotope' ),
+			'alignright'   => __( 'Right', 'sixtenpress-isotope' ),
+			'aligncenter'  => __( 'Center', 'sixtenpress-isotope' ),
+			'alignnone'    => __( 'None', 'sixtenpress-isotope' ),
+		);
+
+		return $options;
+	}
+
+	/**
+	 * Set the field for each post type.
+	 * @param $args
+	 */
 	public function set_post_type_options( $args ) {
 		$post_type = $args['post_type'];
-		if ( ! isset( $this->setting['post_type'][$post_type] ) ) {
-			$this->setting['post_type'][$post_type] = array();
+		if ( ! isset( $this->setting['post_type'][ $post_type ] ) ) {
+			$this->setting['post_type'][ $post_type ] = array();
 		}
 		$setting_name = 'support';
 		$checkbox_args = array(
