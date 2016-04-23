@@ -12,9 +12,15 @@ class SixTenPressIsotopeSettings {
 
 	/**
 	 * Option registered by plugin.
-	 * @var array
+	 * @var array $setting
 	 */
 	protected $setting;
+
+	/**
+	 * Public registered post types.
+	 * @var array $post_types
+	 */
+	protected $post_types;
 
 	/**
 	 * Slug for settings page.
@@ -22,17 +28,11 @@ class SixTenPressIsotopeSettings {
 	 */
 	protected $page = 'sixtenpressisotope';
 
-	protected $post_types = array();
-
 	/**
 	 * Settings fields registered by plugin.
 	 * @var array
 	 */
 	protected $fields;
-
-	public function __construct() {
-		$this->setting = $this->get_setting();
-	}
 
 	/**
 	 * add a submenu page under settings
@@ -51,6 +51,9 @@ class SixTenPressIsotopeSettings {
 
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( "load-settings_page_{$this->page}", array( $this, 'help' ) );
+
+		$this->setting = $this->get_setting();
+		$this->register_sections();
 	}
 
 	/**
@@ -101,7 +104,11 @@ class SixTenPressIsotopeSettings {
 	}
 
 	/**
+	 * Define the array of post types for the plugin to show/use.
+	 * @return array
 	 */
+	protected function post_types() {
+		$args         = array(
 			'public'      => true,
 			'_builtin'    => false,
 			'has_archive' => true,
@@ -109,6 +116,8 @@ class SixTenPressIsotopeSettings {
 		$output       = 'names';
 		$post_types   = get_post_types( $args, $output );
 		$post_types[] = 'post';
+
+		return $post_types;
 	}
 
 	/**
@@ -124,16 +133,8 @@ class SixTenPressIsotopeSettings {
 				'title' => __( 'General Settings', 'sixtenpress-isotope' ),
 			),
 		);
-		$args     = array(
-			'public'      => true,
-			'_builtin'    => false,
-			'has_archive' => true,
-		);
-		$output   = 'names';
 
-		$this->post_types   = get_post_types( $args, $output );
-		$this->post_types[] = 'post';
-
+		$this->post_types = $this->post_types();
 		if ( $this->post_types ) {
 
 			$sections['cpt'] = array(
