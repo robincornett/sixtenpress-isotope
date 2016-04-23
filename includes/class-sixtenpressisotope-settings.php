@@ -155,15 +155,14 @@ class SixTenPressIsotopeSettings {
 		}
 
 		$this->register_fields( $sections );
-
 	}
 
 	/**
 	 * Register settings fields
 	 *
-	 * @param  settings sections $sections
+	 * @param  settings array $sections
 	 *
-	 * @return fields           settings fields
+	 * @return array $fields settings fields
 	 *
 	 * @since 3.0.0
 	 */
@@ -242,14 +241,15 @@ class SixTenPressIsotopeSettings {
 
 	/**
 	 * Callback for general plugin settings section.
-	 *
-	 * @since 2.4.0
 	 */
 	public function general_section_description() {
 		$description = __( 'You can set the default isotope settings here.', 'sixtenpress-isotope' );
 		printf( '<p>%s</p>', wp_kses_post( $description ) );
 	}
 
+	/**
+	 * Callback for the content types section description.
+	 */
 	public function cpt_section_description() {
 		$description = __( 'Set the isotope settings for each content type.', 'sixtenpress-isotope' );
 		printf( '<p>%s</p>', wp_kses_post( $description ) );
