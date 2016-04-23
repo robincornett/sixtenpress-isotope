@@ -387,6 +387,7 @@ class SixTenPressIsotopeSettings {
 		}
 
 		check_admin_referer( "{$this->page}_save-settings", "{$this->page}_nonce" );
+		$new_value = array_merge( $this->setting, $new_value );
 
 		foreach ( $this->fields as $field ) {
 			switch ( $field['callback'] ) {
@@ -403,9 +404,17 @@ class SixTenPressIsotopeSettings {
 					break;
 			}
 		}
+		
+		foreach ( $this->post_types as $post_type ) {
+			$new_value[ $post_type ]['support'] = $this->one_zero( $new_value[ $post_type ]['support'] );
+			$new_value[ $post_type ]['gutter']  = (int) $new_value[ $post_type ]['gutter'];
+			$taxonomies = $this->get_taxonomies( $post_type );
+			foreach ( $taxonomies as $taxonomy ) {
+				$new_value[ $post_type ][ $taxonomy ] = $this->one_zero( $new_value[ $post_type ][ $taxonomy ] );
+			}
+		}
 
 		return $new_value;
-
 	}
 
 	/**
@@ -456,6 +465,5 @@ class SixTenPressIsotopeSettings {
 		foreach ( $help_tabs as $tab ) {
 			$screen->add_help_tab( $tab );
 		}
-
 	}
 }
