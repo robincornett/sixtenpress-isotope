@@ -171,7 +171,9 @@ class SixTenPressIsotopeOutput {
 			}
 			.%5$s %6$s {
 				float: left;
-				margin-bottom: %2$s;
+				margin-right: 0;
+				margin-bottom: %2$spx;
+				margin-left: 0;
 				%1$s
 			}
 			.main-filter ul {
