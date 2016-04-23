@@ -117,7 +117,7 @@ class SixTenPressIsotopeOutput {
 	 * Add isotope support to the relevant post types.
 	 */
 	public function add_post_type_support( $query ) {
-		$this->setting = get_option( 'sixtenpressisotope', false );
+		$this->setting = sixtenpressisotope_get_settings();
 		if ( ! $query->is_main_query() ) {
 			return;
 		}

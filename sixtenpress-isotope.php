@@ -54,3 +54,7 @@ $sixtenpressisotope = new SixTenPressIsotope(
 
 // Run the plugin
 $sixtenpressisotope->run();
+
+function sixtenpressisotope_get_settings() {
+	return apply_filters( 'sixtenpressisotope_get_plugin_setting', false );
+}
