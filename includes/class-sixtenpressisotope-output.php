@@ -13,19 +13,12 @@
 class SixTenPressIsotopeOutput {
 
 	/**
-	 * @var string The plugin setting.
+	 * @var array The plugin setting.
 	 */
 	protected $setting;
 
-	/**
-	 * @var boolean whether the queried post type supports isotope.
-	 */
-	protected $support;
-
 	public function maybe_do_isotope() {
-		$this->support = $this->post_type_supports();
-		$this->setting = get_option( 'sixtenpressisotope', false );
-		if ( ! $this->support ) {
+		if ( ! $this->post_type_supports() ) {
 			return;
 		}
 		if ( is_singular() || is_admin() ) {
@@ -61,13 +54,13 @@ class SixTenPressIsotopeOutput {
 		$post_type = empty( $post_type ) ? $this->get_current_post_type() : $post_type;
 		if ( is_array( $post_type ) ) {
 			foreach( $post_type as $type ) {
-				$support = post_type_supports( $type, 'sixtenpress-isotope' ) ? true : false;
+				$support = post_type_supports( $type, 'sixtenpress-isotope' );
 				if ( ! $support ) {
 					break;
 				}
 			}
 		} else {
-			$support = post_type_supports( $post_type, 'sixtenpress-isotope' ) ? true : false;
+			$support = post_type_supports( $post_type, 'sixtenpress-isotope' );
 		}
 		return (bool) apply_filters( 'sixtenpress_isotope_support', $support );
 	}
@@ -120,22 +113,30 @@ class SixTenPressIsotopeOutput {
 	}
 
 	/**
-	 * @param $query WP_Query
+	 * Add isotope support to the relevant post types.
 	 */
-	public function posts_per_page( $query ) {
+	public function add_post_type_support( $query ) {
+		$this->setting = get_option( 'sixtenpressisotope', false );
 		if ( ! $query->is_main_query() ) {
 			return;
 		}
 		$post_type = empty( $query->get( 'post_type' ) ) ? 'post' : $query->get( 'post_type' );
-		if ( ! $this->post_type_supports( $post_type ) ) {
-			return;
+		if ( isset( $this->setting[ $post_type ]['support'] ) && $this->setting[ $post_type ]['support'] ) {
+			add_post_type_support( $post_type, 'sixtenpress-isotope' );
+			$this->posts_per_page( $query, $post_type );
 		}
+	}
+
+	/**
+	 * @param $query WP_Query
+	 */
+	public function posts_per_page( $query, $post_type ) {
 		// add a filter to optionally override this query
-		if ( apply_filters( 'sixtenpress_isotope_override_query', false, $query->post_type ) ) {
+		if ( apply_filters( 'sixtenpress_isotope_override_query', false, $post_type ) ) {
 			return;
 		}
-		$setting = get_option( 'sixtenpressisotope', false );
-		$query->set( 'posts_per_page', $setting['posts_per_page'] );
+		$query->set( 'posts_per_page', $this->setting['posts_per_page'] );
+	}
 	}
 
 	/**

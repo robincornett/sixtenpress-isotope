@@ -101,10 +101,7 @@ class SixTenPressIsotopeSettings {
 	}
 
 	/**
-	 * Add isotope support to the relevant post types.
 	 */
-	public function add_post_type_support() {
-		$args     = array(
 			'public'      => true,
 			'_builtin'    => false,
 			'has_archive' => true,
@@ -112,11 +109,6 @@ class SixTenPressIsotopeSettings {
 		$output       = 'names';
 		$post_types   = get_post_types( $args, $output );
 		$post_types[] = 'post';
-		foreach( $post_types as $post_type ) {
-			if ( isset( $this->setting[ $post_type ]['support'] ) && $this->setting[ $post_type ]['support'] ) {
-				add_post_type_support( $post_type, 'sixtenpress-isotope' );
-			}
-		}
 	}
 
 	/**
