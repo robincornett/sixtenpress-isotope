@@ -168,12 +168,11 @@ class SixTenPressIsotopeOutput {
 			.%5$s {
 				clear: both;
 				margin-bottom: 40px;
+				overflow: visible;
 			}
 			.%5$s %6$s {
 				float: left;
-				margin-right: 0;
-				margin-bottom: %2$spx;
-				margin-left: 0;
+				margin: 0 0 %2$spx;
 				%1$s
 			}
 			.main-filter ul {
@@ -201,13 +200,13 @@ class SixTenPressIsotopeOutput {
 			$options['selector']
 		);
 
-		$css = apply_filters( 'sixtenpress_isotope_inline_style', $css, $post_type, $this->setting );
+		$css = apply_filters( 'sixtenpress_isotope_inline_style', $css, $post_type, $this->setting, $options );
 		// Minify a bit
 		$css = str_replace( "\t", '', $css );
 		$css = str_replace( array( "\n", "\r" ), ' ', $css );
 
 		// Echo the CSS
-		echo '<style type="text/css" media="screen">' . $css . '</style>';
+		echo '<style type="text/css" media="screen">' . strip_tags( $css ) . '</style>';
 	}
 
 	/**
