@@ -94,11 +94,15 @@ class SixTenPressIsotopeSettings {
 	public function get_setting() {
 
 		$defaults = array(
-			'posts_per_page' => get_option( 'posts_per_page', 10 ),
+			'posts_per_page' => (int) get_option( 'posts_per_page', 10 ),
 			'style'          => 1,
 			'image_size'     => 'default',
 			'alignment'      => 'default',
-			'remove_content' => 1,
+			'remove'         => array(
+				'content' => 1,
+				'before'  => 0,
+				'after'   => 0,
+			),
 		);
 
 		$setting = get_option( $this->page, $defaults );
@@ -213,13 +217,26 @@ class SixTenPressIsotopeSettings {
 				),
 			),
 			array(
-				'id'       => 'remove_content',
-				'title'    => __( 'Remove Post Content', 'sixtenpress-isotope' ),
-				'callback' => 'do_checkbox',
+				'id'       => 'remove',
+				'title'    => __( 'Remove Entry Elements', 'sixtenpress-isotope' ),
+				'callback' => 'do_checkbox_array',
 				'section'  => 'general',
 				'args'     => array(
-					'setting' => 'remove_content',
-					'label'   => __( 'Remove the post/entry content on isotope archives', 'sixtenpress-isotope' ),
+					'setting' => 'remove',
+					'options' => array(
+						array(
+							'choice' => 'content',
+							'label'  => __( 'Remove Entry Content', 'sixtenpress-isotope' ),
+						),
+						array(
+							'choice' => 'before',
+							'label'  => __( 'Remove Entry Info', 'sixtenpress-isotope' ),
+						),
+						array(
+							'choice' => 'after',
+							'label'  => __( 'Remove Entry Meta', 'sixtenpress-isotope' ),
+						),
+					),
 				),
 			),
 		);
@@ -274,21 +291,34 @@ class SixTenPressIsotopeSettings {
 	public function do_checkbox( $args ) {
 		$setting = isset( $this->setting[ $args['setting'] ] ) ? $this->setting[ $args['setting'] ] : 0;
 		if ( isset( $args['setting_name'] ) ) {
-			if ( ! isset( $this->setting[ $args['post_type'] ] ) ) {
-				$this->setting[ $args['post_type'] ] = array();
-			}
-			$setting = isset( $this->setting[ $args['post_type'] ][ $args['setting_name'] ] ) ? $this->setting[ $args['post_type'] ][ $args['setting_name'] ] : 0;
+			$setting = isset( $this->setting[ $args['setting'] ][ $args['setting_name'] ] ) ? $this->setting[ $args['setting'] ][ $args['setting_name'] ] : 0;
 		}
 		if ( ! isset( $this->setting[ $args['setting'] ] ) ) {
 			$this->setting[ $args['setting'] ] = 0;
 		}
-		printf( '<input type="hidden" name="%s[%s]" value="0" />', esc_attr( $this->page ), esc_attr( $args['setting'] ) );
-		printf( '<label for="%1$s[%2$s]"><input type="checkbox" name="%1$s[%2$s]" id="%1$s[%2$s]" value="1" %3$s class="code" />%4$s</label>',
+		$label = isset( $args['setting_name'] ) ? "{$args['setting']}][{$args['setting_name']}" : $args['setting'];
+		$style = isset( $args['style'] ) ? sprintf( 'style=%s', $args['style'] ) : '';
+		printf( '<input type="hidden" name="%s[%s]" value="0" />', esc_attr( $this->page ), esc_attr( $label ) );
+		printf( '<label for="%1$s[%2$s]" %5$s><input type="checkbox" name="%1$s[%2$s]" id="%1$s[%2$s]" value="1" %3$s class="code" />%4$s</label>',
 			esc_attr( $this->page ),
-			esc_attr( $args['setting'] ),
+			esc_attr( $label ),
 			checked( 1, esc_attr( $setting ), false ),
-			esc_attr( $args['label'] )
+			esc_attr( $args['label'] ),
+			$style
 		);
+		$this->do_description( $args['setting'] );
+	}
+
+	public function do_checkbox_array( $args ) {
+		foreach ( $args['options'] as $option ) {
+			$checkbox_args = array(
+				'setting'      => $args['setting'],
+				'label'        => $option['label'],
+				'style'        => 'margin-right:12px;',
+				'setting_name' => $option['choice'],
+			);
+			$this->do_checkbox( $checkbox_args );
+		}
 		$this->do_description( $args['setting'] );
 	}
 
@@ -488,6 +518,12 @@ class SixTenPressIsotopeSettings {
 
 				case 'do_number':
 					$new_value[ $field['id'] ] = (int) $new_value[ $field['id'] ];
+					break;
+
+				case 'do_checkbox_array':
+					foreach ( $field['args']['options'] as $option ) {
+						$new_value[ $field['id'] ][ $option['choice'] ] = $this->one_zero( $new_value[ $field['id'] ][ $option['choice'] ] );
+					}
 					break;
 			}
 		}
