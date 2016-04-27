@@ -289,16 +289,10 @@ class SixTenPressIsotopeSettings {
 	 * @since 3.0.0
 	 */
 	public function do_checkbox( $args ) {
-		$setting = isset( $this->setting[ $args['setting'] ] ) ? $this->setting[ $args['setting'] ] : 0;
-		$label   = $args['setting'];
-		if ( isset( $args['setting_name'] ) ) {
-			$setting = isset( $this->setting[ $args['setting'] ][ $args['setting_name'] ] ) ? $this->setting[ $args['setting'] ][ $args['setting_name'] ] : 0;
-			$label   = "{$args['setting']}][{$args['setting_name']}";
-		}
-		if ( ! isset( $this->setting[ $args['setting'] ] ) ) {
-			$this->setting[ $args['setting'] ] = 0;
-		}
-		$style = isset( $args['style'] ) ? sprintf( 'style=%s', $args['style'] ) : '';
+		$get_things = $this->get_checkbox_setting( $args );
+		$label   = $get_things['label'];
+		$setting = $get_things['setting'];
+		$style   = isset( $args['style'] ) ? sprintf( 'style=%s', $args['style'] ) : '';
 		printf( '<input type="hidden" name="%s[%s]" value="0" />', esc_attr( $this->page ), esc_attr( $label ) );
 		printf( '<label for="%1$s[%2$s]" %5$s><input type="checkbox" name="%1$s[%2$s]" id="%1$s[%2$s]" value="1" %3$s class="code" />%4$s</label>',
 			esc_attr( $this->page ),
@@ -310,13 +304,36 @@ class SixTenPressIsotopeSettings {
 		$this->do_description( $args['setting'] );
 	}
 
+	/**
+	 * Get the setting/label for the checkbox.
+	 * @param $args array
+	 *
+	 * @return array {
+	 *               $setting int the current setting
+	 *               $label string label for the checkbox
+	 * }
+	 */
+	protected function get_checkbox_setting( $args ) {
+		$setting = isset( $this->setting[ $args['setting'] ] ) ? $this->setting[ $args['setting'] ] : 0;
+		$label   = $args['setting'];
+		if ( isset( $args['key'] ) ) {
+			$setting = $this->setting[ $args['key'] ][ $args['setting'] ];
+			$label   = "{$args['key']}][{$args['setting']}";
+		}
+
+		return array(
+			'setting' => $setting,
+			'label'   => $label,
+		);
+	}
+
 	public function do_checkbox_array( $args ) {
 		foreach ( $args['options'] as $option ) {
 			$checkbox_args = array(
-				'setting'      => $args['setting'],
-				'label'        => $option['label'],
-				'style'        => 'margin-right:12px;',
-				'setting_name' => $option['choice'],
+				'setting' => $option['choice'],
+				'label'   => $option['label'],
+				'style'   => 'margin-right:12px;',
+				'key'     => $args['setting'],
 			);
 			$this->do_checkbox( $checkbox_args );
 		}
@@ -438,14 +455,10 @@ class SixTenPressIsotopeSettings {
 	 */
 	public function set_post_type_options( $args ) {
 		$post_type = $args['post_type'];
-		if ( ! isset( $this->setting['post_type'][ $post_type ] ) ) {
-			$this->setting['post_type'][ $post_type ] = array();
-		}
-		$setting_name = 'support';
 		$checkbox_args = array(
-			'setting'   => "{$post_type}][{$setting_name}",
-			'label'     => __( 'Enable Isotope for this post type?', 'sixtenpress-isotope' ),
-			'post_type' => $post_type,
+			'setting' => 'support',
+			'label'   => __( 'Enable Isotope for this post type?', 'sixtenpress-isotope' ),
+			'key'     => $post_type,
 		);
 		$this->do_checkbox( $checkbox_args );
 		echo '<br />';
@@ -467,10 +480,9 @@ class SixTenPressIsotopeSettings {
 		foreach ( $taxonomies as $taxonomy ) {
 			$tax_object = get_taxonomy( $taxonomy );
 			$tax_args   = array(
-				'setting'      => "{$post_type}][{$taxonomy}",
-				'label'        => sprintf( __( 'Add a filter for %s', 'sixtenpress-isotope' ), $tax_object->labels->name ),
-				'post_type'    => $post_type,
-				'setting_name' => $taxonomy,
+				'setting' => $taxonomy,
+				'label'   => sprintf( __( 'Add a filter for %s', 'sixtenpress-isotope' ), $tax_object->labels->name ),
+				'key'     => $post_type,
 			);
 			$this->do_checkbox( $tax_args );
 			echo '<br />';
