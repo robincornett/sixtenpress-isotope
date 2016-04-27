@@ -515,6 +515,12 @@ class SixTenPressIsotopeSettings {
 		}
 
 		check_admin_referer( "{$this->page}_save-settings", "{$this->page}_nonce" );
+		$diff = array_diff_key( $this->setting, $new_value );
+		foreach ( $diff as $key => $value ) {
+			if ( empty( $new_value[ $key ] ) ) {
+				unset( $this->setting[ $key ] );
+			}
+		}
 		$new_value = array_merge( $this->setting, $new_value );
 
 		foreach ( $this->fields as $field ) {
