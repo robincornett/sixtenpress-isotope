@@ -123,10 +123,12 @@ class SixTenPressIsotopeOutput {
 
 	/**
 	 * Add isotope support to the relevant post types.
+	 *
+	 * @param $query WP_Query
 	 */
 	public function add_post_type_support( $query ) {
 		$this->setting = sixtenpressisotope_get_settings();
-		if ( ! $query->is_main_query() ) {
+		if ( ! $query->is_main_query() || $query->is_search() ) {
 			return;
 		}
 		$post_type = empty( $query->get( 'post_type' ) ) ? 'post' : $query->get( 'post_type' );
