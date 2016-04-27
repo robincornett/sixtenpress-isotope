@@ -375,14 +375,13 @@ class SixTenPressIsotopeSettings {
 	 */
 	public function do_select( $args ) {
 		$function = 'pick_' . $args['options'];
-		$options  = $this->$function(); ?>
-		<select id="sixtenpressisotope[<?php echo esc_attr( $args['setting'] ); ?>]"
-		        name="sixtenpressisotope[<?php echo esc_attr( $args['setting'] ); ?>]">
-			<?php
+		$options  = $this->$function();
+		printf( '<label for="%s[%s]">', esc_attr( $this->page ), esc_attr( $args['setting'] ) );
+		printf( '<select id="%1$s[%2$s]" name="%1$s[%2$s]">', esc_attr( $this->page ), esc_attr( $args['setting'] ) );
 			foreach ( (array) $options as $name => $key ) {
 				printf( '<option value="%s" %s>%s</option>', esc_attr( $name ), selected( $name, $this->setting[$args['setting']], false ), esc_attr( $key ) );
-			} ?>
-		</select> <?php
+			}
+		echo '</select></label>';
 		$this->do_description( $args['setting'] );
 	}
 
