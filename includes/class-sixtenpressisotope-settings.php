@@ -317,7 +317,7 @@ class SixTenPressIsotopeSettings {
 		$setting = isset( $this->setting[ $args['setting'] ] ) ? $this->setting[ $args['setting'] ] : 0;
 		$label   = $args['setting'];
 		if ( isset( $args['key'] ) ) {
-			$setting = $this->setting[ $args['key'] ][ $args['setting'] ];
+			$setting = isset( $this->setting[ $args['key'] ][ $args['setting'] ] ) ? $this->setting[ $args['key'] ][ $args['setting'] ] : 0;
 			$label   = "{$args['key']}][{$args['setting']}";
 		}
 
