@@ -18,10 +18,10 @@ class SixTenPressIsotopeOutput {
 	protected $setting;
 
 	public function maybe_do_isotope() {
-		if ( ! $this->post_type_supports() ) {
+		if ( is_singular() || is_admin() ) {
 			return;
 		}
-		if ( is_singular() || is_admin() ) {
+		if ( ! $this->post_type_supports() ) {
 			return;
 		}
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_isotope' ) );
@@ -128,7 +128,7 @@ class SixTenPressIsotopeOutput {
 	 */
 	public function add_post_type_support( $query ) {
 		$this->setting = sixtenpressisotope_get_settings();
-		if ( ! $query->is_main_query() || $query->is_search() ) {
+		if ( ! $query->is_main_query() || $query->is_search() || $query->is_feed() ) {
 			return;
 		}
 		$post_type = empty( $query->get( 'post_type' ) ) ? 'post' : $query->get( 'post_type' );
