@@ -151,7 +151,8 @@ class SixTenPressIsotopeOutput {
 
 	public function modify_genesis_options( $args ) {
 		if ( 'default' !== $this->setting['image_size'] ) {
-			$args['image_size'] = $this->setting['image_size'];
+			$args['content_archive_thumbnail'] = 1;
+			$args['image_size']                = $this->setting['image_size'];
 		}
 		if ( 'default' !== $this->setting['alignment'] ) {
 			$args['image_alignment'] = $this->setting['alignment'];
