@@ -24,9 +24,9 @@ class SixTenPressIsotopeSettings {
 
 	/**
 	 * Slug for settings page.
-	 * @var string
+	 * @var string $page
 	 */
-	protected $page = 'sixtenpressisotope';
+	protected $page;
 
 	/**
 	 * Settings fields registered by plugin.
@@ -35,25 +35,39 @@ class SixTenPressIsotopeSettings {
 	protected $fields;
 
 	/**
+	 * Tab/page for settings.
+	 * @var string $tab
+	 */
+	protected $tab = 'sixtenpressisotope';
+
+	/**
 	 * add a submenu page under settings
 	 * @return submenu SixTen Press Isotope settings page
-	 * @since  1.4.0
+	 * @since  1.1.0
 	 */
 	public function do_submenu_page() {
 
-		add_options_page(
-			__( '6/10 Press Isotope Settings', 'sixtenpress-isotope' ),
-			__( '6/10 Press Isotope', 'sixtenpress-isotope' ),
-			'manage_options',
-			$this->page,
-			array( $this, 'do_settings_form' )
-		);
+		$this->page = 'sixtenpress';
+		if ( ! class_exists( 'SixTenPress' ) ) {
+			add_options_page(
+				__( '6/10 Press Isotope Settings', 'sixtenpress-isotope' ),
+				__( '6/10 Press Isotope', 'sixtenpress-isotope' ),
+				'manage_options',
+				$this->page,
+				array( $this, 'do_settings_form' )
+			);
+			$this->page = $this->tab;
+		}
 
+		add_filter( 'sixtenpress_settings_tabs', array( $this, 'add_tab' ) );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( "load-settings_page_{$this->page}", array( $this, 'help' ) );
 
 		$this->setting = $this->get_setting();
-		$this->register_sections();
+		$sections      = $this->register_sections();
+		$this->fields  = $this->register_fields();
+		$this->add_sections( $sections );
+		$this->add_fields( $this->fields, $sections );
 	}
 
 	/**
@@ -76,20 +90,28 @@ class SixTenPressIsotopeSettings {
 	}
 
 	/**
-	 * Add new fields to wp-admin/options-general.php?page=sixtenpressisotope
+	 * Add isotope settings to 6/10 Press as a new tab, rather than creating a unique page.
+	 * @param $tabs
 	 *
-	 * @since 2.2.0
+	 * @return array
 	 */
-	public function register_settings() {
+	public function add_tab( $tabs ) {
+		$tabs[] = array( 'id' => 'isotope', 'tab' => __( 'Isotope', 'sixtenpress-isotope' ) );
 
-		register_setting( $this->page, $this->page, array( $this, 'do_validation_things' ) );
-
-		$this->register_sections();
-
+		return $tabs;
 	}
 
 	/**
-	 * @return array Setting for plugin, or defaults.
+	 * Add new fields to wp-admin/options-general.php?page=sixtenpressisotope
+	 *
+	 * @since 1.0.0
+	 */
+	public function register_settings() {
+		register_setting( 'sixtenpressisotope', 'sixtenpressisotope', array( $this, 'do_validation_things' ) );
+	}
+
+	/**
+	 * @return array $setting for plugin, or defaults.
 	 */
 	public function get_setting() {
 
@@ -105,7 +127,7 @@ class SixTenPressIsotopeSettings {
 			),
 		);
 
-		$setting = get_option( $this->page, $defaults );
+		$setting = get_option( 'sixtenpressisotope', $defaults );
 
 		return wp_parse_args( $setting, $defaults );
 	}
@@ -137,6 +159,7 @@ class SixTenPressIsotopeSettings {
 		$sections = array(
 			'general' => array(
 				'id'    => 'general',
+				'tab'   => 'isotope',
 				'title' => __( 'General Settings', 'sixtenpress-isotope' ),
 			),
 		);
@@ -146,20 +169,33 @@ class SixTenPressIsotopeSettings {
 
 			$sections['cpt'] = array(
 				'id'    => 'cpt',
+				'tab'   => 'isotope',
 				'title' => __( 'Isotope Settings for Content Types', 'sixtenpress-isotope' ),
 			);
 		}
 
+		return $sections;
+	}
+
+	/**
+	 * Add the sections to the settings page.
+	 * @param $sections
+	 */
+	protected function add_sections( $sections ) {
 		foreach ( $sections as $section ) {
+			$register = $section['id'];
+			$page     = $this->page;
+			if ( class_exists( 'SixTenPress' ) ) {
+				$register = $this->page . '_' . $section['id'];
+				$page     = $this->page . '_' . $section['tab'];
+			}
 			add_settings_section(
-				$section['id'],
+				$register,
 				$section['title'],
 				array( $this, $section['id'] . '_section_description' ),
-				$this->page
+				$page
 			);
 		}
-
-		$this->register_fields( $sections );
 	}
 
 	/**
@@ -169,11 +205,11 @@ class SixTenPressIsotopeSettings {
 	 *
 	 * @return array $fields settings fields
 	 *
-	 * @since 3.0.0
+	 * @since 1.0.0
 	 */
-	protected function register_fields( $sections ) {
+	protected function register_fields() {
 
-		$this->fields = array(
+		$fields = array(
 			array(
 				'id'       => 'posts_per_page',
 				'title'    => __( 'Number of Posts to Show on Isotope Archives', 'sixtenpress-isotope' ),
@@ -241,11 +277,10 @@ class SixTenPressIsotopeSettings {
 			),
 		);
 		if ( $this->post_types ) {
-
 			foreach ( $this->post_types as $post_type ) {
-				$object = get_post_type_object( $post_type );
-				$label  = $object->labels->name;
-				$this->fields[] = array(
+				$object   = get_post_type_object( $post_type );
+				$label    = $object->labels->name;
+				$fields[] = array(
 					'id'       => '[post_types]' . esc_attr( $post_type ),
 					'title'    => esc_attr( $label ),
 					'callback' => 'set_post_type_options',
@@ -255,13 +290,28 @@ class SixTenPressIsotopeSettings {
 			}
 		}
 
-		foreach ( $this->fields as $field ) {
+		return $fields;
+	}
+
+	/**
+	 * Add the fields to the settings page.
+	 * @param $fields
+	 * @param $sections
+	 */
+	protected function add_fields( $fields, $sections ) {
+		foreach ( $fields as $field ) {
+			$page    = $this->page;
+			$section = $sections[ $field['section'] ]['id'];
+			if ( class_exists( 'SixTenPress' ) ) {
+				$page    = $this->page . '_' . $sections[ $field['section'] ]['tab']; // page
+				$section = $this->page . '_' . $sections[ $field['section'] ]['id']; // section
+			}
 			add_settings_field(
 				'[' . $field['id'] . ']',
 				sprintf( '<label for="%s">%s</label>', $field['id'], $field['title'] ),
 				array( $this, $field['callback'] ),
-				$this->page,
-				$sections[$field['section']]['id'],
+				$page,
+				$section,
 				empty( $field['args'] ) ? array() : $field['args']
 			);
 		}
@@ -286,16 +336,16 @@ class SixTenPressIsotopeSettings {
 	/**
 	 * Generic callback to create a checkbox setting.
 	 *
-	 * @since 3.0.0
+	 * @since 1.0.0
 	 */
 	public function do_checkbox( $args ) {
 		$get_things = $this->get_checkbox_setting( $args );
 		$label   = $get_things['label'];
 		$setting = $get_things['setting'];
 		$style   = isset( $args['style'] ) ? sprintf( 'style=%s', $args['style'] ) : '';
-		printf( '<input type="hidden" name="%s[%s]" value="0" />', esc_attr( $this->page ), esc_attr( $label ) );
+		printf( '<input type="hidden" name="%s[%s]" value="0" />', esc_attr( $this->tab ), esc_attr( $label ) );
 		printf( '<label for="%1$s[%2$s]" %5$s><input type="checkbox" name="%1$s[%2$s]" id="%1$s[%2$s]" value="1" %3$s class="code" />%4$s</label>',
-			esc_attr( $this->page ),
+			esc_attr( $this->tab ),
 			esc_attr( $label ),
 			checked( 1, esc_attr( $setting ), false ),
 			esc_attr( $args['label'] ),
@@ -327,6 +377,10 @@ class SixTenPressIsotopeSettings {
 		);
 	}
 
+	/**
+	 * Output an array of checkboxes.
+	 * @param $args array
+	 */
 	public function do_checkbox_array( $args ) {
 		foreach ( $args['options'] as $option ) {
 			$checkbox_args = array(
@@ -343,7 +397,7 @@ class SixTenPressIsotopeSettings {
 	/**
 	 * Generic callback to create a number field setting.
 	 *
-	 * @since 3.0.0
+	 * @since 1.0.0
 	 */
 	public function do_number( $args ) {
 		$setting = isset( $this->setting[ $args['setting'] ] ) ? $this->setting[ $args['setting'] ] : 0;
@@ -356,13 +410,13 @@ class SixTenPressIsotopeSettings {
 		if ( ! isset( $setting ) ) {
 			$setting = 0;
 		}
-		printf( '<label for="%s[%s]">%s</label>', esc_attr( $this->page ), esc_attr( $args['setting'] ), esc_attr( $args['label'] ) );
+		printf( '<label for="%s[%s]">%s</label>', esc_attr( $this->tab ), esc_attr( $args['setting'] ), esc_attr( $args['label'] ) );
 		printf( '<input type="number" step="1" min="%1$s" max="%2$s" id="%5$s[%3$s]" name="%5$s[%3$s]" value="%4$s" class="small-text" />',
 			(int) $args['min'],
 			(int) $args['max'],
 			esc_attr( $args['setting'] ),
 			esc_attr( $setting ),
-			esc_attr( $this->page )
+			esc_attr( $this->tab )
 		);
 		$this->do_description( $args['setting'] );
 
@@ -371,13 +425,13 @@ class SixTenPressIsotopeSettings {
 	/**
 	 * Generic callback to create a select/dropdown setting.
 	 *
-	 * @since 3.0.0
+	 * @since 1.0.0
 	 */
 	public function do_select( $args ) {
 		$function = 'pick_' . $args['options'];
 		$options  = $this->$function();
-		printf( '<label for="%s[%s]">', esc_attr( $this->page ), esc_attr( $args['setting'] ) );
-		printf( '<select id="%1$s[%2$s]" name="%1$s[%2$s]">', esc_attr( $this->page ), esc_attr( $args['setting'] ) );
+		printf( '<label for="%s[%s]">', esc_attr( $this->tab ), esc_attr( $args['setting'] ) );
+		printf( '<select id="%1$s[%2$s]" name="%1$s[%2$s]">', esc_attr( $this->tab ), esc_attr( $args['setting'] ) );
 			foreach ( (array) $options as $name => $key ) {
 				printf( '<option value="%s" %s>%s</option>', esc_attr( $name ), selected( $name, $this->setting[$args['setting']], false ), esc_attr( $key ) );
 			}
@@ -388,10 +442,10 @@ class SixTenPressIsotopeSettings {
 	/**
 	 * Generic callback to create a text field.
 	 *
-	 * @since 3.0.0
+	 * @since 1.0.0
 	 */
 	public function do_text_field( $args ) {
-		printf( '<input type="text" id="%3$s[%1$s]" name="%3$s[%1$s]" value="%2$s" class="regular-text" />', esc_attr( $args['setting'] ), esc_attr( $this->setting[$args['setting']] ), esc_attr( $this->page ) );
+		printf( '<input type="text" id="%3$s[%1$s]" name="%3$s[%1$s]" value="%2$s" class="regular-text" />', esc_attr( $args['setting'] ), esc_attr( $this->setting[$args['setting']] ), esc_attr( $this->tab ) );
 		$this->do_description( $args['setting'] );
 	}
 
@@ -506,7 +560,7 @@ class SixTenPressIsotopeSettings {
 	 *
 	 * @return array            validated values
 	 *
-	 * @since 3.0.0
+	 * @since 1.0.0
 	 */
 	public function do_validation_things( $new_value ) {
 
@@ -544,7 +598,6 @@ class SixTenPressIsotopeSettings {
 					break;
 			}
 		}
-		
 		foreach ( $this->post_types as $post_type ) {
 			$new_value[ $post_type ]['support'] = $this->one_zero( $new_value[ $post_type ]['support'] );
 			$new_value[ $post_type ]['gutter']  = (int) $new_value[ $post_type ]['gutter'];
@@ -562,7 +615,7 @@ class SixTenPressIsotopeSettings {
 	 *
 	 * Uses double casting. First, we cast to bool, then to integer.
 	 *
-	 * @since 2.4.0
+	 * @since 1.0.0
 	 *
 	 * @param mixed $new_value Should ideally be a 1 or 0 integer passed in
 	 *
@@ -576,7 +629,7 @@ class SixTenPressIsotopeSettings {
 	 * Help tab for settings screen
 	 * @return help tab with verbose information for plugin
 	 *
-	 * @since 2.4.0
+	 * @since 1.0.0
 	 */
 	public function help() {
 		$screen = get_current_screen();
