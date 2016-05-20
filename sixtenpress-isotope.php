@@ -35,6 +35,7 @@ function sixtenpressisotope_require() {
 		'class-sixtenpressisotope-help',
 		'class-sixtenpressisotope-output',
 		'class-sixtenpressisotope-settings',
+		'class-sixtenpressisotope-validation',
 	);
 
 	foreach ( $files as $file ) {
