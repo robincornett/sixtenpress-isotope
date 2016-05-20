@@ -32,6 +32,7 @@ if ( ! defined( 'SIXTENPRESSISOTOPE_BASENAME' ) ) {
 function sixtenpressisotope_require() {
 	$files = array(
 		'class-sixtenpressisotope',
+		'class-sixtenpressisotope-help',
 		'class-sixtenpressisotope-output',
 		'class-sixtenpressisotope-settings',
 	);
@@ -43,7 +44,7 @@ function sixtenpressisotope_require() {
 sixtenpressisotope_require();
 
 // Instantiate dependent classes
-$sixtenpressisotope_output = new SixTenPressIsotopeOutput();
+$sixtenpressisotope_output   = new SixTenPressIsotopeOutput();
 $sixtenpressisotope_settings = new SixTenPressIsotopeSettings();
 
 // Instantiate main class and pass in dependencies
@@ -55,6 +56,10 @@ $sixtenpressisotope = new SixTenPressIsotope(
 // Run the plugin
 $sixtenpressisotope->run();
 
+/**
+ * Helper function to retrieve the plugin setting, with defaults.
+ * @return mixed|void
+ */
 function sixtenpressisotope_get_settings() {
 	return apply_filters( 'sixtenpressisotope_get_plugin_setting', false );
 }

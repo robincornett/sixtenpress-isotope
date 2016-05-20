@@ -41,14 +41,13 @@ class SixTenPressIsotopeSettings {
 	protected $tab = 'sixtenpressisotope';
 
 	/**
-	 * add a submenu page under settings
-	 * @return submenu SixTen Press Isotope settings page
-	 * @since  1.1.0
+	 * Maybe add the submenu page under Settings.
 	 */
 	public function do_submenu_page() {
 
 		$this->page = 'sixtenpress';
 		if ( ! class_exists( 'SixTenPress' ) ) {
+			$this->page = $this->tab;
 			add_options_page(
 				__( '6/10 Press Isotope Settings', 'sixtenpress-isotope' ),
 				__( '6/10 Press Isotope', 'sixtenpress-isotope' ),
@@ -56,12 +55,13 @@ class SixTenPressIsotopeSettings {
 				$this->page,
 				array( $this, 'do_settings_form' )
 			);
-			$this->page = $this->tab;
 		}
 
 		add_filter( 'sixtenpress_settings_tabs', array( $this, 'add_tab' ) );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
-		add_action( "load-settings_page_{$this->page}", array( $this, 'help' ) );
+
+		$help = new SixTenPressIsotopeHelp();
+		add_action( "load-settings_page_{$this->page}", array( $help, 'help' ) );
 
 		$this->setting = $this->get_setting();
 		$sections      = $this->register_sections();
@@ -623,40 +623,5 @@ class SixTenPressIsotopeSettings {
 	 */
 	protected function one_zero( $new_value ) {
 		return (int) (bool) $new_value;
-	}
-
-	/**
-	 * Help tab for settings screen
-	 * @return help tab with verbose information for plugin
-	 *
-	 * @since 1.0.0
-	 */
-	public function help() {
-		$screen = get_current_screen();
-
-		$general_help = '<h3>' . __( 'Number of Posts to Show on Isotope Archives', 'sixtenpress-isotope' ) . '</h3>';
-		$general_help .= '<p>' . __( 'Change the number of items which show on content archives, to show more or less items than your regular archives.', 'sixtenpress-isotope' ) . '</p>';
-
-		$general_help .= '<h3>' . __( 'Plugin Stylesheet', 'sixtenpress-isotope' ) . '</h3>';
-		$general_help .= '<p>' . __( 'The plugin adds a wee bit of styling to handle the isotope layout, but if you want to do it yourself, disable the plugin style and enjoy!', 'sixtenpress-isotope' ) . '</p>';
-
-		$cpt_help  = '<p>' . __( 'Each content type on your site will be handled uniquely. Enable Isotope, set the gutter width, and enable filters as you like.', 'sixtenpress-isotope' ) . '</p>';
-
-		$help_tabs = array(
-			array(
-				'id'      => 'sixtenpressisotope_general-help',
-				'title'   => __( 'General Settings', 'sixtenpress-isotope' ),
-				'content' => $general_help,
-			),
-			array(
-				'id'      => 'sixtenpressisotope_cpt-help',
-				'title'   => __( 'Isotope Settings for Content Types', 'sixtenpress-isotope' ),
-				'content' => $cpt_help,
-			),
-		);
-
-		foreach ( $help_tabs as $tab ) {
-			$screen->add_help_tab( $tab );
-		}
 	}
 }
