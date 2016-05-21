@@ -8,7 +8,7 @@
  * @link      http://robincornett.com
  * @copyright 2016 Robin Cornett Creative, LLC
  */
-class SixTenPressIsotopeSettings {
+class SixTenPressIsotopeSettings extends SixTenPressIsotopeValidation {
 
 	/**
 	 * Option registered by plugin.
@@ -107,8 +107,7 @@ class SixTenPressIsotopeSettings {
 	 * @since 1.0.0
 	 */
 	public function register_settings() {
-		$validation = new SixTenPressIsotopeValidation(	$this->page, $this->setting, $this->fields, $this->post_types );
-		register_setting( 'sixtenpressisotope', 'sixtenpressisotope', array( $validation, 'do_validation_things' ) );
+		register_setting( 'sixtenpressisotope', 'sixtenpressisotope', array( $this, 'do_validation_things' ) );
 	}
 
 	/**

@@ -31,21 +31,6 @@ class SixTenPressIsotopeValidation {
 	protected $post_types;
 
 	/**
-	 * SixTenPressIsotopeValidation constructor.
-	 *
-	 * @param $page
-	 * @param $setting
-	 * @param $fields
-	 * @param $post_types
-	 */
-	public function __construct( $page, $setting, $fields, $post_types ) {
-		$this->page       = $page;
-		$this->setting    = $setting;
-		$this->fields     = $fields;
-		$this->post_types = $post_types;
-	}
-
-	/**
 	 * Validate all settings.
 	 *
 	 * @param  array $new_value new values from settings page
@@ -56,8 +41,11 @@ class SixTenPressIsotopeValidation {
 	 */
 	public function do_validation_things( $new_value ) {
 
-		if ( empty( $_POST[$this->page . '_nonce'] ) ) {
-			wp_die( esc_attr__( 'Something unexpected happened. Please try again.', 'sixtenpress-isotope' ) );
+		$action = $this->page . '_save-settings';
+		$nonce  = $this->page . '_nonce';
+		// If the user doesn't have permission to save, then display an error message
+		if ( ! $this->user_can_save( $action, $nonce ) ) {
+			wp_die( esc_attr__( 'Something unexpected happened. Please try again.', 'sixtenpress' ) );
 		}
 
 		check_admin_referer( "{$this->page}_save-settings", "{$this->page}_nonce" );
@@ -100,6 +88,29 @@ class SixTenPressIsotopeValidation {
 		}
 
 		return $new_value;
+	}
+
+	/**
+	 * Determines if the user has permission to save the information from the submenu
+	 * page.
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 *
+	 * @param    string    $action   The name of the action specified on the submenu page
+	 * @param    string    $nonce    The nonce specified on the submenu page
+	 *
+	 * @return   bool                True if the user has permission to save; false, otherwise.
+	 * @author   Tom McFarlin (https://tommcfarlin.com/save-wordpress-submenu-page-options/)
+	 */
+	protected function user_can_save( $action, $nonce ) {
+		$is_nonce_set   = isset( $_POST[ $nonce ] );
+		$is_valid_nonce = false;
+
+		if ( $is_nonce_set ) {
+			$is_valid_nonce = wp_verify_nonce( $_POST[ $nonce ], $action );
+		}
+		return ( $is_nonce_set && $is_valid_nonce );
 	}
 
 	/**
