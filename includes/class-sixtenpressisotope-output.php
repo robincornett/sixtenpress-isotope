@@ -131,7 +131,10 @@ class SixTenPressIsotopeOutput {
 		if ( ! $query->is_main_query() || $query->is_search() || $query->is_feed() ) {
 			return;
 		}
-		$post_type = empty( $query->get( 'post_type' ) ) ? 'post' : $query->get( 'post_type' );
+		$post_type = $query->get( 'post_type' );
+		if ( empty( $post_type ) ) {
+			$post_type = 'post';
+		}
 		if ( isset( $this->setting[ $post_type ]['support'] ) && $this->setting[ $post_type ]['support'] ) {
 			add_post_type_support( $post_type, 'sixtenpress-isotope' );
 			$this->posts_per_page( $query, $post_type );
