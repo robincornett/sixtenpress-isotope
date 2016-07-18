@@ -64,7 +64,11 @@ class SixTenPressIsotopeSettings extends SixTenPressIsotopeValidation {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 
 		$help = new SixTenPressIsotopeHelp();
-		add_action( "load-settings_page_{$this->page}", array( $help, 'help' ) );
+		if ( class_exists( 'SixTenPress' ) ) {
+			add_filter( 'sixtenpress_help_tabs', array( $help, 'tabs' ), 10, 2 );
+		} else {
+			add_action( "load-settings_page_{$this->page}", array( $help, 'help' ) );
+		}
 
 		$this->add_sections( $sections );
 		$this->add_fields( $this->fields, $sections );
