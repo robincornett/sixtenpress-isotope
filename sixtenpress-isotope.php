@@ -1,6 +1,6 @@
 <?php
 /**
- * Isotope handler for SixTen Press
+ * Isotope handler for Six/Ten Press
  *
  * @package   SixTenPressIsotope
  * @author    Robin Cornett <hello@robincornett.com>
@@ -8,12 +8,12 @@
  * @link      http://robincornett.com
  * @copyright 2016 Robin Cornett Creative, LLC
  *
- * Plugin Name:       SixTen Press Isotope
- * Plugin URI:        http://robincornett.com
- * Description:       SixTen Press Isotope makes building an isotope layout archive super easy.
+ * Plugin Name:       Six/Ten Press Isotope
+ * Plugin URI:        https://robincornett.com
+ * Description:       Six/Ten Press Isotope makes building an isotope layout archive super easy.
  * Author:            Robin Cornett
- * Author URI:        http://robincornett.com
- * Text Domain:       sixtenpress
+ * Author URI:        https://robincornett.com
+ * Text Domain:       sixtenpress-isotope
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Version:           1.0.0
