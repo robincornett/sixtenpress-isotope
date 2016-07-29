@@ -79,6 +79,9 @@ class SixTenPressIsotopeOutput {
 	 */
 	public function enqueue_isotope() {
 		wp_register_script( 'sixtenpress-isotope', plugin_dir_url( __FILE__ ) . 'js/isotope.min.js', array( 'jquery' ), '3.0.0', true );
+		if ( ! wp_script_is( 'imagesloaded', 'registered' ) ) {
+			wp_register_script( 'imagesloaded', plugin_dir_url( __FILE__ ) . 'js/imagesloaded.min.js', array(), '4.1.0', true );
+		}
 		wp_enqueue_script( 'sixtenpress-isotope-set', plugin_dir_url( __FILE__ ) . 'js/isotope-set.js', array( 'sixtenpress-isotope', 'imagesloaded' ), '1.0.0', true );
 
 		add_action( 'wp_print_scripts', array( $this, 'localize' ) );
