@@ -92,7 +92,7 @@ class SixTenPressIsotopeOutput {
 	 */
 	public function localize() {
 		$options = $this->get_isotope_options();
-		wp_localize_script( 'sixtenpress-isotope-set', 'SixTenPress', $options );
+		wp_localize_script( 'sixtenpress-isotope-set', 'SixTenPressIsotope', $options );
 	}
 
 	/**

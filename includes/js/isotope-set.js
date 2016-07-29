@@ -88,7 +88,7 @@
 	}
 
 	$( document ).ready( function () {
-		SixTen.params = typeof SixTenPress === 'undefined' ? '' : SixTenPress;
+		SixTen.params = typeof SixTenPressIsotope === 'undefined' ? '' : SixTenPressIsotope;
 
 		if ( typeof SixTen.params !== 'undefined' ) {
 			SixTen.init();
