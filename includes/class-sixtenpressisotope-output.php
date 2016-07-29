@@ -124,19 +124,35 @@ class SixTenPressIsotopeOutput {
 	}
 
 	/**
-	 * Add isotope support to the relevant post types.
+	 * Get the post type and see if post type support should be added.
 	 *
 	 * @param $query WP_Query
 	 */
-	public function add_post_type_support( $query ) {
+	public function maybe_add_post_type_support( $query ) {
 		$this->setting = sixtenpressisotope_get_settings();
 		if ( ! $query->is_main_query() || $query->is_search() || $query->is_feed() ) {
 			return;
 		}
-		$post_type = $query->get( 'post_type' );
-		if ( empty( $post_type ) ) {
-			$post_type = 'post';
+		$post_types = $query->get( 'post_type' );
+		if ( empty( $post_types ) ) {
+			$post_types = 'post';
 		}
+
+		if ( is_array( $post_types ) ) {
+			foreach ( $post_types as $post_type ) {
+				$this->add_post_type_support( $query, $post_type );
+			}
+		} else {
+			$this->add_post_type_support( $query, $post_types );
+		}
+	}
+
+	/**
+	 * Actually add the post type support.
+	 * @param $query
+	 * @param $post_type
+	 */
+	protected function add_post_type_support( $query, $post_type ) {
 		if ( isset( $this->setting[ $post_type ]['support'] ) && $this->setting[ $post_type ]['support'] ) {
 			add_post_type_support( $post_type, 'sixtenpress-isotope' );
 			$this->posts_per_page( $query, $post_type );

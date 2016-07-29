@@ -37,7 +37,7 @@ class SixTenPressIsotope {
 	public function run() {
 		add_action( 'admin_menu', array( $this->settings, 'do_submenu_page' ) );
 		add_filter( 'sixtenpressisotope_get_plugin_setting', array( $this->settings, 'get_setting' ) );
-		add_action( 'pre_get_posts', array( $this->output, 'add_post_type_support' ), 999 );
+		add_action( 'pre_get_posts', array( $this->output, 'maybe_add_post_type_support' ), 999 );
 		add_action( 'template_redirect', array( $this->output, 'maybe_do_isotope' ) );
 	}
 }
