@@ -34,8 +34,6 @@ function sixtenpressisotope_require() {
 		'class-sixtenpressisotope',
 		'class-sixtenpressisotope-help',
 		'class-sixtenpressisotope-output',
-		'class-sixtenpressisotope-validation',
-		'class-sixtenpressisotope-settings',
 	);
 
 	foreach ( $files as $file ) {
@@ -46,12 +44,10 @@ sixtenpressisotope_require();
 
 // Instantiate dependent classes
 $sixtenpressisotope_output   = new SixTenPressIsotopeOutput();
-$sixtenpressisotope_settings = new SixTenPressIsotopeSettings();
 
 // Instantiate main class and pass in dependencies
 $sixtenpressisotope = new SixTenPressIsotope(
-	$sixtenpressisotope_output,
-	$sixtenpressisotope_settings
+	$sixtenpressisotope_output
 );
 
 // Run the plugin
