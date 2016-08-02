@@ -232,13 +232,32 @@ class SixTenPressSettings {
 	public function do_select( $args ) {
 		$function = 'pick_' . $args['options'];
 		$options  = $this->$function();
-		printf( '<label for="%s[%s]">', esc_attr( $this->page ), esc_attr( $args['setting'] ) );
-		printf( '<select id="%1$s[%2$s]" name="%1$s[%2$s]">', esc_attr( $this->page ), esc_attr( $args['setting'] ) );
+		$array    = $this->get_select_setting( $args );
+		$setting  = $array['setting'];
+		$label    = $array['label'];
+		printf( '<label for="%s[%s]">', esc_attr( $this->page ), esc_attr( $label ) );
+		printf( '<select id="%1$s[%2$s]" name="%1$s[%2$s]">', esc_attr( $this->page ), esc_attr( $label ) );
 		foreach ( (array) $options as $name => $key ) {
-			printf( '<option value="%s" %s>%s</option>', esc_attr( $name ), selected( $name, $this->setting[$args['setting']], false ), esc_attr( $key ) );
+			printf( '<option value="%s" %s>%s</option>', esc_attr( $name ), selected( $name, $setting, false ), esc_attr( $key ) );
 		}
 		echo '</select></label>';
 		$this->do_description( $args['setting'] );
+	}
+
+	/**
+	 * Get the setting and label for a select option. Includes support for a secondary/array select.
+	 * @param $args
+	 *
+	 * @return array
+	 */
+	protected function get_select_setting( $args ) {
+		$setting = isset( $this->setting[ $args['setting'] ] ) ? $this->setting[ $args['setting'] ] : 0;
+		$label   = $args['setting'];
+		if ( isset( $args['key'] ) ) {
+			$setting = isset( $this->setting[ $args['key'] ][ $args['setting'] ] ) ? $this->setting[ $args['key'] ][ $args['setting'] ] : 0;
+			$label   = "{$args['key']}][{$args['setting']}";
+		}
+		return array( 'setting' => $setting, 'label' => $label );
 	}
 
 	/**
