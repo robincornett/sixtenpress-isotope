@@ -2,14 +2,28 @@
  * Set up the isotope script and filters.
  * @copyright 2016 Robin Cornett
  */
-(function ( document, $, undefined ) {
+( function ( document, $, undefined ) {
 	'use strict';
 	var SixTen  = {};
 	var filters = {};
 
 	SixTen.init = function () {
 
-		$( window ).on( 'resize.stp', _doIsotope ).triggerHandler( 'resize.stp' );
+		var _container = $( '.' + SixTen.params.container );
+		_container.isotope( {
+			itemSelector: SixTen.params.selector,
+			percentPosition: true,
+			masonry: {
+				isAnimated: true,
+				gutter: parseInt( SixTen.params.gutter )
+			}
+		} );
+
+		var _function = _doIsotope;
+		if ( SixTen.params.infinite ) {
+			_function = _doInfiniteScroll;
+		}
+		$( window ).on( 'resize.stp', _function ).triggerHandler( 'resize.stp' );
 
 		/**
 		 * Filter using an unordered list.
@@ -26,19 +40,45 @@
 		} );
 	};
 
+	/**
+	 * Do the isotope functions.
+	 * @private
+	 */
 	function _doIsotope() {
 		var _container = $( '.' + SixTen.params.container );
-		_container.isotope( {
-			itemSelector: SixTen.params.selector,
-			percentPosition: true,
-			masonry: {
-				isAnimated: true,
-				gutter: parseInt( SixTen.params.gutter )
-			}
-		} );
 		_container.imagesLoaded( function() {
 			_container.isotope( 'layout' );
-		});
+			$( SixTen.params.selector ).animate( { opacity: 1 } );
+		} );
+	}
+
+	/**
+	 * Do infinite scroll
+	 * @private
+	 */
+	function _doInfiniteScroll() {
+		var _container   = $( '.' + SixTen.params.container ),
+			_navSelector = '.archive-pagination';
+		$( _navSelector ).css( 'display', 'none' );
+		_container.infinitescroll( {
+				navSelector: _navSelector,
+				nextSelector: _navSelector + ' .pagination-next a',
+				itemSelector: SixTen.params.selector,
+				loading: {
+					finishedMsg: 'No more items to load.',
+					msgText: 'message',
+					img: '',
+					speed: 'fast'
+				}
+			},
+			function ( newItems ) {
+				var _newItems = $( newItems ).css( { opacity: 0 } );
+				_newItems.imagesLoaded( function () {
+					_container.isotope( 'insert', _newItems );
+					_newItems.animate( { opacity: 1 } );
+				} );
+			}
+		);
 	}
 
 	/**

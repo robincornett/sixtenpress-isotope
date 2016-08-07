@@ -82,7 +82,12 @@ class SixTenPressIsotopeOutput {
 		if ( ! wp_script_is( 'imagesloaded', 'registered' ) ) {
 			wp_register_script( 'imagesloaded', plugin_dir_url( __FILE__ ) . 'js/imagesloaded.min.js', array(), '4.1.0', true );
 		}
-		wp_enqueue_script( 'sixtenpress-isotope-set', plugin_dir_url( __FILE__ ) . 'js/isotope-set.js', array( 'sixtenpress-isotope', 'imagesloaded' ), '1.0.0', true );
+		$dependent_scripts = array( 'sixtenpress-isotope', 'imagesloaded' );
+		wp_register_script( 'infinite-scroll', plugin_dir_url( __FILE__ ) . 'js/jquery.infinitescroll.min.js', array(), '2.1.0', true );
+		if ( $this->setting['infinite'] ) {
+			$dependent_scripts[] = 'infinite-scroll';
+		}
+		wp_enqueue_script( 'sixtenpress-isotope-set', plugin_dir_url( __FILE__ ) . 'js/isotope-set.js', $dependent_scripts, '1.0.0', true );
 
 		add_action( 'wp_print_scripts', array( $this, 'localize' ) );
 	}
@@ -106,6 +111,7 @@ class SixTenPressIsotopeOutput {
 			'container' => 'isotope',
 			'selector'  => '.entry',
 			'gutter'    => $gutter,
+			'infinite'  => (bool) $this->setting['infinite'],
 		) );
 
 		return $options;
@@ -195,6 +201,9 @@ class SixTenPressIsotopeOutput {
 		$one_third  = 'width: -webkit-calc(33.33333% - ' . 2 * $options['gutter'] / 3 . 'px); width: calc(33.33333% - ' . 2 * $options['gutter'] / 3 . 'px);';
 		$one_fourth = 'width: -webkit-calc(25% - ' . 3 * $options['gutter'] / 4 . 'px); width: calc(25% - ' . 3 * $options['gutter'] / 4 . 'px);';
 		$css        = sprintf( '
+			.js .%6$s {
+				opacity: 0;
+			}
 			.%5$s {
 				clear: both;
 				margin-bottom: 40px;

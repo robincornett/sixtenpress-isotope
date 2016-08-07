@@ -129,6 +129,7 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 				'before'  => 0,
 				'after'   => 0,
 			),
+			'infinite'       => 0,
 		);
 
 		$setting = get_option( 'sixtenpressisotope', $defaults );
@@ -203,6 +204,16 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 					'min'     => 1,
 					'max'     => 200,
 					'label'   => __( 'Posts per Page', 'sixtenpress-isotope' ),
+				),
+			),
+			array(
+				'id'       => 'infinite',
+				'title'    => __( 'Infinite Scroll', 'sixtenpress-isotope' ),
+				'callback' => 'do_checkbox',
+				'section'  => 'general',
+				'args'     => array(
+					'setting' => 'infinite',
+					'label'   => __( 'Enable infinite scroll?', 'sixtenpress-isotope' ),
 				),
 			),
 			array(
@@ -367,6 +378,10 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 	protected function get_taxonomies( $post_type ) {
 		$taxonomies = get_object_taxonomies( $post_type, 'names' );
 		return 'post' === $post_type ? array( 'category' ) : $taxonomies;
+	}
+
+	public function infinite_description() {
+		return __( 'Combine infinite scroll with filtering with great caution.', 'sixtenpress-isotope' );
 	}
 
 	/**
