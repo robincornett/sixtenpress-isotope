@@ -47,6 +47,25 @@ class SixTenPressSettings {
 	}
 
 	/**
+	 * Generic function to output a simple settings form.
+	 *
+	 * @since 1.0.0
+	 */
+	public function do_simple_settings_form() {
+
+		echo '<div class="wrap">';
+		echo '<h1>' . esc_attr( get_admin_page_title() ) . '</h1>';
+		echo '<form action="options.php" method="post">';
+		settings_fields( $this->page );
+		do_settings_sections( $this->page );
+		wp_nonce_field( "{$this->page}_save-settings", "{$this->page}_nonce", false );
+		submit_button();
+		echo '</form>';
+		echo '</div>';
+
+	}
+
+	/**
 	 * Add sections to the settings page.
 	 * @param $sections
 	 */
