@@ -111,10 +111,14 @@ class SixTenPressIsotopeOutput {
 			'container' => 'isotope',
 			'selector'  => '.entry',
 			'gutter'    => $gutter,
-			'infinite'  => (bool) $this->setting['infinite'],
 		) );
+		$array = array(
+			'infinite' => (bool) $this->setting['infinite'],
+			'loading'  => plugin_dir_url( __FILE__ ) . 'images/ajax-loading.gif',
+			'finished' => __( 'No more items to load.', 'sixtenpress-isotope' ),
+		);
 
-		return $options;
+		return array_merge( $options, $array );
 	}
 
 	/**

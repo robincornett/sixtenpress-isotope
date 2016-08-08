@@ -2,7 +2,7 @@
  * Set up the isotope script and filters.
  * @copyright 2016 Robin Cornett
  */
-( function ( document, $, undefined ) {
+;( function ( document, $, undefined ) {
 	'use strict';
 	var SixTen  = {};
 	var filters = {};
@@ -63,11 +63,10 @@
 		_container.infinitescroll( {
 				navSelector: _navSelector,
 				nextSelector: _navSelector + ' .pagination-next a',
-				itemSelector: SixTen.params.selector,
+				itemSelector: '.' + SixTen.params.container + ' ' + SixTen.params.selector,
 				loading: {
-					finishedMsg: 'No more items to load.',
-					msgText: 'message',
-					img: '',
+					finishedMsg: SixTen.params.finished,
+					img: SixTen.params.loading,
 					speed: 'fast'
 				}
 			},
