@@ -130,6 +130,7 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 				'after'   => 0,
 			),
 			'infinite'       => 0,
+			'columns'        => 4,
 		);
 
 		$setting = get_option( 'sixtenpressisotope', $defaults );
@@ -227,6 +228,16 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 				),
 			),
 			array(
+				'id'       => 'columns',
+				'title'    => __( 'Columns (Larger Screens)' , 'sixtenpress-isotope' ),
+				'callback' => 'do_select',
+				'section'  => 'general',
+				'args'     => array(
+					'setting' => 'columns',
+					'options' => 'columns',
+				),
+			),
+			array(
 				'id'       => 'image_size',
 				'title'    => __( 'Featured Image Size', 'sixtenpress-isotope' ),
 				'callback' => 'do_select',
@@ -311,6 +322,15 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 			}
 		}
 
+		return $options;
+	}
+
+	protected function pick_columns() {
+		$options = array(
+			2 => 2,
+			3 => 3,
+			4 => 4,
+		);
 		return $options;
 	}
 
