@@ -210,8 +210,12 @@ class SixTenPressSettings {
 	 * @since 1.0.1
 	 */
 	public function do_number( $args ) {
-		$setting = isset( $args['key'] ) ? $this->setting[ $args['key'] ][ $args['setting'] ] : $this->setting[ $args['setting'] ];
-		$label   = isset( $args['key'] ) ? $args['key'] . '][' . $args['setting'] : $args['setting'];
+		$setting = isset( $this->setting[ $args['setting'] ] ) ? $this->setting[ $args['setting'] ] : 0;
+		$label   = $args['setting'];
+		if ( isset( $args['key'] ) ) {
+			$setting = isset( $this->setting[ $args['key'] ][ $args['setting'] ] ) ? $this->setting[ $args['key'] ][ $args['setting'] ] : 0;
+			$label   = "{$args['key']}][{$args['setting']}";
+		}
 		printf( '<label for="%5$s[%3$s]"><input type="number" step="%6$s" min="%1$s" max="%2$s" id="%5$s[%3$s]" name="%5$s[%3$s]" value="%4$s" class="small-text" />%7$s</label>',
 			$args['min'],
 			(int) $args['max'],
