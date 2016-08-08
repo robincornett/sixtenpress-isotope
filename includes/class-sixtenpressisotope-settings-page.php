@@ -446,8 +446,9 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 					break;
 
 				case 'do_checkbox_array':
-					foreach ( $field['args']['options'] as $option ) {
-						$new_value[ $field['id'] ][ $option['choice'] ] = $this->one_zero( $new_value[ $field['id'] ][ $option['choice'] ] );
+					$choices = $field['args']['choices'];
+					foreach ( $choices as $key => $label ) {
+						$new_value[ $field['id'] ][ $key ] = $this->one_zero( $new_value[ $field['id'] ][ $key ] );
 					}
 					break;
 			}
