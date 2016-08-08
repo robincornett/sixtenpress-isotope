@@ -52,6 +52,7 @@ class SixTenPressIsotopeHelp {
 
 		$help  = '<h3>' . __( 'Number of Posts to Show on Isotope Archives', 'sixtenpress-isotope' ) . '</h3>';
 		$help .= '<p>' . __( 'Change the number of items which show on content archives, to show more or less items than your regular archives.', 'sixtenpress-isotope' ) . '</p>';
+		$help .= '<p>' . __( 'If you enable infinite scroll, set a smaller/standard number for the number of posts.', 'sixtenpress-isotope' ) . '</p>';
 
 		$help .= '<h3>' . __( 'Plugin Stylesheet', 'sixtenpress-isotope' ) . '</h3>';
 		$help .= '<p>' . __( 'The plugin adds a wee bit of styling to handle the isotope layout, but if you want to do it yourself, disable the plugin style and enjoy!', 'sixtenpress-isotope' ) . '</p>';
