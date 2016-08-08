@@ -203,26 +203,11 @@ class SixTenPressIsotopeOutput {
 		$options    = $this->get_isotope_options();
 		$one_half   = 'width: -webkit-calc(50% - ' . $options['gutter'] / 2 . 'px); width: calc(50% - ' . $options['gutter'] / 2 . 'px);';
 		$css        = sprintf(
-			'.js .%4$s {
-				opacity: 0;
-			}
-			.%3$s {
-				clear: both;
-				margin: 40px auto;
-				overflow: visible;
-			}
-			.%3$s %4$s {
-				float: left;
-				margin: 0 0 %2$spx;
-				%1$s
-			}
-			.main-filter ul {
-				text-align: center;
-			}
-			.main-filter li {
-				display: inline-block;
-				margin: 1px;
-			}',
+			'.js .%4$s { opacity: 0; }
+			.%3$s { clear: both; margin: 40px auto; overflow: visible; }
+			.%3$s %4$s { float: left; margin: 0 0 %2$spx; %1$s }
+			.main-filter ul { text-align: center; }
+			.main-filter li { display: inline-block; margin: 1px; }',
 			$one_half,
 			$options['gutter'],
 			$options['container'],
@@ -231,11 +216,7 @@ class SixTenPressIsotopeOutput {
 		if ( $this->setting['columns'] > 2 ) {
 			$one_third = 'width: -webkit-calc(33.33333% - ' . 2 * $options['gutter'] / 3 . 'px); width: calc(33.33333% - ' . 2 * $options['gutter'] / 3 . 'px);';
 			$css      .= sprintf(
-				'@media only screen and (min-width: 600px) {
-					.%1$s %2$s {
-						%3$s
-					}
-				}',
+				'@media only screen and (min-width: 600px) { .%1$s %2$s { %3$s } }',
 				$options['container'],
 				$options['selector'],
 				$one_third
@@ -244,11 +225,7 @@ class SixTenPressIsotopeOutput {
 		if ( $this->setting['columns'] > 3 ) {
 			$one_fourth = 'width: -webkit-calc(25% - ' . 3 * $options['gutter'] / 4 . 'px); width: calc(25% - ' . 3 * $options['gutter'] / 4 . 'px);';
 			$css       .= sprintf(
-				'@media only screen and (min-width: 1023px) {
-					.%1$s %2$s {
-						%3$s
-					}
-				}',
+				'@media only screen and (min-width: 1023px) { .%1$s %2$s { %3$s } }',
 				$options['container'],
 				$options['selector'],
 				$one_fourth
