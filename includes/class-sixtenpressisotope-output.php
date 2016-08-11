@@ -140,7 +140,7 @@ class SixTenPressIsotopeOutput {
 	 */
 	public function maybe_add_post_type_support( $query ) {
 		$this->setting = sixtenpressisotope_get_settings();
-		if ( ! $query->is_main_query() || $query->is_search() || $query->is_feed() ) {
+		if ( ! $query->is_main_query() || $query->is_search() || $query->is_feed() || is_admin() ) {
 			return;
 		}
 		$post_types = $query->get( 'post_type' );
