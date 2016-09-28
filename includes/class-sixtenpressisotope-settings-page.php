@@ -112,6 +112,7 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 			),
 			'infinite'       => 0,
 			'columns'        => 4,
+			'layout'         => 1,
 		);
 
 		$setting = get_option( 'sixtenpressisotope', $defaults );
@@ -216,6 +217,16 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 				'args'     => array(
 					'setting' => 'columns',
 					'options' => 'columns',
+				),
+			),
+			array(
+				'id'       => 'layout',
+				'title'    => __( 'Layout', 'sixtenpress-isotope' ),
+				'callback' => 'do_checkbox',
+				'section'  => 'general',
+				'args'     => array(
+					'setting' => 'layout',
+					'label'   => __( 'Force layout to full width on archives?', 'sixtenpress-isotope' ),
 				),
 			),
 			array(
@@ -381,8 +392,20 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 		return 'post' === $post_type ? array( 'category' ) : $taxonomies;
 	}
 
+	/**
+	 * The description for the infinite scroll setting.
+	 * @return string|void
+	 */
 	public function infinite_description() {
 		return __( 'Combine infinite scroll with filtering with great caution.', 'sixtenpress-isotope' );
+	}
+
+	/**
+	 * The description for the layout setting.
+	 * @return string|void
+	 */
+	public function layout_description() {
+		return __( 'Leave this setting unchecked to use the site\'s default layout, or select a specific layout on the archive settings page.', 'sixtenpress-isotope' );
 	}
 
 	/**
