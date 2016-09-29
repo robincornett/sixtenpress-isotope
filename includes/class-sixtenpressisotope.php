@@ -29,6 +29,7 @@ class SixTenPressIsotope {
 	 */
 	public function run() {
 		add_action( 'plugins_loaded', array( $this, 'load_settings_page' ) );
+		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 		add_action( 'pre_get_posts', array( $this->output, 'maybe_add_post_type_support' ), 999 );
 		add_action( 'template_redirect', array( $this->output, 'maybe_do_isotope' ) );
 	}
@@ -51,5 +52,14 @@ class SixTenPressIsotope {
 		$settings = new SixTenPressIsotopeSettings();
 		add_action( 'admin_menu', array( $settings, 'do_submenu_page' ) );
 		add_filter( 'sixtenpressisotope_get_plugin_setting', array( $settings, 'get_setting' ) );
+	}
+
+	/**
+	 * Set up text domain for translations
+	 *
+	 * @since 1.1.0
+	 */
+	public function load_textdomain() {
+		load_plugin_textdomain( 'sixtenpress-isotope', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
 }
