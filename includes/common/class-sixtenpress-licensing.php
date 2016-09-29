@@ -196,7 +196,6 @@ class SixTenPressLicensing extends SixTenPressSettings {
 	 * Activate plugin license
 	 * @param  string $new_value entered license key
 	 * @uses do_remote_request()
-	 * @return string   whether key is valid or not
 	 *
 	 * @since 1.4.0
 	 */
@@ -236,9 +235,16 @@ class SixTenPressLicensing extends SixTenPressSettings {
 				'url'        => esc_url( home_url() ),
 			);
 			$license_data = $this->do_remote_request( $api_params );
+			$status       = 'invalid';
+			if ( $license_data ) {
+				$status = $license_data->license;
+				if ( false === $license_data->success ) {
+					$status = $license_data->error;
+				}
+			}
 
 			// $license_data->license will be either "valid" or "invalid"
-			update_option( $this->key . '_status', $license_data->license );
+			update_option( $this->key . '_status', $status );
 		}
 	}
 
@@ -276,7 +282,7 @@ class SixTenPressLicensing extends SixTenPressSettings {
 			$license_data = $this->do_remote_request( $api_params );
 
 			// $license_data->license will be either "deactivated" or "failed"
-			if ( 'deactivated' === $license_data->license ) {
+			if ( is_object( $license_data ) && 'deactivated' === $license_data->license ) {
 				delete_option( $this->key . '_status' );
 			}
 		}
@@ -302,11 +308,25 @@ class SixTenPressLicensing extends SixTenPressSettings {
 		}
 
 		$license_data = $this->check_license();
-		if ( $license_data->license !== $this->status ) {
-			// Update local plugin status
-			update_option( $this->key . '_status', $license_data->license );
+		$status       = 'invalid';
+		if ( $license_data ) {
+			$status = $license_data->license;
+			if ( false === $license_data->success ) {
+				$status = $license_data->error;
+			}
+			$this->update_data_option( $license_data );
 		}
+		if ( $status !== $this->status ) {
+			// Update local plugin status
+			update_option( $this->key . '_status', $status );
+		}
+	}
 
+	/**
+	 * Update the plugin data setting.
+	 * @param $license_data
+	 */
+	protected function update_data_option( $license_data ) {
 		$data_setting = $this->key . '_data';
 		if ( ! isset( $this->data['expires'] ) || $license_data->expires !== $this->data['expires'] ) {
 			$this->update_settings( array(
@@ -380,7 +400,7 @@ class SixTenPressLicensing extends SixTenPressSettings {
 	 */
 	private function do_remote_request( $api_params, $timeout = 15 ) {
 		$response = wp_remote_post( $this->url, array( 'timeout' => $timeout, 'sslverify' => false, 'body' => $api_params ) );
-		if ( is_wp_error( $response ) ) {
+		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			return false;
 		}
 		return json_decode( wp_remote_retrieve_body( $response ) );
