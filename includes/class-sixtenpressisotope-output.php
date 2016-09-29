@@ -80,6 +80,7 @@ class SixTenPressIsotopeOutput {
 	 * Function to enqueue isotope scripts and do the isotope things.
 	 */
 	public function enqueue_isotope() {
+		$version = '1.1.0';
 		wp_register_script( 'sixtenpress-isotope', plugin_dir_url( __FILE__ ) . 'js/isotope.min.js', array( 'jquery' ), '3.0.0', true );
 		if ( ! wp_script_is( 'imagesloaded', 'registered' ) ) {
 			wp_register_script( 'imagesloaded', plugin_dir_url( __FILE__ ) . 'js/imagesloaded.min.js', array(), '4.1.0', true );
@@ -89,7 +90,7 @@ class SixTenPressIsotopeOutput {
 		if ( $this->setting['infinite'] ) {
 			$dependent_scripts[] = 'infinite-scroll';
 		}
-		wp_enqueue_script( 'sixtenpress-isotope-set', plugin_dir_url( __FILE__ ) . 'js/isotope-set.js', $dependent_scripts, '1.0.0', true );
+		wp_enqueue_script( 'sixtenpress-isotope-set', plugin_dir_url( __FILE__ ) . 'js/isotope-set.js', $dependent_scripts, $version, true );
 
 		add_action( 'wp_print_scripts', array( $this, 'localize' ) );
 	}
