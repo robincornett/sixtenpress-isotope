@@ -118,6 +118,12 @@ class SixTenPressSettings {
 		return $this->tab && $this->page !== $this->tab ? $this->tab : $this->page;
 	}
 
+	/**
+	 * Add a submit button.
+	 * @param $class
+	 * @param $name
+	 * @param $value
+	 */
 	protected function print_button( $class, $name, $value ) {
 		printf( '<input type="submit" class="%s" name="%s" value="%s"/>',
 			esc_attr( $class ),
@@ -301,6 +307,28 @@ class SixTenPressSettings {
 			echo isset( $args['clear'] ) && $args['clear'] ? '<br />' : '';
 		}
 		$this->do_description( $args['setting'] );
+	}
+
+	/**
+	 * Output a text field setting.
+	 * @param $args
+	 */
+	public function do_text_field( $args ) {
+		printf( '<input type="text" id="%3$s[%1$s]" aria-label="%3$s[%1$s]" name="%3$s[%1$s]" value="%2$s" class="regular-text" />',
+			esc_attr( $args['setting'] ),
+			esc_attr( $this->setting[ $args['setting'] ] ),
+			esc_attr( $this->page ) );
+		$this->do_description( $args['setting'] );
+	}
+
+	/**
+	 * Output a textarea setting.
+	 * @param $args
+	 */
+	public function do_textarea( $args ) {
+		$rows = isset( $args['rows'] ) ? $args['rows'] : 3;
+		printf( '<textarea class="large-text" rows="%3$s" id="%1$s[%2$s]" name="%1$s[%2$s]">%3$s</textarea>', $this->page, $args['setting'], $this->setting[ $args['setting'] ], (int) $rows );
+		printf( '<br /><label for="%1$s[%2$s]">%3$s</label>', $this->page, $args['setting'], $args['label'] );
 	}
 
 	/**
