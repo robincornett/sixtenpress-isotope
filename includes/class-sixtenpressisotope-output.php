@@ -115,13 +115,23 @@ class SixTenPressIsotopeOutput {
 			'selector'  => '.entry',
 			'gutter'    => $gutter,
 		) );
+		$isotope = apply_filters( 'sixtenpress_isotope_options', array(
+			'isotopeRules' => array(
+				'itemSelector'    => $options['selector'],
+				'percentPosition' => true,
+				'masonry'         => [
+					'isAnimated' => true,
+					'gutter'     => (int) $options['gutter'],
+				]
+			),
+		) );
 		$array = array(
 			'infinite' => (bool) $this->setting['infinite'],
 			'loading'  => plugin_dir_url( __FILE__ ) . 'images/ajax-loading.gif',
 			'finished' => __( 'No more items to load.', 'sixtenpress-isotope' ),
 		);
 
-		return array_merge( $options, $array );
+		return array_merge( $options, $isotope, $array );
 	}
 
 	/**

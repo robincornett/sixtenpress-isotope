@@ -10,14 +10,7 @@
 	SixTen.init = function () {
 
 		var _container = $( '.' + SixTen.params.container );
-		_container.isotope( {
-			itemSelector: SixTen.params.selector,
-			percentPosition: true,
-			masonry: {
-				isAnimated: true,
-				gutter: parseInt( SixTen.params.gutter )
-			}
-		} );
+		_container.isotope(	SixTen.params.isotopeRules );
 
 		var _function = _doIsotope;
 		if ( SixTen.params.infinite ) {
