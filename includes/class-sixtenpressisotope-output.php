@@ -105,7 +105,7 @@ class SixTenPressIsotopeOutput {
 
 	/**
 	 * Get the isotope options for localization, inline scripts
-	 * @return mixed|void
+	 * @return array
 	 */
 	protected function get_isotope_options() {
 		$post_type_name = $this->get_current_post_type();
@@ -126,8 +126,9 @@ class SixTenPressIsotopeOutput {
 			),
 		) );
 		$array = array(
+			'loading'  => plugin_dir_url( __FILE__ ) . 'images/loading.svg',
+			'msg'      => __( 'Loading...', 'sixtenpress-featured-content-masonry' ),
 			'infinite' => (bool) $this->setting['infinite'],
-			'loading'  => plugin_dir_url( __FILE__ ) . 'images/ajax-loading.gif',
 			'finished' => __( 'No more items to load.', 'sixtenpress-isotope' ),
 		);
 
@@ -220,7 +221,9 @@ class SixTenPressIsotopeOutput {
 			.%3$s { clear: both; margin: 40px auto; overflow: visible; }
 			.%3$s %4$s { float: left; margin: 0 0 %2$spx; %1$s }
 			.main-filter ul { text-align: center; }
-			.main-filter li { display: inline-block; margin: 1px; }',
+			.main-filter li { display: inline-block; margin: 1px; }
+			div#infscr-loading { position: absolute; right: 0; bottom: 0; left: 0; text-align: center; }
+			div#infscr-loading img { display: block; margin: 0 auto; }',
 			$one_half,
 			$options['gutter'],
 			$options['container'],

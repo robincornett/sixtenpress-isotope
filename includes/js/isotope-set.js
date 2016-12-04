@@ -10,7 +10,9 @@
 	SixTen.init = function () {
 
 		var _container = $( '.' + SixTen.params.container );
-		_container.isotope(	SixTen.params.isotopeRules );
+		_container.imagesLoaded( function() {
+			_container.isotope( SixTen.params.isotopeRules );
+		} );
 
 		var _function = _doIsotope;
 		if ( SixTen.params.infinite ) {
@@ -60,6 +62,7 @@
 				loading: {
 					finishedMsg: SixTen.params.finished,
 					img: SixTen.params.loading,
+					msgText: '<em>' + SixTen.params.msg + '</em>',
 					speed: 'fast'
 				}
 			},
