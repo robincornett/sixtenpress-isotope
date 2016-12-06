@@ -17,6 +17,9 @@ class SixTenPressIsotopeOutput {
 	 */
 	protected $setting;
 
+	/**
+	 * Decide whether or not we can do the isotope output.
+	 */
 	public function maybe_do_isotope() {
 		if ( is_singular() || is_admin() ) {
 			return;
@@ -33,6 +36,9 @@ class SixTenPressIsotopeOutput {
 		}
 		if ( function_exists( 'genesis' ) ) {
 			$this->do_genesis_things();
+		} else {
+			add_action( 'loop_start', array( $this, 'open_div' ), 25 );
+			add_action( 'loop_end', array( $this, 'close_div' ), 5 );
 		}
 	}
 
@@ -40,7 +46,6 @@ class SixTenPressIsotopeOutput {
 	 * Do genesis specific functions.
 	 */
 	protected function do_genesis_things() {
-		add_action( 'genesis_after_header', array( $this, 'pick_filter' ) );
 		if ( $this->setting['layout'] ) {
 			add_filter( 'genesis_pre_get_option_site_layout', '__genesis_return_full_width_content' );
 		}
@@ -199,6 +204,11 @@ class SixTenPressIsotopeOutput {
 		$query->set( 'posts_per_page', $this->setting['posts_per_page'] );
 	}
 
+	/**
+	 * @param $args
+	 *
+	 * @return mixed
+	 */
 	public function modify_genesis_options( $args ) {
 		if ( 'default' !== $this->setting['image_size'] ) {
 			$args['content_archive_thumbnail'] = 1;
@@ -268,6 +278,9 @@ class SixTenPressIsotopeOutput {
 	 * Wraps articles/posts in a div. Required for isotope.
 	 */
 	function open_div() {
+		if ( ! is_main_query() || ! in_the_loop() ) {
+			return;
+		}
 		do_action( 'sixtenpress_before_isotope' );
 		$options = $this->get_isotope_options();
 		echo '<div class="' . $options['container'] . '" id="' . $options['container'] . '">';
@@ -278,8 +291,11 @@ class SixTenPressIsotopeOutput {
 	 *
 	 */
 	function close_div() {
+		if ( ! is_main_query() || ! in_the_loop() ) {
+			return;
+		}
 		echo '</div>';
-		echo '<br clear="all">';
+		echo '<div class="clearfix"></div>';
 		do_action( 'sixtenpress_after_isotope' );
 	}
 
@@ -324,7 +340,7 @@ class SixTenPressIsotopeOutput {
 	protected function updated_filters() {
 		$tax_filters = $this->build_filter_array();
 		$count       = count( $tax_filters );
-		if ( $count === 1 ) {
+		if ( 1 === $count ) {
 			$tax_filters = implode( $tax_filters );
 		}
 		return $tax_filters;
@@ -350,8 +366,6 @@ class SixTenPressIsotopeOutput {
 
 	/**
 	 * Build the filter(s) for the isotope.
-	 * @param $select_options array containing terms, name, singular name, and optional class for the select.
-	 * @param string $filter_name string What to name the filter heading (optional)
 	 */
 	public function do_isotope_select() {
 		$select_options = $this->updated_filters();
@@ -373,8 +387,7 @@ class SixTenPressIsotopeOutput {
 			$output .= $this->build_taxonomy_select( $option, $class );
 			$i++;
 		}
-		$output .= '<br clear="all" />';
-		$output .= '</div>';
+		$output .= '</div><div class="clearfix"></div>';
 		echo $output;
 	}
 
