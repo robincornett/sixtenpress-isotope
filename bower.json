@@ -1,0 +1,24 @@
+{
+  "name": "sixtenpress-isotope",
+  "description": "SixTen Press Isotope is a little plugin which makes setting up an isotope based archive easy peasy.",
+  "main": "",
+  "authors": [
+    "Robin Cornett"
+  ],
+  "license": "GPL-2.0",
+  "keywords": [
+    "isotope"
+  ],
+  "homepage": "https://github.com/robincornett/sixtenpress-isotope",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "sixtenpress": "https://robincornett@bitbucket.org/sixtenpress/sixtenpress.git"
+  }
+}
