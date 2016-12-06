@@ -168,8 +168,6 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 	/**
 	 * Register settings fields
 	 *
-	 * @param  settings array $sections
-	 *
 	 * @return array $fields settings fields
 	 *
 	 * @since 1.0.0
@@ -350,12 +348,21 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 	public function set_post_type_options( $args ) {
 		$post_type = $args['post_type'];
 		$checkbox_args = array(
-			'setting' => 'support',
-			'label'   => __( 'Enable Isotope for this post type?', 'sixtenpress-isotope' ),
-			'key'     => $post_type,
+			array(
+				'setting' => 'support',
+				'label'   => __( 'Enable Isotope for this post type?', 'sixtenpress-isotope' ),
+				'key'     => $post_type,
+			),
+			array(
+				'setting' => 'search',
+				'label'   => __( 'Add a search input?', 'sixtenpress-isotope' ),
+				'key'     => $post_type,
+			),
 		);
-		$this->do_checkbox( $checkbox_args );
-		echo '<br />';
+		foreach ( $checkbox_args  as $arg ) {
+			$this->do_checkbox( $arg );
+			echo '<br />';
+		}
 		$gutter_args = array(
 			'setting' => 'gutter',
 			'min'     => 0,

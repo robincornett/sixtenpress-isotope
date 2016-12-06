@@ -2,15 +2,16 @@
  * Set up the isotope script and filters.
  * @copyright 2016 Robin Cornett
  */
-;( function ( document, $, undefined ) {
+;(function ( document, $, undefined ) {
 	'use strict';
 	var SixTen  = {};
 	var filters = {};
+	var qsRegex;
 
 	SixTen.init = function () {
 
 		var _container = $( '.' + SixTen.params.container );
-		_container.imagesLoaded( function() {
+		_container.imagesLoaded( function () {
 			_container.isotope( SixTen.params.isotopeRules );
 		} );
 
@@ -30,9 +31,21 @@
 		/**
 		 * Filter using dropdown(s).
 		 */
-		$( '.filter' ).on( 'change.stpselect', function() {
+		$( '.filter' ).on( 'change.stpselect', function () {
 			_doSelect( $( this ) );
 		} );
+
+		/**
+		 * Filter by search input.
+		 */
+		var _quickSearch = $( '.isotope-search' ).keyup( _debounce( function () {
+			qsRegex = new RegExp( _quickSearch.val(), 'gi' );
+			_container.isotope( {
+				filter: function () {
+					return qsRegex ? $( this ).text().match( qsRegex ) : true;
+				}
+			} );
+		}, 250 ) );
 	};
 
 	/**
@@ -41,9 +54,9 @@
 	 */
 	function _doIsotope() {
 		var _container = $( '.' + SixTen.params.container );
-		_container.imagesLoaded( function() {
+		_container.imagesLoaded( function () {
 			_container.isotope( 'layout' );
-			$( SixTen.params.selector ).animate( { opacity: 1 } );
+			$( SixTen.params.selector ).animate( {opacity: 1} );
 		} );
 	}
 
@@ -67,10 +80,10 @@
 				}
 			},
 			function ( newItems ) {
-				var _newItems = $( newItems ).css( { opacity: 0 } );
+				var _newItems = $( newItems ).css( {opacity: 0} );
 				_newItems.imagesLoaded( function () {
 					_container.isotope( 'insert', _newItems );
-					_newItems.animate( { opacity: 1 } );
+					_newItems.animate( {opacity: 1} );
 				} );
 			}
 		);
@@ -117,9 +130,36 @@
 	function _combineFilters( filters ) {
 		var _selector = [];
 		for ( var prop in filters ) {
-			_selector.push( filters[ prop ] );
+			_selector.push( filters[prop] );
 		}
 		return _selector.join( '' );
+	}
+
+	/**
+	 * Delay action after resize
+	 * @param func
+	 * @param wait
+	 * @param immediate
+	 * @returns {Function}
+	 * @private
+	 */
+	function _debounce( func, wait, immediate ) {
+		var timeout;
+		return function() {
+			var context = this, args = arguments;
+			var later   = function () {
+				timeout = null;
+				if ( ! immediate ) {
+					func.apply( context, args );
+				}
+			};
+			var callNow = immediate && ! timeout;
+			clearTimeout( timeout );
+			timeout = setTimeout( later, wait );
+			if ( callNow ) {
+				func.apply( context, args );
+			}
+		};
 	}
 
 	$( document ).ready( function () {

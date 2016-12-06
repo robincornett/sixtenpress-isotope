@@ -26,6 +26,11 @@ class SixTenPressIsotopeOutput {
 		}
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_isotope' ) );
 		add_action( 'wp_head', array( $this, 'inline_style' ) );
+		add_action( 'wp_head', array( $this, 'pick_filter' ) );
+		$post_type = $this->get_current_post_type();
+		if ( $this->setting[ $post_type ]['search'] ) {
+			add_action( 'sixtenpress_before_isotope', array( $this, 'add_search_input' ), 20 );
+		}
 		if ( function_exists( 'genesis' ) ) {
 			$this->do_genesis_things();
 		}
@@ -218,10 +223,12 @@ class SixTenPressIsotopeOutput {
 		$one_half   = 'width: -webkit-calc(50% - ' . $options['gutter'] / 2 . 'px); width: calc(50% - ' . $options['gutter'] / 2 . 'px);';
 		$css        = sprintf(
 			'.js .%4$s { opacity: 0; }
-			.%3$s { clear: both; margin: 40px auto; overflow: visible; }
+			.%3$s { clear: both; margin: 0 auto 40px; overflow: visible; }
 			.%3$s %4$s { float: left; margin: 0 0 %2$spx; %1$s }
+			.main-filter { margin-bottom: 40px; overflow: auto; }
 			.main-filter ul { text-align: center; }
 			.main-filter li { display: inline-block; margin: 1px; }
+			.isotope-search-form { margin-bottom: 40px; }
 			div#infscr-loading { position: absolute; right: 0; bottom: 0; left: 0; text-align: center; }
 			div#infscr-loading img { display: block; margin: 0 auto; }',
 			$one_half,
@@ -276,6 +283,15 @@ class SixTenPressIsotopeOutput {
 		do_action( 'sixtenpress_after_isotope' );
 	}
 
+	/**
+	 * Add a text based search input.
+	 */
+	public function add_search_input() {
+		$post_type = $this->get_current_post_type();
+		$object    = get_post_type_object( $post_type );
+
+		printf( '<div class="isotope-search-form"><input type="text" class="isotope-search" name="isotope-search" placeholder="%s %s"></div>', __( 'Search', 'sixtenpress-isotope' ), $object->label );
+	}
 
 	/**
 	 * Build the array/string of taxonomies to use as a filter.
