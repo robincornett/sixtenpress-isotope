@@ -122,7 +122,7 @@ class SixTenPressIsotopeOutput {
 		$gutter         = isset( $this->setting[ $post_type_name ]['gutter'] ) ? $this->setting[ $post_type_name ]['gutter'] : 0;
 		$options        = apply_filters( 'sixtenpress_isotope_options', array(
 			'container' => 'isotope',
-			'selector'  => '.entry',
+			'selector'  => $this->setting['selector'],
 			'gutter'    => $gutter,
 		) );
 		$isotope = apply_filters( 'sixtenpress_isotope_options', array(

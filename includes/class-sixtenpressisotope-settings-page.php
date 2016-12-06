@@ -49,6 +49,9 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 		$this->setting = $this->get_setting();
 		$sections      = $this->register_sections();
 		$this->fields  = $this->register_fields();
+		if ( function_exists( 'genesis' ) ) {
+			$this->fields = array_merge( $this->fields, $this->genesis_fields() );
+		}
 		if ( ! class_exists( 'SixTenPress' ) ) {
 			$this->page = $this->tab;
 			add_options_page(
@@ -113,6 +116,7 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 			'infinite'       => 0,
 			'columns'        => 4,
 			'layout'         => 1,
+			'selector'       => '.entry',
 		);
 
 		$setting = get_option( 'sixtenpressisotope', $defaults );
@@ -152,6 +156,13 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 			),
 		);
 
+		if ( function_exists( 'genesis' ) ) {
+			$sections['genesis'] = array(
+				'id'    => 'genesis',
+				'tab'   => 'isotope',
+				'title' => __( 'Genesis Framework Settings', 'sixtenpress-isotope' ),
+			);
+		}
 		$this->post_types = $this->post_types();
 		if ( $this->post_types ) {
 
@@ -218,47 +229,12 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 				),
 			),
 			array(
-				'id'       => 'layout',
-				'title'    => __( 'Layout', 'sixtenpress-isotope' ),
-				'callback' => 'do_checkbox',
+				'id'       => 'selector',
+				'title'    => __( 'Post Selector' , 'sixtenpress-isotope' ),
+				'callback' => 'do_text_field',
 				'section'  => 'general',
 				'args'     => array(
-					'setting' => 'layout',
-					'label'   => __( 'Force layout to full width on archives?', 'sixtenpress-isotope' ),
-				),
-			),
-			array(
-				'id'       => 'image_size',
-				'title'    => __( 'Featured Image Size', 'sixtenpress-isotope' ),
-				'callback' => 'do_select',
-				'section'  => 'general',
-				'args'     => array(
-					'setting' => 'image_size',
-					'options' => 'sizes',
-				),
-			),
-			array(
-				'id'       => 'alignment',
-				'title'    => __( 'Featured Image Alignment', 'sixtenpress-isotope' ),
-				'callback' => 'do_select',
-				'section'  => 'general',
-				'args'     => array(
-					'setting' => 'alignment',
-					'options' => 'alignment',
-				),
-			),
-			array(
-				'id'       => 'remove',
-				'title'    => __( 'Remove Entry Elements', 'sixtenpress-isotope' ),
-				'callback' => 'do_checkbox_array',
-				'section'  => 'general',
-				'args'     => array(
-					'setting' => 'remove',
-					'choices' => array(
-						'content' => __( 'Remove Entry Content', 'sixtenpress-isotope' ),
-						'before' => __( 'Remove Entry Info', 'sixtenpress-isotope' ),
-						'after' => __( 'Remove Entry Meta', 'sixtenpress-isotope' ),
-					),
+					'setting' => 'selector',
 				),
 			),
 		);
@@ -279,6 +255,55 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 		return $fields;
 	}
 
+	public function genesis_fields() {
+		return array(
+			array(
+				'id'       => 'layout',
+				'title'    => __( 'Layout', 'sixtenpress-isotope' ),
+				'callback' => 'do_checkbox',
+				'section'  => 'genesis',
+				'args'     => array(
+					'setting' => 'layout',
+					'label'   => __( 'Force layout to full width on archives?', 'sixtenpress-isotope' ),
+				),
+			),
+			array(
+				'id'       => 'image_size',
+				'title'    => __( 'Featured Image Size', 'sixtenpress-isotope' ),
+				'callback' => 'do_select',
+				'section'  => 'genesis',
+				'args'     => array(
+					'setting' => 'image_size',
+					'options' => 'sizes',
+				),
+			),
+			array(
+				'id'       => 'alignment',
+				'title'    => __( 'Featured Image Alignment', 'sixtenpress-isotope' ),
+				'callback' => 'do_select',
+				'section'  => 'genesis',
+				'args'     => array(
+					'setting' => 'alignment',
+					'options' => 'alignment',
+				),
+			),
+			array(
+				'id'       => 'remove',
+				'title'    => __( 'Remove Entry Elements', 'sixtenpress-isotope' ),
+				'callback' => 'do_checkbox_array',
+				'section'  => 'genesis',
+				'args'     => array(
+					'setting' => 'remove',
+					'choices' => array(
+						'content' => __( 'Remove Entry Content', 'sixtenpress-isotope' ),
+						'before' => __( 'Remove Entry Info', 'sixtenpress-isotope' ),
+						'after' => __( 'Remove Entry Meta', 'sixtenpress-isotope' ),
+					),
+				),
+			),
+		);
+	}
+
 	/**
 	 * Callback for general plugin settings section.
 	 */
@@ -288,11 +313,23 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 	}
 
 	/**
+	 * Callback for Genesis section settings.
+	 */
+	public function genesis_section_description() {
+		$description = __( 'These settings enhance the plugin options for the Genesis Framework.', 'sixtenpress-isotope' );
+		printf( '<p>%s</p>', wp_kses_post( $description ) );
+	}
+
+	/**
 	 * Callback for the content types section description.
 	 */
 	public function cpt_section_description() {
 		$description = __( 'Set the isotope settings for each content type.', 'sixtenpress-isotope' );
 		printf( '<p>%s</p>', wp_kses_post( $description ) );
+	}
+
+	public function selector_description() {
+		return __( 'Class for articles/entries. Don\'t change this unless you know what you\'re doing.', 'sixtenpress-isotope' );
 	}
 
 	/**
@@ -359,7 +396,7 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 				'key'     => $post_type,
 			),
 		);
-		foreach ( $checkbox_args  as $arg ) {
+		foreach ( $checkbox_args as $arg ) {
 			$this->do_checkbox( $arg );
 			echo '<br />';
 		}
@@ -462,10 +499,15 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 						$new_value[ $field['id'] ][ $key ] = $this->one_zero( $new_value[ $field['id'] ][ $key ] );
 					}
 					break;
+
+				case 'do_text_field':
+					$new_value[ $field['id'] ] = esc_attr( $new_value[ $field['id'] ] );
+					break;
 			}
 		}
 		foreach ( $this->post_types as $post_type ) {
 			$new_value[ $post_type ]['support'] = $this->one_zero( $new_value[ $post_type ]['support'] );
+			$new_value[ $post_type ]['search']  = $this->one_zero( $new_value[ $post_type ]['search'] );
 			$new_value[ $post_type ]['gutter']  = (int) $new_value[ $post_type ]['gutter'];
 			$taxonomies = $this->get_taxonomies( $post_type );
 			foreach ( $taxonomies as $taxonomy ) {
