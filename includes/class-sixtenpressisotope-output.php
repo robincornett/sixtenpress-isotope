@@ -279,7 +279,7 @@ class SixTenPressIsotopeOutput {
 	 * Wraps articles/posts in a div. Required for isotope.
 	 */
 	function open_div() {
-		if ( ! is_main_query() || ! in_the_loop() ) {
+		if ( ! is_main_query() && ! in_the_loop() ) {
 			return;
 		}
 		do_action( 'sixtenpress_before_isotope' );
@@ -292,7 +292,7 @@ class SixTenPressIsotopeOutput {
 	 *
 	 */
 	function close_div() {
-		if ( ! is_main_query() || ! in_the_loop() ) {
+		if ( ! is_main_query() && ! in_the_loop() ) {
 			return;
 		}
 		echo '</div>';
