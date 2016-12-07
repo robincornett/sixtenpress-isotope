@@ -307,7 +307,7 @@ class SixTenPressIsotopeOutput {
 		$post_type = $this->get_current_post_type();
 		$object    = get_post_type_object( $post_type );
 
-		printf( '<div class="isotope-search-form"><input type="text" class="isotope-search" name="isotope-search" placeholder="%s %s"></div>', __( 'Search', 'sixtenpress-isotope' ), $object->label );
+		printf( '<div class="isotope-search-form"><input type="text" aria-label="%1$s %2$s" class="isotope-search" name="isotope-search" placeholder="%1$s %2$s"></div>', esc_html__( 'Search', 'sixtenpress-isotope' ), esc_html( $object->label ) );
 	}
 
 	/**
