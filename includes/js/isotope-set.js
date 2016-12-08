@@ -66,11 +66,11 @@
 	 */
 	function _doInfiniteScroll() {
 		var _container   = $( '.' + SixTen.params.container ),
-			_navSelector = '.archive-pagination';
+			_navSelector = SixTen.params.navigation;
 		$( _navSelector ).css( 'display', 'none' );
 		_container.infinitescroll( {
 				navSelector: _navSelector,
-				nextSelector: _navSelector + ' .pagination-next a',
+				nextSelector: _navSelector + ' ' + SixTen.params.link,
 				itemSelector: '.' + SixTen.params.container + ' ' + SixTen.params.selector,
 				loading: {
 					finishedMsg: SixTen.params.finished,

@@ -125,6 +125,8 @@ class SixTenPressIsotopeOutput {
 			'container' => 'isotope',
 			'selector'  => '.entry',
 			'gutter'    => $gutter,
+			'navigation' => '.archive-pagination',
+			'link'       => '.pagination-next a',
 		) );
 		$isotope = apply_filters( 'sixtenpress_isotope_options', array(
 			'isotopeRules' => array(
