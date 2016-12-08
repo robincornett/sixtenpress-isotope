@@ -31,7 +31,7 @@ class SixTenPressIsotopeOutput {
 		add_action( 'wp_head', array( $this, 'inline_style' ) );
 		add_action( 'wp_head', array( $this, 'pick_filter' ) );
 		$post_type = $this->get_current_post_type();
-		if ( $this->setting[ $post_type ]['search'] ) {
+		if ( isset( $this->setting[ $post_type ]['search'] ) && $this->setting[ $post_type ]['search'] ) {
 			add_action( 'sixtenpress_before_isotope', array( $this, 'add_search_input' ), 20 );
 		}
 		if ( function_exists( 'genesis' ) ) {
@@ -74,7 +74,7 @@ class SixTenPressIsotopeOutput {
 		$support   = false;
 		$post_type = empty( $post_type ) ? $this->get_current_post_type() : $post_type;
 		if ( is_array( $post_type ) ) {
-			foreach( $post_type as $type ) {
+			foreach ( $post_type as $type ) {
 				$support = post_type_supports( $type, 'sixtenpress-isotope' );
 				if ( ! $support ) {
 					break;
@@ -278,7 +278,7 @@ class SixTenPressIsotopeOutput {
 	/**
 	 * Wraps articles/posts in a div. Required for isotope.
 	 */
-	function open_div() {
+	public function open_div() {
 		if ( ! is_main_query() && ! in_the_loop() ) {
 			return;
 		}
@@ -291,7 +291,7 @@ class SixTenPressIsotopeOutput {
 	 * Closes the div added above. Required for isotope.
 	 *
 	 */
-	function close_div() {
+	public function close_div() {
 		if ( ! is_main_query() && ! in_the_loop() ) {
 			return;
 		}
