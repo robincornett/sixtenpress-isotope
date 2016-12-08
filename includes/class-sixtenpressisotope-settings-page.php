@@ -116,7 +116,6 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 			'infinite'       => 0,
 			'columns'        => 4,
 			'layout'         => 1,
-			'selector'       => '.entry',
 		);
 
 		$setting = get_option( 'sixtenpressisotope', $defaults );
@@ -228,15 +227,6 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 					'options' => 'columns',
 				),
 			),
-			array(
-				'id'       => 'selector',
-				'title'    => __( 'Post Selector' , 'sixtenpress-isotope' ),
-				'callback' => 'do_text_field',
-				'section'  => 'general',
-				'args'     => array(
-					'setting' => 'selector',
-				),
-			),
 		);
 		if ( $this->post_types ) {
 			foreach ( $this->post_types as $post_type ) {
@@ -326,10 +316,6 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 	public function cpt_section_description() {
 		$description = __( 'Set the isotope settings for each content type.', 'sixtenpress-isotope' );
 		printf( '<p>%s</p>', wp_kses_post( $description ) );
-	}
-
-	public function selector_description() {
-		return __( 'Class for articles/entries. Don\'t change this unless you know what you\'re doing.', 'sixtenpress-isotope' );
 	}
 
 	/**
