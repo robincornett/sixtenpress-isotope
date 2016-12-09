@@ -389,7 +389,7 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 		$gutter_args = array(
 			'setting' => 'gutter',
 			'min'     => 0,
-			'max'     => 24,
+			'max'     => 60,
 			'value'   => __( 'Gutter Width', 'sixtenpress-isotope' ),
 			'key'     => $post_type,
 		);
