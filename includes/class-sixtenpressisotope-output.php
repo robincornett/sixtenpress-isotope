@@ -123,7 +123,7 @@ class SixTenPressIsotopeOutput {
 		$gutter         = isset( $this->setting[ $post_type_name ]['gutter'] ) ? $this->setting[ $post_type_name ]['gutter'] : 0;
 		$options        = apply_filters( 'sixtenpress_isotope_options', array(
 			'container' => 'isotope',
-			'selector'  => '.entry',
+			'selector'  => 'article',
 			'gutter'    => $gutter,
 			'navigation' => '.archive-pagination',
 			'link'       => '.pagination-next a',
@@ -281,7 +281,7 @@ class SixTenPressIsotopeOutput {
 	 * Wraps articles/posts in a div. Required for isotope.
 	 */
 	public function open_div() {
-		if ( ! is_main_query() && ! in_the_loop() ) {
+		if ( ! is_main_query() ) {
 			return;
 		}
 		do_action( 'sixtenpress_before_isotope' );
@@ -294,7 +294,7 @@ class SixTenPressIsotopeOutput {
 	 *
 	 */
 	public function close_div() {
-		if ( ! is_main_query() && ! in_the_loop() ) {
+		if ( ! is_main_query() ) {
 			return;
 		}
 		echo '</div>';
