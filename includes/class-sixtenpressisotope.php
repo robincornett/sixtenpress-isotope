@@ -39,14 +39,14 @@ class SixTenPressIsotope {
 	 */
 	public function load_settings_page() {
 		if ( ! class_exists( 'SixTenPressSettings' ) ) {
-			require plugin_dir_path( __FILE__ ) . '/common/class-sixtenpress-settings.php';
+			include_once plugin_dir_path( __FILE__ ) . 'common/class-sixtenpress-settings.php';
 		}
 		if ( ! class_exists( 'SixTenPressLicensing' ) ) {
-			require plugin_dir_path( __FILE__ ) . '/common/class-sixtenpress-licensing.php';
+			include_once plugin_dir_path( __FILE__ ) . 'common/class-sixtenpress-licensing.php';
 		}
 		$files = array( 'page' );
-		foreach( $files as $file ) {
-			require plugin_dir_path( __FILE__ ) . 'class-sixtenpressisotope-settings-' . $file .'.php';
+		foreach ( $files as $file ) {
+			include_once plugin_dir_path( __FILE__ ) . "class-sixtenpressisotope-settings-{$file}.php";
 		}
 
 		$settings = new SixTenPressIsotopeSettings();

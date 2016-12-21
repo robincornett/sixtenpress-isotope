@@ -26,7 +26,7 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 	 * Slug for settings page.
 	 * @var string $page
 	 */
-	protected $page;
+	protected $page = 'sixtenpress';
 
 	/**
 	 * Settings fields registered by plugin.
@@ -40,12 +40,15 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 	 */
 	protected $tab = 'sixtenpressisotope';
 
+	protected $action;
+
+	protected $nonce;
+
 	/**
 	 * Maybe add the submenu page under Settings.
 	 */
 	public function do_submenu_page() {
 
-		$this->page    = 'sixtenpress';
 		$this->setting = $this->get_setting();
 		$sections      = $this->register_sections();
 		$this->fields  = $this->register_fields();
@@ -62,6 +65,9 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 				array( $this, 'do_simple_settings_form' )
 			);
 		}
+
+		$this->action = $this->page . '_save-settings';
+		$this->nonce  = $this->page . '_nonce';
 
 		add_filter( 'sixtenpress_settings_tabs', array( $this, 'add_tab' ) );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
@@ -95,7 +101,8 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 	 * @since 1.0.0
 	 */
 	public function register_settings() {
-		register_setting( 'sixtenpressisotope', 'sixtenpressisotope', array( $this, 'do_validation_things' ) );
+		$method = method_exists( $this, 'sanitize' ) ? 'sanitize' : 'do_validation_things';
+		register_setting( 'sixtenpressisotope', 'sixtenpressisotope', array( $this, $method ) );
 	}
 
 	/**
@@ -286,8 +293,8 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 					'setting' => 'remove',
 					'choices' => array(
 						'content' => __( 'Remove Entry Content', 'sixtenpress-isotope' ),
-						'before' => __( 'Remove Entry Info', 'sixtenpress-isotope' ),
-						'after' => __( 'Remove Entry Meta', 'sixtenpress-isotope' ),
+						'before'  => __( 'Remove Entry Info', 'sixtenpress-isotope' ),
+						'after'   => __( 'Remove Entry Meta', 'sixtenpress-isotope' ),
 					),
 				),
 			),
@@ -449,14 +456,12 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 	 */
 	public function do_validation_things( $new_value ) {
 
-		$action = $this->page . '_save-settings';
-		$nonce  = $this->page . '_nonce';
 		// If the user doesn't have permission to save, then display an error message
-		if ( ! $this->user_can_save( $action, $nonce ) ) {
+		if ( ! $this->user_can_save( $this->action, $this->nonce ) ) {
 			wp_die( esc_attr__( 'Something unexpected happened. Please try again.', 'sixtenpress' ) );
 		}
 
-		check_admin_referer( "{$this->page}_save-settings", "{$this->page}_nonce" );
+		check_admin_referer( $this->action, $this->nonce );
 		$diff = array_diff_key( $this->setting, $new_value );
 		foreach ( $diff as $key => $value ) {
 			if ( empty( $new_value[ $key ] ) ) {
@@ -503,4 +508,18 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 
 		return $new_value;
 	}
+
+	/**
+	 * Returns a 1 or 0, for all truthy / falsy values.
+	 *
+	 * Uses double casting. First, we cast to bool, then to integer.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param mixed $new_value Should ideally be a 1 or 0 integer passed in
+	 * @return integer 1 or 0.
+	 */
+//	protected function one_zero( $new_value ) {
+//		return (int) (bool) $new_value;
+//	}
 }
