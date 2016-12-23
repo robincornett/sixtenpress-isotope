@@ -35,7 +35,7 @@ gulp.task( 'bower', function () {
 } );
 
 gulp.task( 'assets', function () {
-	gulp.src( config.bowerDir + '/sixtenpress/includes/common/**.*' )
+	gulp.src( config.bowerDir + '/sixtenpress/includes/common/**' )
 		.pipe( gulp.dest( 'includes/common' ) );
 } );
 

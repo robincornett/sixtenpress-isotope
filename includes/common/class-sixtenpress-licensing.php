@@ -302,12 +302,13 @@ class SixTenPressLicensing extends SixTenPressSettings {
 			return;
 		}
 
-		if ( empty( $this->license ) ) {
+		$license = get_option( $this->page . '_key', '' );
+		if ( empty( $license ) ) {
 			delete_option( $this->key . '_status' );
 			return;
 		}
 
-		$license_data = $this->check_license();
+		$license_data = $this->check_license( $license );
 		$status       = 'invalid';
 		if ( $license_data ) {
 			$status = $license_data->license;
