@@ -195,10 +195,9 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 			array(
 				'id'       => 'posts_per_page',
 				'title'    => __( 'Number of Posts to Show on Isotope Archives', 'sixtenpress-isotope' ),
-				'callback' => 'do_number',
+				'type'     => 'number',
 				'section'  => 'general',
 				'args'     => array(
-					'setting' => 'posts_per_page',
 					'min'     => 1,
 					'max'     => 200,
 					'label'   => __( 'Posts per Page', 'sixtenpress-isotope' ),
@@ -207,30 +206,23 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 			array(
 				'id'       => 'infinite',
 				'title'    => __( 'Infinite Scroll', 'sixtenpress-isotope' ),
-				'callback' => 'do_checkbox',
+				'type'     => 'checkbox',
 				'section'  => 'general',
-				'args'     => array(
-					'setting' => 'infinite',
-					'label'   => __( 'Enable infinite scroll?', 'sixtenpress-isotope' ),
-				),
+				'label'    => __( 'Enable infinite scroll?', 'sixtenpress-isotope' ),
 			),
 			array(
 				'id'       => 'style',
 				'title'    => __( 'Plugin Stylesheet', 'sixtenpress-isotope' ),
-				'callback' => 'do_checkbox',
+				'type'     => 'checkbox',
 				'section'  => 'general',
-				'args'     => array(
-					'setting' => 'style',
-					'label'   => __( 'Use the plugin styles?', 'sixtenpress-isotope' ),
-				),
+				'label'    => __( 'Use the plugin styles?', 'sixtenpress-isotope' ),
 			),
 			array(
 				'id'       => 'columns',
 				'title'    => __( 'Columns (Larger Screens)' , 'sixtenpress-isotope' ),
-				'callback' => 'do_select',
+				'type'     => 'select',
 				'section'  => 'general',
 				'args'     => array(
-					'setting' => 'columns',
 					'options' => 'columns',
 				),
 			),
@@ -240,7 +232,7 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 				$object   = get_post_type_object( $post_type );
 				$label    = $object->labels->name;
 				$fields[] = array(
-					'id'       => '[post_types]' . esc_attr( $post_type ),
+					'id'       => esc_attr( $post_type ),
 					'title'    => esc_attr( $label ),
 					'callback' => 'set_post_type_options',
 					'section'  => 'cpt',
@@ -257,40 +249,34 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 			array(
 				'id'       => 'layout',
 				'title'    => __( 'Layout', 'sixtenpress-isotope' ),
-				'callback' => 'do_checkbox',
+				'type'     => 'checkbox',
 				'section'  => 'genesis',
-				'args'     => array(
-					'setting' => 'layout',
-					'label'   => __( 'Force layout to full width on archives?', 'sixtenpress-isotope' ),
-				),
+				'label'    => __( 'Force layout to full width on archives?', 'sixtenpress-isotope' ),
 			),
 			array(
 				'id'       => 'image_size',
 				'title'    => __( 'Featured Image Size', 'sixtenpress-isotope' ),
-				'callback' => 'do_select',
+				'type'     => 'select',
 				'section'  => 'genesis',
 				'args'     => array(
-					'setting' => 'image_size',
 					'options' => 'sizes',
 				),
 			),
 			array(
 				'id'       => 'alignment',
 				'title'    => __( 'Featured Image Alignment', 'sixtenpress-isotope' ),
-				'callback' => 'do_select',
+				'type'     => 'select',
 				'section'  => 'genesis',
 				'args'     => array(
-					'setting' => 'alignment',
 					'options' => 'alignment',
 				),
 			),
 			array(
 				'id'       => 'remove',
 				'title'    => __( 'Remove Entry Elements', 'sixtenpress-isotope' ),
-				'callback' => 'do_checkbox_array',
+				'type'     => 'checkbox_array',
 				'section'  => 'genesis',
 				'args'     => array(
-					'setting' => 'remove',
 					'choices' => array(
 						'content' => __( 'Remove Entry Content', 'sixtenpress-isotope' ),
 						'before'  => __( 'Remove Entry Info', 'sixtenpress-isotope' ),
@@ -305,24 +291,21 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 	 * Callback for general plugin settings section.
 	 */
 	public function general_section_description() {
-		$description = __( 'You can set the default isotope settings here.', 'sixtenpress-isotope' );
-		printf( '<p>%s</p>', wp_kses_post( $description ) );
+		return __( 'You can set the default isotope settings here.', 'sixtenpress-isotope' );
 	}
 
 	/**
 	 * Callback for Genesis section settings.
 	 */
 	public function genesis_section_description() {
-		$description = __( 'These settings enhance the plugin options for the Genesis Framework.', 'sixtenpress-isotope' );
-		printf( '<p>%s</p>', wp_kses_post( $description ) );
+		return __( 'These settings enhance the plugin options for the Genesis Framework.', 'sixtenpress-isotope' );
 	}
 
 	/**
 	 * Callback for the content types section description.
 	 */
 	public function cpt_section_description() {
-		$description = __( 'Set the isotope settings for each content type.', 'sixtenpress-isotope' );
-		printf( '<p>%s</p>', wp_kses_post( $description ) );
+		return __( 'Set the isotope settings for each content type.', 'sixtenpress-isotope' );
 	}
 
 	/**
