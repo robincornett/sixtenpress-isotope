@@ -96,7 +96,7 @@ class SixTenPressSettingsSanitize {
 				}
 				break;
 
-			case 'text_field':
+			case 'text':
 				$new_value = sanitize_text_field( $new_value );
 				break;
 
@@ -176,6 +176,10 @@ class SixTenPressSettingsSanitize {
 
 			case 'do_text_field':
 				$new_value = sanitize_text_field( $new_value );
+				break;
+
+			case 'do_wysiwyg':
+				$new_value = wp_kses_post( $new_value );
 				break;
 
 			default:

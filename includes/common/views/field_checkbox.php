@@ -12,4 +12,4 @@ printf( '<label for="%1$s[%2$s]" %5$s><input type="checkbox" name="%1$s[%2$s]" i
 	esc_attr( $args['label'] ),
 	$style
 );
-$this->do_description( $args['setting'] );
+$this->do_description( isset( $args['setting'] ) ? $args['setting'] : $args['id'] );

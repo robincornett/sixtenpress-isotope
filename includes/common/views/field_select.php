@@ -12,4 +12,4 @@ foreach ( (array) $options as $name => $key ) {
 	printf( '<option value="%s" %s>%s</option>', esc_attr( $name ), selected( $name, $setting, false ), esc_attr( $key ) );
 }
 echo '</select></label>';
-$this->do_description( $args['setting'] );
+$this->do_description( isset( $args['setting'] ) ? $args['setting'] : $args['id'] );

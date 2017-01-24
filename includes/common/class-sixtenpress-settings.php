@@ -100,7 +100,7 @@ class SixTenPressSettings {
 			add_settings_section(
 				$register,
 				$section['title'],
-				array( $this, 'section_description' ),
+				isset( $section['description'] ) && is_array( $section['description'] ) ? $section['description'] : array( $this, 'section_description' ),
 				$page
 			);
 		}
@@ -131,16 +131,31 @@ class SixTenPressSettings {
 				$page    = $this->page . '_' . $sections[ $field['section'] ]['tab']; // page
 				$section = $this->page . '_' . $sections[ $field['section'] ]['id']; // section
 			}
-			$callback = isset( $field['type'] ) && method_exists( $this, "do_{$field['type']}" ) ? "do_{$field['type']}" : $field['callback'];
+			$callback = isset( $field['callback'] ) && is_array( $field['callback'] ) ? $field['callback'] : 'do_field';
 			$label    = sprintf( '<label for="%s[%s]">%s</label>', $this->tab ? $this->tab : $this->page, $field['id'], $field['title'] );
+			$args     = isset( $field['args'] ) ? array_merge( $field, $field['args'] ) : $field;
 			add_settings_field(
 				$field['id'],
 				$label,
-				array( $this, $callback ),
+				is_array( $callback ) ? $callback : array( $this, $callback ),
 				$page,
 				$section,
-				empty( $field['args'] ) ? array() : $field['args']
+				$args
 			);
+		}
+	}
+
+	/**
+	 * Generic function to pick the view file to output the field.
+	 *
+	 * @param $args
+	 */
+	public function do_field( $args ) {
+		$name = isset( $args['type'] ) ? "field_{$args['type']}.php" : $args['callback'];
+		if ( file_exists( $this->path() . $name ) ) {
+			include $this->path() . $name;
+		} elseif ( method_exists( $this, $args['callback'] ) ) {
+			$this->$args['callback']( $args );
 		}
 	}
 
@@ -175,7 +190,7 @@ class SixTenPressSettings {
 	 */
 	public function do_image( $args ) {
 
-		$id = $this->setting[ $args['setting'] ];
+		$id = $this->setting[ $args['id'] ];
 		if ( ! empty( $id ) ) {
 			echo wp_kses_post( $this->render_image_preview( $id ) );
 		}
@@ -191,11 +206,11 @@ class SixTenPressSettings {
 	 */
 	public function render_buttons( $id, $args ) {
 		$id = $id ? (int) $id : '';
-		$this->data[ $args['setting'] ] = $this->get_localization_data( $args );
-		printf( '<input type="hidden" class="upload-file-id" id="%1$s" name="%1$s" value="%2$s" />', esc_attr( $this->page . '[' . $args['setting'] . ']' ), esc_attr( $id ) );
+		$this->data[ $args['id'] ] = $this->get_localization_data( $args );
+		printf( '<input type="hidden" class="upload-file-id" id="%1$s" name="%1$s" value="%2$s" />', esc_attr( $this->page . '[' . $args['id'] . ']' ), esc_attr( $id ) );
 		printf( '<input id="%1$s" type="button" class="upload-file button-secondary %2$s" value="%3$s" />',
-			esc_attr( $this->page . '[' . $args['setting'] . ']' ),
-			esc_attr( $args['setting'] ),
+			esc_attr( $this->page . '[' . $args['id'] . ']' ),
+			esc_attr( $args['id'] ),
 			esc_attr__( 'Select Image', 'sixtenpress' )
 		);
 		if ( ! empty( $id ) ) {
@@ -258,8 +273,8 @@ class SixTenPressSettings {
 	 * }
 	 */
 	protected function get_checkbox_setting( $args ) {
-		$setting = isset( $this->setting[ $args['setting'] ] ) ? $this->setting[ $args['setting'] ] : 0;
-		$label   = $args['setting'];
+		$setting = isset( $args['id'] ) && isset( $this->setting[ $args['id'] ] ) ? $this->setting[ $args['id'] ] : 0;
+		$label   = isset( $args['id'] ) ? $args['id'] : '';
 		if ( isset( $args['key'] ) ) {
 			$setting = isset( $this->setting[ $args['key'] ][ $args['setting'] ] ) ? $this->setting[ $args['key'] ][ $args['setting'] ] : 0;
 			$label   = "{$args['key']}][{$args['setting']}";
@@ -296,8 +311,8 @@ class SixTenPressSettings {
 	 * @return array
 	 */
 	protected function get_select_setting( $args ) {
-		$setting = isset( $this->setting[ $args['setting'] ] ) ? $this->setting[ $args['setting'] ] : 0;
-		$label   = $args['setting'];
+		$setting = isset( $args['id'] ) && isset( $this->setting[ $args['id'] ] ) ? $this->setting[ $args['id'] ] : '';
+		$label   = isset( $args['id'] ) ? $args['id'] : '';
 		if ( isset( $args['key'] ) ) {
 			$setting = isset( $this->setting[ $args['key'] ][ $args['setting'] ] ) ? $this->setting[ $args['key'] ][ $args['setting'] ] : 0;
 			$label   = "{$args['key']}][{$args['setting']}";
@@ -450,5 +465,31 @@ class SixTenPressSettings {
 			$is_valid_nonce = wp_verify_nonce( $_POST[ $nonce ], $action );
 		}
 		return ( $is_nonce_set && $is_valid_nonce );
+	}
+
+	/**
+	 * Takes an array of new settings, merges them with the old settings, and pushes them into the database.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param string|array $new     New settings. Can be a string, or an array.
+	 * @param string       $setting Optional. Settings field name. Default is sixtenpress.
+	 */
+	protected function update_settings( $new = '', $setting = 'sixtenpress' ) {
+		return update_option( $setting, wp_parse_args( $new, get_option( $setting ) ) );
+	}
+
+	/**
+	 * Returns a 1 or 0, for all truthy / falsy values.
+	 *
+	 * Uses double casting. First, we cast to bool, then to integer.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param mixed $new_value Should ideally be a 1 or 0 integer passed in
+	 * @return integer 1 or 0.
+	 */
+	protected function one_zero( $new_value ) {
+		return (int) (bool) $new_value;
 	}
 }
