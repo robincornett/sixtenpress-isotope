@@ -8,8 +8,7 @@ This plugin doesn't do anything until you tell it to. Go to Settings > 6/10 Pres
 
 
 ## Requirements
-* WordPress 4.3, tested up to 4.6
-* Genesis Framework (templates and widget will not work with other themes, although post type and metaboxes will work with any theme)
+* WordPress 4.3, tested up to 4.7
 
 ## Installation
 
@@ -42,6 +41,12 @@ Then go to your Plugins screen and click __Activate__.
 If you are intending to use this plugin on a commercial project (for a client), you need to [purchase a commercial license for Isotope](http://isotope.metafizzy.co/license.html). It's easy, takes just a moment, and is worth every penny. _Note: I have no affiliation with Metafizzy.
 
 ## Changelog
+
+### 1.2.0
+* added: search input filter
+* added: pagination selectors are now localized
+* changed: increased maximum gutter size
+* removed: Genesis Framework specificity
 
 ### 1.1.0
 * added: option to force full width layout

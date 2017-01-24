@@ -3,14 +3,14 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: Six/Ten Press Isotope\n"
-"POT-Creation-Date: 2016-09-29 08:50-0400\n"
+"POT-Creation-Date: 2017-01-24 18:53-0500\n"
 "PO-Revision-Date: 2016-09-29 08:37-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-WPHeader: sixtenpress-isotope.php\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -21,17 +21,17 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 
 #: includes/class-sixtenpressisotope-help.php:40
-#: includes/class-sixtenpressisotope-settings-page.php:151
+#: includes/class-sixtenpressisotope-settings-page.php:161
 msgid "General Settings"
 msgstr ""
 
 #: includes/class-sixtenpressisotope-help.php:45
-#: includes/class-sixtenpressisotope-settings-page.php:161
+#: includes/class-sixtenpressisotope-settings-page.php:178
 msgid "Isotope Settings for Content Types"
 msgstr ""
 
 #: includes/class-sixtenpressisotope-help.php:53
-#: includes/class-sixtenpressisotope-settings-page.php:182
+#: includes/class-sixtenpressisotope-settings-page.php:197
 msgid "Number of Posts to Show on Isotope Archives"
 msgstr ""
 
@@ -48,7 +48,7 @@ msgid ""
 msgstr ""
 
 #: includes/class-sixtenpressisotope-help.php:57
-#: includes/class-sixtenpressisotope-settings-page.php:204
+#: includes/class-sixtenpressisotope-settings-page.php:215
 msgid "Plugin Stylesheet"
 msgstr ""
 
@@ -64,168 +64,189 @@ msgid ""
 "the gutter width, and enable filters as you like."
 msgstr ""
 
-#: includes/class-sixtenpressisotope-output.php:121
+#: includes/class-sixtenpressisotope-output.php:143
+msgid "Loading..."
+msgstr ""
+
+#: includes/class-sixtenpressisotope-output.php:145
 msgid "No more items to load."
 msgstr ""
 
-#: includes/class-sixtenpressisotope-output.php:336
+#: includes/class-sixtenpressisotope-output.php:312
+msgid "Search"
+msgstr ""
+
+#: includes/class-sixtenpressisotope-output.php:382
 #, php-format
 msgid "Filter %s By:"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-output.php:363
+#: includes/class-sixtenpressisotope-output.php:408
 #, php-format
 msgid "All %s"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-output.php:420
+#: includes/class-sixtenpressisotope-output.php:465
 msgid "Filter By: "
 msgstr ""
 
-#: includes/class-sixtenpressisotope-output.php:422
+#: includes/class-sixtenpressisotope-output.php:467
 msgid "All"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:55
+#: includes/class-sixtenpressisotope-settings-page.php:61
 msgid "6/10 Press Isotope Settings"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:56
+#: includes/class-sixtenpressisotope-settings-page.php:62
 msgid "6/10 Press Isotope"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:84
+#: includes/class-sixtenpressisotope-settings-page.php:93
 msgid "Isotope"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:189
+#: includes/class-sixtenpressisotope-settings-page.php:169
+msgid "Genesis Framework Settings"
+msgstr ""
+
+#: includes/class-sixtenpressisotope-settings-page.php:203
 msgid "Posts per Page"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:194
+#: includes/class-sixtenpressisotope-settings-page.php:208
 msgid "Infinite Scroll"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:199
+#: includes/class-sixtenpressisotope-settings-page.php:211
 msgid "Enable infinite scroll?"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:209
+#: includes/class-sixtenpressisotope-settings-page.php:218
 msgid "Use the plugin styles?"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:214
+#: includes/class-sixtenpressisotope-settings-page.php:222
 msgid "Columns (Larger Screens)"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:224
+#: includes/class-sixtenpressisotope-settings-page.php:251
 msgid "Layout"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:229
+#: includes/class-sixtenpressisotope-settings-page.php:254
 msgid "Force layout to full width on archives?"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:234
+#: includes/class-sixtenpressisotope-settings-page.php:258
 msgid "Featured Image Size"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:244
+#: includes/class-sixtenpressisotope-settings-page.php:267
 msgid "Featured Image Alignment"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:254
+#: includes/class-sixtenpressisotope-settings-page.php:276
 msgid "Remove Entry Elements"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:260
+#: includes/class-sixtenpressisotope-settings-page.php:281
 msgid "Remove Entry Content"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:261
+#: includes/class-sixtenpressisotope-settings-page.php:282
 msgid "Remove Entry Info"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:262
+#: includes/class-sixtenpressisotope-settings-page.php:283
 msgid "Remove Entry Meta"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:288
+#: includes/class-sixtenpressisotope-settings-page.php:294
 msgid "You can set the default isotope settings here."
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:296
+#: includes/class-sixtenpressisotope-settings-page.php:301
+msgid "These settings enhance the plugin options for the Genesis Framework."
+msgstr ""
+
+#: includes/class-sixtenpressisotope-settings-page.php:308
 msgid "Set the isotope settings for each content type."
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:306
-#: includes/class-sixtenpressisotope-settings-page.php:336
+#: includes/class-sixtenpressisotope-settings-page.php:317
+#: includes/class-sixtenpressisotope-settings-page.php:347
 msgid "Theme Default"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:337
+#: includes/class-sixtenpressisotope-settings-page.php:348
 msgid "Left"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:338
+#: includes/class-sixtenpressisotope-settings-page.php:349
 msgid "Right"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:339
+#: includes/class-sixtenpressisotope-settings-page.php:350
 msgid "Center"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:340
+#: includes/class-sixtenpressisotope-settings-page.php:351
 msgid "None"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:354
+#: includes/class-sixtenpressisotope-settings-page.php:366
 msgid "Enable Isotope for this post type?"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:363
+#: includes/class-sixtenpressisotope-settings-page.php:371
+msgid "Add a search input?"
+msgstr ""
+
+#: includes/class-sixtenpressisotope-settings-page.php:383
 msgid "Gutter Width"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:376
+#: includes/class-sixtenpressisotope-settings-page.php:396
 #, php-format
 msgid "Add a filter for %s"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:400
+#: includes/class-sixtenpressisotope-settings-page.php:420
 msgid "Combine infinite scroll with filtering with great caution."
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:408
+#: includes/class-sixtenpressisotope-settings-page.php:428
 msgid ""
 "Leave this setting unchecked to use the site's default layout, or select a "
 "specific layout on the archive settings page."
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:426
+#: includes/class-sixtenpressisotope-settings-page.php:444
 #: includes/common/class-sixtenpress-licensing.php:213
 #: includes/common/class-sixtenpress-licensing.php:264
+#: includes/common/class-sixtenpress-settings.php:437
 msgid "Something unexpected happened. Please try again."
 msgstr ""
 
-#: includes/common/class-eddpluginupdater.php:196
+#: includes/common/class-eddpluginupdater.php:201
 #, php-format
 msgid ""
 "There is a new version of %1$s available. %2$sView version %3$s details%4$s."
 msgstr ""
 
-#: includes/common/class-eddpluginupdater.php:204
+#: includes/common/class-eddpluginupdater.php:209
 #, php-format
 msgid ""
 "There is a new version of %1$s available. %2$sView version %3$s details%4$s "
 "or %5$supdate now%6$s."
 msgstr ""
 
-#: includes/common/class-eddpluginupdater.php:358
+#: includes/common/class-eddpluginupdater.php:376
 msgid "You do not have permission to install plugin updates"
 msgstr ""
 
-#: includes/common/class-eddpluginupdater.php:358
+#: includes/common/class-eddpluginupdater.php:376
 msgid "Error"
 msgstr ""
 
@@ -237,28 +258,33 @@ msgstr ""
 msgid "Deactivate"
 msgstr ""
 
-#: includes/common/class-sixtenpress-settings.php:142
-msgid "Select Image"
-msgstr ""
-
-#: includes/common/class-sixtenpress-settings.php:146
-msgid "Delete Image"
-msgstr ""
-
-#: includes/common/class-sixtenpress-settings.php:360
+#: includes/common/class-sixtenpress-settings-sanitize.php:218
 #, php-format
 msgid " The %s has been reset to the last valid setting."
 msgstr ""
 
-#: includes/common/class-sixtenpress-settings.php:368
+#: includes/common/class-sixtenpress-settings-sanitize.php:226
 msgid "Sorry, that is an invalid file type."
 msgstr ""
 
-#: includes/common/class-sixtenpress-settings.php:419
+#: includes/common/class-sixtenpress-settings-sanitize.php:277
 #, php-format
 msgid ""
 "Well, that was unexpected. The %s has been reset to the last valid setting; "
 "the value you entered didn't work."
+msgstr ""
+
+#: includes/common/class-sixtenpress-settings.php:214
+msgid "Select Image"
+msgstr ""
+
+#: includes/common/class-sixtenpress-settings.php:218
+msgid "Delete Image"
+msgstr ""
+
+#: includes/common/class-sixtenpress-settings.php:395
+#, php-format
+msgid "Select %s"
 msgstr ""
 
 #. Plugin Name of the plugin/theme

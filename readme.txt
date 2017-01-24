@@ -1,8 +1,8 @@
 === Six/Ten Press Isotope ===
 Contributors: littler.chicken
 Requires at least: 4.3
-Tested up to: 4.6
-Stable tag: 1.1.0
+Tested up to: 4.7
+Stable tag: 1.2.0
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -25,9 +25,15 @@ Built by <a href="https://robincornett.com/">Robin Cornett</a>
 If you are intending to use this plugin on a commercial project (for a client), you need to <a href="http://isotope.metafizzy.co/license.html">purchase a commercial license for Isotope</a>. It's easy, takes just a moment, and is worth every penny. _Note: I have no affiliation with Metafizzy.
 
 == Upgrade Notice ==
-1.1.0 New options, bugfixes
+1.2.0 new search filter
 
 == Changelog ==
+
+= 1.2.0 =
+* added: search input filter
+* added: pagination selectors are now localized
+* changed: increased maximum gutter size
+* removed: Genesis Framework specificity
 
 = 1.1.0 =
 * added: option to force full width layout
