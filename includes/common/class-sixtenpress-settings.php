@@ -155,7 +155,7 @@ class SixTenPressSettings {
 		if ( file_exists( $this->path() . $name ) ) {
 			include $this->path() . $name;
 		} elseif ( method_exists( $this, $args['callback'] ) ) {
-			$this->$args['callback']( $args );
+			$this->{$args['callback']}( $args );
 		}
 	}
 
