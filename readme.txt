@@ -2,7 +2,7 @@
 Contributors: littler.chicken
 Requires at least: 4.3
 Tested up to: 4.7
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -28,6 +28,9 @@ If you are intending to use this plugin on a commercial project (for a client), 
 1.2.0 new search filter
 
 == Changelog ==
+
+= 1.2.1 =
+* update 6/10 common files (fixes settings load priority)
 
 = 1.2.0 =
 * added: search input filter

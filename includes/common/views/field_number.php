@@ -15,4 +15,3 @@ printf( '<label for="%5$s[%3$s]"><input type="number" step="%6$s" min="%1$s" max
 	isset( $args['step'] ) ? esc_attr( $args['step'] ) : (int) 1,
 	isset( $args['value'] ) ? esc_attr( $args['value'] ) : ''
 );
-$this->do_description( $id );

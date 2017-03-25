@@ -12,4 +12,3 @@ foreach ( $args['choices'] as $key => $label ) {
 	);
 	echo isset( $args['clear'] ) && $args['clear'] ? '<br />' : '';
 }
-$this->do_description( $args['id'] );

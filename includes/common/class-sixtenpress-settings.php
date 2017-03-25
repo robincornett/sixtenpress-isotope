@@ -47,7 +47,7 @@ class SixTenPressSettings {
 	/**
 	 * @var string
 	 */
-	protected $version = '1.2.0';
+	protected $version = SIXTENPRESS_VERSION;
 
 	/**
 	 * Check if 6/10 Press is active.
@@ -63,7 +63,8 @@ class SixTenPressSettings {
 	 * @since 1.0.0
 	 */
 	protected function get_active_tab() {
-		return isset( $_GET['tab'] ) ? $_GET['tab'] : 'main';
+		$tab = filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_STRING );
+		return $tab ? $tab : 'main';
 	}
 
 	/**
@@ -157,6 +158,7 @@ class SixTenPressSettings {
 		} elseif ( method_exists( $this, $args['callback'] ) ) {
 			$this->{$args['callback']}( $args );
 		}
+		$this->do_description( $args['id'] );
 	}
 
 	/**
@@ -440,7 +442,7 @@ class SixTenPressSettings {
 		check_admin_referer( $this->action, $this->nonce );
 
 		include_once plugin_dir_path( __FILE__ ) . 'class-sixtenpress-settings-sanitize.php';
-		$sanitize = new SixTenPressSettingsSanitize( $this->fields, $this->get_setting(), $this->page );
+		$sanitize = new SixTenPressSettingsSanitize( $this->fields, $this->get_setting(), $this->page, $this->get_setting_name() );
 		return $sanitize->sanitize( $new_value );
 	}
 

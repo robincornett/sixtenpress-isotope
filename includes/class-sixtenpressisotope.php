@@ -28,7 +28,7 @@ class SixTenPressIsotope {
 	 * Check for post type support, etc.
 	 */
 	public function run() {
-		add_action( 'plugins_loaded', array( $this, 'load_settings_page' ) );
+		add_action( 'plugins_loaded', array( $this, 'load_settings_page' ), 20 );
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 		add_action( 'pre_get_posts', array( $this->output, 'maybe_add_post_type_support' ), 999 );
 		add_action( 'template_redirect', array( $this->output, 'maybe_do_isotope' ) );

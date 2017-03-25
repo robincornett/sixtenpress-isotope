@@ -42,6 +42,9 @@ If you are intending to use this plugin on a commercial project (for a client), 
 
 ## Changelog
 
+### 1.2.1
+* update 6/10 common files (fixes settings load priority)
+
 ### 1.2.0
 * added: search input filter
 * added: pagination selectors are now localized

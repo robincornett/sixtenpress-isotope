@@ -24,16 +24,24 @@ class SixTenPressSettingsSanitize {
 	protected $fields;
 
 	/**
+	 * The registered setting/option name.
+	 * @var string
+	 */
+	protected $option;
+
+	/**
 	 * SixTenPressSettingsSanitize constructor.
 	 *
 	 * @param $fields
 	 * @param $setting
 	 * @param $page
+	 * @param $option
 	 */
-	public function __construct( $fields, $setting, $page ) {
+	public function __construct( $fields, $setting, $page, $option ) {
 		$this->fields  = $fields;
 		$this->setting = $setting;
 		$this->page    = $page;
+		$this->option  = $option;
 	}
 
 	/**
@@ -54,7 +62,10 @@ class SixTenPressSettingsSanitize {
 			$method                    = isset( $field['type'] ) ? 'sanitize_switcher' : 'sanitize_callback_switcher';
 			$new_value[ $field['id'] ] = $this->$method( $new_value[ $field['id'] ], $field, $old_value[ $field['id'] ] );
 			$new_value[ $field['id'] ] = apply_filters( "sixtenpress_sanitize_{$this->page}_{$field['id']}", $new_value[ $field['id'] ], $field, $new_value, $old_value[ $field['id'] ] );
+			$new_value[ $field['id'] ] = apply_filters( "sixtenpress_sanitize_{$this->option}_{$field['id']}", $new_value[ $field['id'] ], $field, $new_value, $old_value[ $field['id'] ] );
 		}
+
+		do_action( "sixtenpress_after_sanitize_{$this->option}", $this->option, $new_value, $old_value );
 
 		return $new_value;
 	}
@@ -90,7 +101,7 @@ class SixTenPressSettingsSanitize {
 				break;
 
 			case 'checkbox_array':
-				$choices = $field['args']['choices'];
+				$choices = isset( $field['choices'] ) ? $field['choices'] : $field['args']['choices'];
 				foreach ( $choices as $key => $label ) {
 					$new_value[ $key ] = $this->one_zero( $new_value[ $key ] );
 				}
@@ -124,7 +135,7 @@ class SixTenPressSettingsSanitize {
 				$new_value = is_array( $new_value ) ? array_map( 'sanitize_text_field', $new_value ) : sanitize_text_field( $new_value );
 				break;
 		} // End switch().
-		return $new_value;
+		return $this->format_fields( $new_value, $field );
 	}
 
 	/**
@@ -186,7 +197,31 @@ class SixTenPressSettingsSanitize {
 				$new_value = is_array( $new_value ) ? array_map( 'sanitize_text_field', $new_value ) : sanitize_text_field( $new_value );
 				break;
 		} // End switch().
-		return $new_value;
+		return $this->format_fields( $new_value, $field );
+	}
+
+	/**
+	 * Format values for specific kinds of data.
+	 * Currently supported: url, email, image
+	 * @param $value
+	 * @param $field
+	 *
+	 * @return mixed
+	 */
+	protected function format_fields( $value, $field ) {
+		if ( ! isset( $field['format'] ) ) {
+			return $value;
+		}
+		$method = "validate_{$field['format']}";
+		if ( method_exists( $this, $method ) ) {
+			$value = $this->$method( $value, $field );
+		}
+
+		return $value;
+	}
+
+	protected function validate_url( $new_value, $field ) {
+		return esc_url( $new_value );
 	}
 
 	/**
@@ -194,16 +229,39 @@ class SixTenPressSettingsSanitize {
 	 *
 	 * @param $new_value
 	 *
+	 * @param $field
+	 *
 	 * @return string
 	 */
-	protected function validate_email( $new_value, $old_value ) {
-		return is_email( $new_value ) ? esc_attr( $new_value ) : $old_value;
+	protected function validate_email( $new_value, $field ) {
+		return is_email( $new_value ) ? esc_attr( $new_value ) : '';
+	}
+
+	/**
+	 * Format a standard US phone number.
+	 *
+	 * @param $new_value
+	 *
+	 * @param string $field
+	 *
+	 * @return string
+	 */
+	protected function validate_phone( $new_value, $field = '' ) {
+		if ( preg_match( '/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})$/', $new_value, $matches ) ) {
+			$new_value = sprintf( '(%s) %s-%s', $matches[1], $matches[2], $matches[3] );
+		}
+
+		return $new_value;
 	}
 
 	/**
 	 * Returns previous value for image if not correct file type/size
+	 *
 	 * @param  string $new_value New value
-	 * @return string            New or previous value, depending on allowed image size.
+	 * @param $old_value
+	 * @param $label
+	 *
+	 * @return string New or previous value, depending on allowed image size.
 	 * @since  1.0.0
 	 */
 	protected function validate_image( $new_value, $old_value, $label ) {

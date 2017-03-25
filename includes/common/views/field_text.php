@@ -5,4 +5,3 @@ printf( '<input type="text" id="%3$s[%1$s]" aria-label="%3$s[%1$s]" name="%3$s[%
 	esc_attr( $this->setting[ $args['id'] ] ),
 	esc_attr( $this->get_setting_name() )
 );
-$this->do_description( $args['id'] );
