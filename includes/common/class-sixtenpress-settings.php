@@ -47,7 +47,7 @@ class SixTenPressSettings {
 	/**
 	 * @var string
 	 */
-	protected $version = SIXTENPRESS_VERSION;
+	protected $version = '1.4.0';
 
 	/**
 	 * Check if 6/10 Press is active.
