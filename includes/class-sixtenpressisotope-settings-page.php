@@ -322,18 +322,44 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 	 *
 	 */
 	protected function pick_sizes() {
-		$options['default'] = __( 'Theme Default', 'sixtenpress-isotope' );
-		$intermediate_sizes = get_intermediate_image_sizes();
-		foreach ( $intermediate_sizes as $_size ) {
-			$default_sizes = apply_filters( 'sixtenpressisotope_thumbnail_size_list', array( 'thumbnail', 'medium', 'medium_large' ) );
-			if ( in_array( $_size, $default_sizes, true ) ) {
-				$width           = get_option( $_size . '_size_w' );
-				$height          = get_option( $_size . '_size_h' );
-				$options[$_size] = sprintf( '%s ( %sx%s )', $_size, $width, $height );
-			}
+		$sizes   = $this->get_registered_image_sizes();
+		$options = array();
+		foreach ( (array) $sizes as $name => $size ) {
+			$options[ $name ] = sprintf( '%s (%sx%s)', $name, $size['width'], $size['height'] );
 		}
 
 		return $options;
+	}
+
+	/**
+	 * Get all registered image sizes.
+	 * @return array
+	 */
+	protected function get_registered_image_sizes() {
+
+		global $_wp_additional_image_sizes;
+
+		$sizes = array();
+
+		foreach ( get_intermediate_image_sizes() as $_size ) {
+
+			if ( in_array( $_size, array( 'thumbnail', 'medium', 'medium_large', 'large' ), true ) ) {
+
+				$sizes[ $_size ]['width']  = get_option( "{$_size}_size_w" );
+				$sizes[ $_size ]['height'] = get_option( "{$_size}_size_h" );
+				$sizes[ $_size ]['crop']   = (bool) get_option( "{$_size}_crop" );
+
+			} elseif ( isset( $_wp_additional_image_sizes[ $_size ] ) ) {
+
+				$sizes[ $_size ] = array(
+					'width'  => $_wp_additional_image_sizes[ $_size ]['width'],
+					'height' => $_wp_additional_image_sizes[ $_size ]['height'],
+					'crop'   => $_wp_additional_image_sizes[ $_size ]['crop'],
+				);
+			}
+		}
+
+		return $sizes;
 	}
 
 	protected function pick_columns() {
