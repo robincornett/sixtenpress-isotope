@@ -1,8 +1,8 @@
 === Six/Ten Press Isotope ===
 Contributors: littler.chicken
 Requires at least: 4.3
-Tested up to: 4.7
-Stable tag: 1.2.1
+Tested up to: 4.9alpha
+Stable tag: 1.3.0
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -25,9 +25,13 @@ Built by <a href="https://robincornett.com/">Robin Cornett</a>
 If you are intending to use this plugin on a commercial project (for a client), you need to <a href="http://isotope.metafizzy.co/license.html">purchase a commercial license for Isotope</a>. It's easy, takes just a moment, and is worth every penny. _Note: I have no affiliation with Metafizzy.
 
 == Upgrade Notice ==
-1.2.0 new search filter
+1.3.0 new setting for moving featured images
 
 == Changelog ==
+
+= 1.3.0 =
+* added: setting to move featured image (Genesis Framework)
+* added: Medium Large image to size selector
 
 = 1.2.1 =
 * update 6/10 common files (fixes settings load priority)

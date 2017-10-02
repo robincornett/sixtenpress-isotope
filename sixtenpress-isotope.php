@@ -16,7 +16,7 @@
  * Text Domain:       sixtenpress-isotope
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Version:           1.2.1
+ * Version:           1.3.0
  */
 
 // If this file is called directly, abort.

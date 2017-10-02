@@ -8,7 +8,7 @@ This plugin doesn't do anything until you tell it to. Go to Settings > 6/10 Pres
 
 
 ## Requirements
-* WordPress 4.3, tested up to 4.7
+* WordPress 4.3, tested up to 4.9alpha
 
 ## Installation
 
@@ -41,6 +41,10 @@ Then go to your Plugins screen and click __Activate__.
 If you are intending to use this plugin on a commercial project (for a client), you need to [purchase a commercial license for Isotope](http://isotope.metafizzy.co/license.html). It's easy, takes just a moment, and is worth every penny. _Note: I have no affiliation with Metafizzy.
 
 ## Changelog
+
+### 1.3.0
+* added: setting to move featured image (Genesis Framework)
+* added: Medium Large image to size selector
 
 ### 1.2.1
 * update 6/10 common files (fixes settings load priority)

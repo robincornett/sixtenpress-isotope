@@ -92,7 +92,7 @@ class SixTenPressIsotopeOutput {
 	 * Function to enqueue isotope scripts and do the isotope things.
 	 */
 	public function enqueue_isotope() {
-		$version = '1.2.1';
+		$version = '1.3.0';
 		$minify  = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		wp_register_script( 'sixtenpress-isotope', plugin_dir_url( __FILE__ ) . 'js/isotope.min.js', array( 'jquery' ), '3.0.0', true );
 		if ( ! wp_script_is( 'imagesloaded', 'registered' ) ) {
