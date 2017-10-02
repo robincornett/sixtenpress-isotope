@@ -50,11 +50,6 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 	public function do_submenu_page() {
 
 		$this->setting = $this->get_setting();
-		$sections      = $this->register_sections();
-		$this->fields  = $this->register_fields();
-		if ( function_exists( 'genesis' ) ) {
-			$this->fields = array_merge( $this->fields, $this->genesis_fields() );
-		}
 		if ( ! class_exists( 'SixTenPress' ) ) {
 			$this->page = $this->tab;
 			add_options_page(
@@ -79,6 +74,18 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 			add_action( "load-settings_page_{$this->page}", array( $help, 'help' ) );
 		}
 
+		add_action( "load-settings_page_{$this->page}", array( $this, 'build_settings_page' ) );
+	}
+
+	/**
+	 * Build the isotope settings page.
+	 */
+	public function build_settings_page() {
+		$sections      = $this->register_sections();
+		$this->fields  = $this->register_fields();
+		if ( function_exists( 'genesis' ) ) {
+			$this->fields = array_merge( $this->fields, $this->genesis_fields() );
+		}
 		$this->add_sections( $sections );
 		$this->add_fields( $this->fields, $sections );
 	}
