@@ -113,6 +113,7 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 		$defaults = array(
 			'posts_per_page' => (int) get_option( 'posts_per_page', 10 ),
 			'style'          => 1,
+			'image_move'     => 1,
 			'image_size'     => 'default',
 			'alignment'      => 'default',
 			'remove'         => array(
@@ -252,6 +253,13 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 				'type'     => 'checkbox',
 				'section'  => 'genesis',
 				'label'    => __( 'Force layout to full width on archives?', 'sixtenpress-isotope' ),
+			),
+			array(
+				'id'       => 'image_move',
+				'title'    => __( 'Move Featured Image', 'sixtenpress-isotope' ),
+				'type'     => 'checkbox',
+				'section'  => 'genesis',
+				'label'    => __( 'Move the featured image to before the post title?', 'sixtenpress-isotope' ),
 			),
 			array(
 				'id'       => 'image_size',

@@ -55,7 +55,7 @@ $sixtenpressisotope->run();
 
 /**
  * Helper function to retrieve the plugin setting, with defaults.
- * @return mixed|void
+ * @return mixed
  */
 function sixtenpressisotope_get_settings() {
 	return apply_filters( 'sixtenpressisotope_get_plugin_setting', false );
