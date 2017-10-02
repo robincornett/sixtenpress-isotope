@@ -317,7 +317,7 @@ class SixTenPressIsotopeSettings extends SixTenPressSettings {
 		$options['default'] = __( 'Theme Default', 'sixtenpress-isotope' );
 		$intermediate_sizes = get_intermediate_image_sizes();
 		foreach ( $intermediate_sizes as $_size ) {
-			$default_sizes = apply_filters( 'sixtenpressisotope_thumbnail_size_list', array( 'thumbnail', 'medium' ) );
+			$default_sizes = apply_filters( 'sixtenpressisotope_thumbnail_size_list', array( 'thumbnail', 'medium', 'medium_large' ) );
 			if ( in_array( $_size, $default_sizes, true ) ) {
 				$width           = get_option( $_size . '_size_w' );
 				$height          = get_option( $_size . '_size_h' );
