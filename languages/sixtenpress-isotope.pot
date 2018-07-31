@@ -1,4 +1,4 @@
-# Copyright (C) 2017 Six/Ten Press Isotope
+# Copyright (C) 2018 Six/Ten Press Isotope
 # This file is distributed under the same license as the Six/Ten Press Isotope package.
 msgid ""
 msgstr ""

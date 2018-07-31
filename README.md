@@ -8,7 +8,7 @@ This plugin doesn't do anything until you tell it to. Go to Settings > 6/10 Pres
 
 
 ## Requirements
-* WordPress 4.3, tested up to 4.9alpha
+* WordPress 4.3, tested up to 5.0alpha
 
 ## Installation
 
@@ -42,6 +42,9 @@ If you are intending to use this plugin on a commercial project (for a client), 
 
 ## Changelog
 
+### 1.3.1
+* updated: settings library (fixes settings for users not also using 6/10 Press)
+
 ### 1.3.0
 * added: setting to move featured image (Genesis Framework)
 * added: Medium Large image to size selector
@@ -67,4 +70,4 @@ If you are intending to use this plugin on a commercial project (for a client), 
 
 ## Credits
 
-Built by [Robin Cornett](http://robincornett.com/)
+Built by [Robin Cornett](https://robincornett.com/)

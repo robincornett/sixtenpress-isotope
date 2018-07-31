@@ -1,8 +1,8 @@
 === Six/Ten Press Isotope ===
 Contributors: littler.chicken
 Requires at least: 4.3
-Tested up to: 4.9alpha
-Stable tag: 1.3.0
+Tested up to: 5.0alpha
+Stable tag: 1.3.1
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -28,6 +28,9 @@ If you are intending to use this plugin on a commercial project (for a client), 
 1.3.0 new setting for moving featured images
 
 == Changelog ==
+
+= 1.3.1 =
+* updated: settings library (fixes settings for users not also using 6/10 Press)
 
 = 1.3.0 =
 * added: setting to move featured image (Genesis Framework)

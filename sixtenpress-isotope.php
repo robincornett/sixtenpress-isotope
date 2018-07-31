@@ -5,8 +5,8 @@
  * @package   SixTenPressIsotope
  * @author    Robin Cornett <hello@robincornett.com>
  * @license   GPL-2.0+
- * @link      http://robincornett.com
- * @copyright 2016 Robin Cornett Creative, LLC
+ * @link      https://robincornett.com
+ * @copyright 2016-2018 Robin Cornett Creative, LLC
  *
  * Plugin Name:       Six/Ten Press Isotope
  * Plugin URI:        https://robincornett.com
@@ -16,7 +16,7 @@
  * Text Domain:       sixtenpress-isotope
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Version:           1.3.0
+ * Version:           1.3.1
  */
 
 // If this file is called directly, abort.
