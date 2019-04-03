@@ -21,7 +21,7 @@ class SixTenPressIsotopeOutput {
 	 * Decide whether or not we can do the isotope output.
 	 */
 	public function maybe_do_isotope() {
-		if ( is_singular() || is_admin() ) {
+		if ( is_singular() || is_admin() || is_search() ) {
 			return;
 		}
 		if ( ! $this->post_type_supports() ) {
@@ -85,6 +85,7 @@ class SixTenPressIsotopeOutput {
 		} else {
 			$support = post_type_supports( $post_type, 'sixtenpress-isotope' );
 		}
+
 		return (bool) apply_filters( 'sixtenpress_isotope_support', $support );
 	}
 
@@ -124,23 +125,23 @@ class SixTenPressIsotopeOutput {
 		$post_type_name = $this->get_current_post_type();
 		$gutter         = isset( $this->setting[ $post_type_name ]['gutter'] ) ? $this->setting[ $post_type_name ]['gutter'] : 0;
 		$options        = apply_filters( 'sixtenpress_isotope_options', array(
-			'container' => 'isotope',
-			'selector'  => 'article',
-			'gutter'    => $gutter,
+			'container'  => 'isotope',
+			'selector'   => 'article',
+			'gutter'     => $gutter,
 			'navigation' => '.archive-pagination',
 			'link'       => '.pagination-next a',
 		) );
-		$isotope = apply_filters( 'sixtenpress_isotope_options', array(
+		$isotope        = apply_filters( 'sixtenpress_isotope_options', array(
 			'isotopeRules' => array(
 				'itemSelector'    => $options['selector'],
 				'percentPosition' => true,
 				'masonry'         => [
 					'isAnimated' => true,
 					'gutter'     => (int) $options['gutter'],
-				]
+				],
 			),
 		) );
-		$array = array(
+		$array          = array(
 			'loading'  => plugin_dir_url( __FILE__ ) . 'images/loading.svg',
 			'msg'      => __( 'Loading...', 'sixtenpress-featured-content-masonry' ),
 			'infinite' => (bool) $this->setting['infinite'],
@@ -159,6 +160,7 @@ class SixTenPressIsotopeOutput {
 		if ( false === get_post_type() ) {
 			$post_type_name = get_query_var( 'post_type' );
 		}
+
 		return $post_type_name;
 	}
 
@@ -188,6 +190,7 @@ class SixTenPressIsotopeOutput {
 
 	/**
 	 * Actually add the post type support.
+	 *
 	 * @param $query
 	 * @param $post_type
 	 */
@@ -233,10 +236,10 @@ class SixTenPressIsotopeOutput {
 		if ( ! $this->setting['style'] || apply_filters( 'sixtenpress_isotope_remove_inline_style', false ) ) {
 			return;
 		}
-		$post_type  = $this->get_current_post_type();
-		$options    = $this->get_isotope_options();
-		$one_half   = 'width: -webkit-calc(50% - ' . $options['gutter'] / 2 . 'px); width: calc(50% - ' . $options['gutter'] / 2 . 'px);';
-		$css        = sprintf(
+		$post_type = $this->get_current_post_type();
+		$options   = $this->get_isotope_options();
+		$one_half  = 'width: -webkit-calc(50% - ' . $options['gutter'] / 2 . 'px); width: calc(50% - ' . $options['gutter'] / 2 . 'px);';
+		$css       = sprintf(
 			'.js .%4$s { opacity: 0; }
 			.%3$s { clear: both; margin: 0 auto 40px; overflow: visible; }
 			.%3$s %4$s { float: left; margin: 0 0 %2$spx; %1$s }
@@ -253,7 +256,7 @@ class SixTenPressIsotopeOutput {
 		);
 		if ( $this->setting['columns'] > 2 ) {
 			$one_third = 'width: -webkit-calc(33.33333% - ' . 2 * $options['gutter'] / 3 . 'px); width: calc(33.33333% - ' . 2 * $options['gutter'] / 3 . 'px);';
-			$css      .= sprintf(
+			$css       .= sprintf(
 				'@media only screen and (min-width: 600px) { .%1$s %2$s { %3$s } }',
 				$options['container'],
 				$options['selector'],
@@ -262,7 +265,7 @@ class SixTenPressIsotopeOutput {
 		}
 		if ( $this->setting['columns'] > 3 ) {
 			$one_fourth = 'width: -webkit-calc(25% - ' . 3 * $options['gutter'] / 4 . 'px); width: calc(25% - ' . 3 * $options['gutter'] / 4 . 'px);';
-			$css       .= sprintf(
+			$css        .= sprintf(
 				'@media only screen and (min-width: 1023px) { .%1$s %2$s { %3$s } }',
 				$options['container'],
 				$options['selector'],
@@ -348,6 +351,7 @@ class SixTenPressIsotopeOutput {
 		if ( 1 === $count ) {
 			$tax_filters = implode( $tax_filters );
 		}
+
 		return $tax_filters;
 	}
 
@@ -366,6 +370,7 @@ class SixTenPressIsotopeOutput {
 		if ( is_string( $filters ) ) {
 			$action = 'do_isotope_buttons';
 		}
+
 		add_action( 'sixtenpress_before_isotope', array( $this, $action ) );
 	}
 
@@ -382,7 +387,7 @@ class SixTenPressIsotopeOutput {
 		$output       = '<div class="main-filter">';
 		$object       = get_post_type_object( $this->get_current_post_type() );
 		$filter_text  = sprintf( __( 'Filter %s By:', 'sixtenpress-isotope' ), esc_attr( $object->labels->name ) );
-		$output      .= sprintf( '<h4>%s</h4>', esc_html( $filter_text ) );
+		$output       .= sprintf( '<h4>%s</h4>', esc_html( $filter_text ) );
 		$i            = 0;
 		foreach ( $select_options as $option ) {
 			$class = $column_class;
@@ -390,7 +395,7 @@ class SixTenPressIsotopeOutput {
 				$class .= ' first';
 			}
 			$output .= $this->build_taxonomy_select( $option, $class );
-			$i++;
+			$i ++;
 		}
 		$output .= '</div><div class="clearfix"></div>';
 		echo $output;
@@ -398,23 +403,24 @@ class SixTenPressIsotopeOutput {
 
 	/**
 	 * Build a select/dropdown for isotope filtering.
+	 *
 	 * @param $option array
 	 */
 	protected function build_taxonomy_select( $option, $class ) {
-		$output = sprintf( '<select name="%1$s" id="%1$s-filters" class="%2$s" data-filter-group="%1$s">',
+		$output     = sprintf( '<select name="%1$s" id="%1$s-filters" class="%2$s" data-filter-group="%1$s">',
 			esc_attr( strtolower( $option ) ),
 			esc_attr( $class )
 		);
 		$tax_object = get_taxonomy( $option );
 		$label      = $tax_object->labels->name;
 		$all_things = sprintf( __( 'All %s', 'sixtenpress-isotope' ), $label );
-		$output .= sprintf( '<option value="all" data-filter-value="">%s</option>',
+		$output     .= sprintf( '<option value="all" data-filter-value="">%s</option>',
 			esc_html( $all_things )
 		);
-		$terms = get_terms( $option );
-		$items = '';
+		$terms      = get_terms( $option );
+		$items      = '';
 		foreach ( $terms as $term ) {
-			$class  = sprintf( '%s-%s', esc_attr( $option ), esc_attr( $term->slug ) );
+			$class = sprintf( '%s-%s', esc_attr( $option ), esc_attr( $term->slug ) );
 			$items .= sprintf( '<option value="%1$s" data-filter-value=".%1$s">%2$s</option>',
 				esc_attr( $class ),
 				esc_attr( $term->name )
@@ -422,11 +428,12 @@ class SixTenPressIsotopeOutput {
 		}
 		$output .= apply_filters( "sixtenpress_isotope_filter_{$option}_items", $items, $option, $class, $terms );
 		$output .= '</select>';
+
 		return $output;
 	}
 
 	/**
-	 * @param $count
+	 * @param        $count
 	 * @param string $class
 	 *
 	 * @return string
@@ -463,11 +470,11 @@ class SixTenPressIsotopeOutput {
 		if ( ! $terms ) {
 			return;
 		}
-		$output  = '<div class="main-filter">';
+		$output = '<div class="main-filter">';
 		$output .= sprintf( '<h4>%s</h4>', __( 'Filter By: ', 'sixtenpress-isotope' ) );
 		$output .= sprintf( '<ul id="%s" class="filter">', esc_html( $taxonomy ) );
 		$output .= sprintf( '<li><button class="active" data-filter="*">%s</button></li>', __( 'All', 'sixtenpress-isotope' ) );
-		$items = '';
+		$items  = '';
 		foreach ( $terms as $term ) {
 			$items .= sprintf( '<li><button data-filter=".%s-%s">%s</button></li>',
 				esc_html( $taxonomy ),
