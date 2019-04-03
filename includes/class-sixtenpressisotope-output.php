@@ -338,6 +338,13 @@ class SixTenPressIsotopeOutput {
 				};
 			}
 		}
+		if ( is_tax() ) {
+			$taxonomy = get_query_var( 'taxonomy' );
+			if ( in_array( $taxonomy, $tax_filters, true ) ) {
+				$tax_filters = array_diff( $tax_filters, array( $taxonomy ) );
+			}
+		}
+
 		return apply_filters( 'sixtenpress_isotope_filter_terms', $tax_filters, $post_type, $taxonomies, $this->setting );
 	}
 
@@ -359,7 +366,7 @@ class SixTenPressIsotopeOutput {
 	 * Determine which filter to use.
 	 */
 	public function pick_filter() {
-		if ( ! is_post_type_archive() && ! is_home() ) {
+		if ( ! is_post_type_archive() && ! is_tax() && ! is_home() ) {
 			return;
 		}
 		$filters = $this->updated_filters();
