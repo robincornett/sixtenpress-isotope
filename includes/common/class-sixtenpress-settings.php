@@ -4,7 +4,7 @@ if ( ! class_exists( 'SixTenPressField' ) ) {
 	include dirname( __FILE__ ) . '/class-sixtenpress-field.php';
 }
 /**
- * @copyright 2016-2017 Robin Cornett
+ * @copyright 2016-2019 Robin Cornett
  * @package   SixTenPress
  */
 class SixTenPressSettings extends SixTenPressField {
@@ -59,6 +59,12 @@ class SixTenPressSettings extends SixTenPressField {
 	protected $get;
 
 	/**
+	 * Whether the enqueuer has run or not.
+	 * @var boolean
+	 */
+	private $enqueued;
+
+	/**
 	 * Check if 6/10 Press is active.
 	 * @return bool
 	 */
@@ -91,6 +97,7 @@ class SixTenPressSettings extends SixTenPressField {
 	 * @since 1.0.0
 	 */
 	public function do_simple_settings_form() {
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_all' ) );
 
 		echo '<div class="wrap">';
 		echo '<h1>' . esc_attr( get_admin_page_title() ) . '</h1>';
@@ -110,6 +117,7 @@ class SixTenPressSettings extends SixTenPressField {
 	 * @param $sections
 	 */
 	public function add_sections( $sections ) {
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_all' ) );
 		$page = $this->page;
 		foreach ( $sections as $section ) {
 			$register = $section['id'];
@@ -150,18 +158,16 @@ class SixTenPressSettings extends SixTenPressField {
 	 */
 	public function add_fields( $fields, $sections ) {
 		foreach ( $fields as $field ) {
+			$field = $this->get_settings_field( $field );
+			if ( ! $field['section'] || empty( $sections[ $field['section'] ] ) ) {
+				continue;
+			}
 			$page    = $this->page;
 			$section = $sections[ $field['section'] ]['id'];
 			if ( class_exists( 'SixTenPress' ) && isset( $sections[ $field['section'] ]['tab'] ) ) {
 				$page    = $this->page . '_' . $sections[ $field['section'] ]['tab']; // page
 				$section = $this->page . '_' . $sections[ $field['section'] ]['id']; // section
 			}
-			$defaults = array(
-				'callback' => 'do_field',
-				'args'     => array(),
-				'type'     => '',
-			);
-			$field    = wp_parse_args( $field, $defaults );
 			$callback = is_array( $field['callback'] ) ? $field['callback'] : array( $this, $field['callback'] );
 			$label    = 'checkbox' === $field['type'] ? $field['title'] : sprintf( '<label for="%s-%s">%s</label>', $this->tab ? $this->tab : $this->page, $field['id'], $field['title'] );
 			add_settings_field(
@@ -176,11 +182,83 @@ class SixTenPressSettings extends SixTenPressField {
 	}
 
 	/**
+	 * Merge each settings field with certain defaults.
+	 * @since 2.3.0
+	 *
+	 * @param $field
+	 * @return array
+	 */
+	private function get_settings_field( $field ) {
+		$defaults = array(
+			'callback' => 'do_field',
+			'args'     => array(),
+			'type'     => '',
+			'section'  => false,
+		);
+
+		return wp_parse_args( $field, $defaults );
+	}
+
+	/**
 	 * Generic function to pick the view file to output the field.
 	 *
-	 * @param $args
+	 * @param        $field
+	 * @param string $i
+	 * @param array  $parent
 	 */
-	public function do_field( $args ) {
+	public function do_field( $field, $i = '', $parent = array() ) {
+		$field = $this->get_field( $field );
+		if ( $field['repeatable'] ) {
+			$this->do_description( $field );
+			echo '<div class="sixten-meta">';
+			echo '<div class="repeater-container">';
+			$count = $this->get_count( $field );
+			for ( $i = 0; $i <= $count; $i ++ ) {
+				$class    = 'row';
+				$iterator = '';
+				if ( $field['repeatable'] ) {
+					$class   .= ' repeatable';
+					$iterator = sprintf( ' data-iterator="%s"', $i );
+				}
+				printf(
+					'<div class="%s group sixten-%s"%s>',
+					esc_attr( $class ),
+					esc_attr( $field['id'] ),
+					$iterator // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				);
+				do_action( "sixtenpress_settings_before_{$field['id']}_input", $field, $i, $parent );
+				echo '<div class="input">';
+				$this->print_field( $field, $i );
+				echo '</div>';
+				echo '</div>';
+			}
+			echo '</div>';
+			echo '</div>';
+		} elseif ( 'group' === $field['type'] ) {
+			$this->do_description( $field );
+			echo '<div class="sixten-meta">';
+			printf(
+				'<div class="row group sixten-%s">',
+				esc_attr( $field['id'] )
+			);
+			do_action( "sixtenpress_settings_before_{$field['id']}_input", $field, $i, $parent );
+			echo '<div class="input">';
+			$this->print_field( $field, $i );
+			echo '</div>';
+			echo '</div>';
+			echo '</div>';
+		} else {
+			$this->print_field( $field, $i, $parent );
+		}
+	}
+
+	/**
+	 * Update the field with defaults.
+	 * @param $field
+	 *
+	 * @return array
+	 */
+	private function get_field( $field ) {
 		$defaults = array(
 			'key'         => false,
 			'type'        => '',
@@ -188,30 +266,125 @@ class SixTenPressSettings extends SixTenPressField {
 			'required'    => false,
 			'description' => '',
 			'clear'       => true,
+			'repeatable'  => false,
 		);
-		$args = wp_parse_args( $args, $defaults );
-		if ( isset( $args['value'] ) ) {
-			$args['label'] = $args['value'];
+		$field    = wp_parse_args( $field, $defaults );
+		if ( isset( $field['value'] ) ) {
+			$field['label'] = $field['value'];
 		}
-		$getter      = $this->get_getter();
-		$name        = $getter->get_field_name( $args );
-		$id          = $getter->get_field_id( $args );
-		$value       = $getter->get_field_value( $args );
-		$method      = "do_field_{$args['type']}";
-		$needs_class = in_array( $args['type'], array( 'checkbox_array' ), true );
-		if ( method_exists( $this, $method ) ) {
-			if ( $needs_class ) {
-				$class = $args['clear'] ? 'block' : 'inline';
-				printf( '<div class="%s">', esc_attr( $class ) );
-			}
-			$this->$method( $name, $id, $value, $args );
-			if ( $needs_class ) {
-				echo '</div>';
-			}
-		} elseif ( method_exists( $this, $args['callback'] ) && 'do_field' !== $args['callback'] ) {
-			$this->{$args['callback']}( $args );
+		if ( isset( $field['setting'] ) && empty( $field['id'] ) ) {
+			$field['id'] = $field['setting'];
 		}
-		$this->do_description( $args );
+
+		return $field;
+	}
+
+	/**
+	 * Output the field group with markup.
+	 * @since 2.3.0
+	 *
+	 * @param        $group
+	 * @param string $i
+	 */
+	public function do_field_group( $group, $i = '' ) {
+		foreach ( $group['group'] as $field ) {
+			$field = $this->get_field( $field );
+			if ( ! isset( $field['type'] ) || ! $field['type'] ) {
+				continue;
+			}
+			if ( ! empty( $field['before'] ) ) {
+				echo wp_kses_post( $field['before'] );
+			}
+			$class = 'sixten-box-' . $field['type'];
+			if ( $field['required'] ) {
+				$class .= ' required';
+			}
+			echo '<div class="' . esc_attr( $class ) . '">';
+			$this->do_group_field_label( $field, $i, $group );
+			do_action( "sixtenpress_settings_before_{$field['id']}_input", $field, $i, $group );
+			echo '<div class="input">';
+			$this->print_field( $field, $i, $group );
+			echo '</div></div>';
+			if ( ! empty( $field['after'] ) ) {
+				echo wp_kses_post( $field['after'] );
+			}
+		}
+	}
+
+	/**
+	 * Output the group subfield label.
+	 * Has to be added here as normal settings page field labels
+	 * are added automatically by the Settings API.
+	 *
+	 * @since 2.3.0
+	 *
+	 * @param $field
+	 * @param $i
+	 * @param $args
+	 */
+	protected function do_group_field_label( $field, $i, $args ) {
+		$getter = $this->get_getter();
+		$id     = $getter->get_id( $field, $i, $args );
+		$for    = in_array( $field['type'], array( 'multiselect', 'checkbox_array' ), true ) ? 'id' : 'for';
+		$inner  = 'checkbox' === $field['type'] ? '&nbsp;' : sprintf(
+			'<label %3$s="%1$s"><h4>%2$s</h4></label>',
+			esc_attr( $id ),
+			esc_attr( $field['title'] ),
+			$for
+		);
+		printf( '<div class="label">%s</div>', $inner ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+
+	/**
+	 * Print the settings field.
+	 * @since 2.3.0
+	 *
+	 * @param        $field
+	 * @param string $i
+	 * @param array  $parent
+	 */
+	private function print_field( $field, $i = '', $parent = array() ) {
+		if ( 'group' === $field['type'] ) {
+			$this->do_field_group( $field, $i );
+			return;
+		}
+		$group       = (bool) $parent;
+		$needs_class = in_array( $field['type'], array( 'checkbox_array', 'multiselect' ), true );
+		if ( $needs_class ) {
+			$class = $field['clear'] ? 'block' : 'inline';
+			printf( '<div class="%s">', esc_attr( $class ) );
+		}
+		$getter = $this->get_getter();
+		$name   = $getter->get_name( $field, $i, $parent );
+		$id     = $getter->get_id( $field, $i, $parent );
+		$value  = $getter->get_value( $field, $i, $parent );
+		do_action( 'sixtenpress_settings_before_field', $value, $field, $name, $id );
+		$this->pick_field( $field, $name, $id, $value, $getter, $group );
+		do_action( 'sixtenpress_settings_after_field', $value, $field, $name, $id );
+		if ( $needs_class ) {
+			echo '</div>';
+		}
+		if ( ! ( $field['repeatable'] ) ) {
+			$this->do_description( $field );
+		}
+	}
+
+	/**
+	 * Get the plugin setting, merged with defaults.
+	 *
+	 * @param string $key Optional setting key to retrieve directly.
+	 *
+	 * @return array
+	 * @since 2.4.0
+	 */
+	public function get_option( $key = '' ) {
+		if ( isset( $this->setting ) ) {
+			return $key ? $this->setting[ $key ] : $this->setting;
+		}
+		$setting       = get_option( $this->get_setting_name(), $this->defaults() );
+		$this->setting = wp_parse_args( $setting, $this->defaults() );
+
+		return $key ? $this->setting[ $key ] : $this->setting;
 	}
 
 	/**
@@ -223,9 +396,20 @@ class SixTenPressSettings extends SixTenPressField {
 	}
 
 	/**
+	 * Set up settings defaults.
+	 * @return array
+	 */
+	protected function defaults() {
+		return array();
+	}
+
+	/**
 	 * Enqueue our admin scripts.
 	 */
 	public function enqueue_all() {
+		if ( $this->enqueued ) {
+			return;
+		}
 		$enqueue = $this->include_file( 'fields-enqueue' );
 		if ( ! $enqueue ) {
 			return;
@@ -235,6 +419,7 @@ class SixTenPressSettings extends SixTenPressField {
 		);
 		$enqueue_class->enqueue();
 		add_action( 'admin_footer', array( $this, 'localize' ) );
+		$this->enqueued = true;
 	}
 
 	/**
@@ -264,7 +449,8 @@ class SixTenPressSettings extends SixTenPressField {
 	 * @param $value
 	 */
 	protected function print_button( $class, $name, $value ) {
-		printf( '<input type="submit" class="%s" name="%s" value="%s"/>',
+		printf(
+			'<input type="submit" class="%s" name="%s" value="%s"/>',
 			esc_attr( $class ),
 			esc_attr( $name ),
 			esc_attr( $value )
@@ -297,10 +483,10 @@ class SixTenPressSettings extends SixTenPressField {
 	 * @since 2.3.0
 	 */
 	public function render_buttons( $image_id, $args ) {
-		$image_id                  = $image_id ? (int) $image_id : '';
-		$getter                    = $this->get_getter();
-		$id                        = $getter->get_field_id( $args );
-		$name                      = $getter->get_field_name( $args );
+		$image_id = $image_id ? (int) $image_id : '';
+		$getter   = $this->get_getter();
+		$id       = $getter->get_field_id( $args );
+		$name     = $getter->get_field_name( $args );
 		add_filter( 'sixtenpress_uploader_localization', function( $data ) use ( $args ) {
 			return array_merge( $data, array(
 				$args['id'] => $this->get_localization_data( $args ),
@@ -393,9 +579,14 @@ class SixTenPressSettings extends SixTenPressField {
 	 * @since 1.3.0
 	 */
 	public function set_color( $args ) {
-		$this->do_field( array_merge( $args, array(
-			'type' => 'color',
-		) ) );
+		$this->do_field(
+			array_merge(
+				$args,
+				array(
+					'type' => 'color',
+				)
+			)
+		);
 	}
 
 	/**
@@ -404,9 +595,14 @@ class SixTenPressSettings extends SixTenPressField {
 	 * @since 1.0.0
 	 */
 	public function do_checkbox( $args ) {
-		$this->do_field( array_merge( $args, array(
-			'type' => 'checkbox',
-		) ) );
+		$this->do_field(
+			array_merge(
+				$args,
+				array(
+					'type' => 'checkbox',
+				)
+			)
+		);
 	}
 
 	/**
@@ -415,10 +611,15 @@ class SixTenPressSettings extends SixTenPressField {
 	 * @since 1.0.1
 	 */
 	public function do_number( $args ) {
-		$this->do_field( array_merge( $args, array(
-			'type'  => 'number',
-			'class' => 'small-text',
-		) ) );
+		$this->do_field(
+			array_merge(
+				$args,
+				array(
+					'type'  => 'number',
+					'class' => 'small-text',
+				)
+			)
+		);
 	}
 
 	/**
@@ -427,9 +628,14 @@ class SixTenPressSettings extends SixTenPressField {
 	 * @since 2.0.0
 	 */
 	public function do_select( $args ) {
-		$this->do_field( array_merge( $args, array(
-			'type' => 'select',
-		) ) );
+		$this->do_field(
+			array_merge(
+				$args,
+				array(
+					'type' => 'select',
+				)
+			)
+		);
 	}
 
 	/**
@@ -438,9 +644,14 @@ class SixTenPressSettings extends SixTenPressField {
 	 * @param $args array
 	 */
 	public function do_checkbox_array( $args ) {
-		$this->do_field( array_merge( $args, array(
-			'type' => 'checkbox_array',
-		) ) );
+		$this->do_field(
+			array_merge(
+				$args,
+				array(
+					'type' => 'checkbox_array',
+				)
+			)
+		);
 	}
 
 	/**
@@ -449,9 +660,14 @@ class SixTenPressSettings extends SixTenPressField {
 	 * @param $args
 	 */
 	public function do_text_field( $args ) {
-		$this->do_field( array_merge( $args, array(
-			'type' => 'text',
-		) ) );
+		$this->do_field(
+			array_merge(
+				$args,
+				array(
+					'type' => 'text',
+				)
+			)
+		);
 	}
 
 	/**
@@ -460,17 +676,22 @@ class SixTenPressSettings extends SixTenPressField {
 	 * @param $args
 	 */
 	public function do_textarea( $args ) {
-		$this->do_field( array_merge( $args, array(
-			'type' => 'textarea',
-		) ) );
+		$this->do_field(
+			array_merge(
+				$args,
+				array(
+					'type' => 'textarea',
+				)
+			)
+		);
 	}
 
 	/**
 	 * Default method for getting setting.
 	 * @return array
 	 */
-	protected function get_setting() {
-		return get_option( $this->tab, array() );
+	public function get_setting() {
+		return get_option( $this->tab, $this->defaults() );
 	}
 
 	/**
@@ -479,25 +700,6 @@ class SixTenPressSettings extends SixTenPressField {
 	 */
 	protected function register_fields() {
 		return array();
-	}
-
-	/**
-	 * Generic callback to display a field description.
-	 *
-	 * @param  array $args setting name used to identify description callback
-	 *
-	 * @since 1.0.0
-	 */
-	protected function do_description( $args ) {
-		$description = isset( $args['description'] ) && $args['description'] ? $args['description'] : '';
-		$function    = isset( $args['id'] ) ? $args['id'] . '_description' : '';
-		if ( ! $description && method_exists( $this, $function ) ) {
-			$description = $this->$function();
-		}
-		if ( ! $description ) {
-			return;
-		}
-		printf( '<p class="description">%s</p>', wp_kses_post( $description ) );
 	}
 
 	/**
@@ -532,15 +734,18 @@ class SixTenPressSettings extends SixTenPressField {
 			'order'          => 'ASC',
 		);
 		if ( $term && $taxonomy && term_exists( $term, $taxonomy ) ) {
-			$args = array_merge( $args, array(
-				'tax_query' => array(
-					array(
-						'taxonomy' => $taxonomy,
-						'field'    => 'term_id',
-						'terms'    => $term,
+			$args = array_merge(
+				$args,
+				array(
+					'tax_query' => array(
+						array(
+							'taxonomy' => $taxonomy,
+							'field'    => 'term_id',
+							'terms'    => $term,
+						),
 					),
-				),
-			) );
+				)
+			);
 		}
 		$posts = get_posts( $args );
 		foreach ( $posts as $post ) {
@@ -556,14 +761,20 @@ class SixTenPressSettings extends SixTenPressField {
 	 */
 	public function enqueue_uploader() {
 		if ( ! wp_script_is( 'sixtenpress-upload', 'registered' ) ) {
-			wp_register_script( 'sixtenpress-upload', plugins_url( '/js/file-upload.js', dirname( __FILE__ ) ), array(
-				'jquery',
-				'media-upload',
-				'thickbox',
-			), $this->version, true );
+			wp_register_script(
+				'sixtenpress-upload',
+				plugins_url( '/js/file-upload.js', dirname( __FILE__ ) ),
+				array( 'jquery', 'media-upload', 'thickbox' ),
+				$this->version,
+				true
+			);
+		}
+		if ( ! wp_style_is( 'sixtenpress-upload', 'registered' ) ) {
+			wp_register_style( 'sixtenpress-upload', plugins_url( '/includes/css/sixtenpress-upload.css', dirname( __FILE__ ) ), array(), $this->version, 'screen' );
 		}
 		wp_enqueue_media();
 		wp_enqueue_script( 'sixtenpress-upload' );
+		wp_enqueue_style( 'sixtenpress-upload' );
 		add_action( 'admin_footer', array( $this, 'localize' ) );
 	}
 
@@ -582,10 +793,35 @@ class SixTenPressSettings extends SixTenPressField {
 	}
 
 	/**
+	 * Get the number of fields for a repeater.
+	 *
+	 * @param $field
+	 *
+	 * @return int
+	 */
+	protected function get_count( $field ) {
+		$meta    = $this->setting;
+		$minimum = 1;
+		if ( isset( $field['minimum'] ) && $field['minimum'] >= $minimum ) {
+			$minimum = $field['minimum'];
+		}
+		$maximum = 40;
+		if ( isset( $field['maximum'] ) && $field['maximum'] >= $maximum ) {
+			$maximum = $field['maximum'];
+		}
+		$count = $minimum;
+		if ( isset( $meta[ $field['id'] ] ) ) {
+			$count = count( (array) $meta[ $field['id'] ] );
+		}
+
+		return $count > $minimum && $count <= $maximum ? $count : $minimum;
+	}
+
+	/**
 	 * Getter method for getting all the fields.
 	 * @return array
 	 */
-	protected function _get() {
+	protected function _get() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 		if ( $this->fields ) {
 			return $this->fields;
 		}
@@ -603,6 +839,12 @@ class SixTenPressSettings extends SixTenPressField {
 	 */
 	public function sanitize( $new_value ) {
 
+		if ( ! isset( $this->action ) ) {
+			$this->action = "{$this->page}_save-settings";
+		}
+		if ( ! isset( $this->nonce ) ) {
+			$this->nonce = "{$this->page}_nonce";
+		}
 		// If the user doesn't have permission to save, then display an error message
 		if ( ! $this->user_can_save( $this->action, $this->nonce ) ) {
 			wp_die( esc_attr__( 'Something unexpected happened. Please try again.', 'sixtenpress' ) );

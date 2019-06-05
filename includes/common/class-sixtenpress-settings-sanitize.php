@@ -1,7 +1,7 @@
 <?php
 /**
- * @copyright 2016-2018 Robin Cornett
  * @package SixTenPress
+ * @copyright 2016-2019 Robin Cornett
  */
 class SixTenPressSettingsSanitize {
 
@@ -123,7 +123,7 @@ class SixTenPressSettingsSanitize {
 			default:
 				$field['type'] = '';
 				break;
-		} // End switch().
+		} // End switch(). phpcs:ignore Squiz.PHP.CommentedOutCode.Found
 		return $field;
 	}
 

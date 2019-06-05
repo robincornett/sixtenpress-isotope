@@ -2,7 +2,7 @@
 
 /**
  * Generic licensing class to work with EDD Software Licensing.
- * @copyright 2016-2017 Robin Cornett
+ * @copyright 2016-2019 Robin Cornett
  */
 class SixTenPressLicensing extends SixTenPressSettings {
 
@@ -75,7 +75,7 @@ class SixTenPressLicensing extends SixTenPressSettings {
 	 * The plugin author.
 	 * @var $author
 	 */
-	protected $author;
+	protected $author = 'Robin Cornett';
 
 	/**
 	 * Action for our custom nonce.
@@ -131,6 +131,25 @@ class SixTenPressLicensing extends SixTenPressSettings {
 	}
 
 	/**
+	 * Register the license key field.
+	 * @return array
+	 */
+	protected function register_fields() {
+		return array(
+			array(
+				'id'       => $this->key . '_key',
+				'title'    => $this->name,
+				'callback' => 'do_license_key_field',
+				'section'  => $this->is_sixten_active() ? 'licensing' : $this->tab,
+				'args'     => array(
+					'setting' => $this->key . '_key',
+					'label'   => __( 'Enter your license key.', 'sixtenpress' ),
+				),
+			),
+		);
+	}
+
+	/**
 	 * License key input field
 	 *
 	 * @param  array $args parameters to define field
@@ -140,11 +159,14 @@ class SixTenPressLicensing extends SixTenPressSettings {
 	public function do_license_key_field( $args ) {
 		if ( 'valid' === $this->status ) {
 			$style = 'color:white;background-color:green;border-radius:100%;margin-right:8px;vertical-align:middle;';
-			printf( '<span class="dashicons dashicons-yes" style="%s"></span>',
-				esc_attr( $style )
+			printf(
+				'<span class="dashicons dashicons-yes" style="%s"><span class="screen-reader-text">%s</span></span>',
+				esc_attr( $style ),
+				esc_html__( 'Activated', 'sixtenpress' )
 			);
 		}
-		printf( '<input type="password" class="regular-text" id="%1$s" name="%1$s" value="%2$s" />',
+		printf(
+			'<input type="password" class="regular-text" id="%1$s" name="%1$s" value="%2$s" />',
 			esc_attr( $args['setting'] ),
 			esc_attr( $this->license )
 		);

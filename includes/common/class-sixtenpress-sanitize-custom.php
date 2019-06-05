@@ -2,6 +2,7 @@
 
 /**
  * Class SixTenPressSanitizeCustom
+ * @copyright 2018-2019 Robin Cornett
  */
 class SixTenPressSanitizeCustom {
 

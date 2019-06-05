@@ -1,6 +1,7 @@
 <?php
 /**
  * Class SixTenPressFieldsEnqueue
+ * @copyright 2019 Robin Cornett
  */
 class SixTenPressFieldsEnqueue {
 
@@ -53,6 +54,9 @@ class SixTenPressFieldsEnqueue {
 		foreach ( $scripts as $script ) {
 			if ( $this->check_field_keys( $script['key'], $script['value'] ) ) {
 				add_filter( "sixtenpress_admin_{$script['filter']}", '__return_true' );
+				if ( 'post_meta' === $script['filter'] ) {
+					add_filter( 'sixtenpress_admin_style', '__return_true' );
+				}
 			}
 		}
 	}
@@ -73,7 +77,7 @@ class SixTenPressFieldsEnqueue {
 				return true;
 			}
 
-			if ( 'group' !== $field['type'] ) {
+			if ( empty( $field['type'] ) || 'group' !== $field['type'] ) {
 				continue;
 			}
 			foreach ( $field['group'] as $group_field ) {

@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Class SixTenPressSanitizeSwitcher
+ * @copyright 2019 Robin Cornett
+ */
 class SixTenPressSanitizeSwitcher {
 
 	/**
@@ -19,22 +23,25 @@ class SixTenPressSanitizeSwitcher {
 	public function sanitize_switcher( $post_value, $field, $old_value = '' ) {
 		$switch = isset( $field['type'] ) ? $field['type'] : '';
 		switch ( $switch ) {
-			case 'text':
-				$post_value = esc_attr( $post_value );
-				break;
-
 			case 'file':
 				$post_value = is_numeric( $post_value ) ? (int) $post_value : esc_url( $post_value );
 				break;
 
 			case 'image':
-				$post_value = $this->validate_image( $post_value, $old_value, $field['title'] );
+				$name       = ! empty( $field['title'] ) ? $field['title'] : $field['label'];
+				$post_value = $this->validate_image( $post_value, $old_value, $name );
+				break;
+
+			case 'gallery':
+			case 'text':
+				$post_value = esc_attr( $post_value );
 				break;
 
 			case 'id':
 				$post_value = (int) $post_value;
 				break;
 
+			case 'radio':
 			case 'select':
 				$post_value = is_numeric( $post_value ) ? (int) $post_value : esc_attr( $post_value );
 				break;
@@ -75,9 +82,10 @@ class SixTenPressSanitizeSwitcher {
 			default:
 				$post_value = is_array( $post_value ) ? array_map( 'sanitize_text_field', $post_value ) : sanitize_text_field( $post_value );
 				break;
-		}  // End switch().
+		}
 
 		$custom = $this->get_custom_formatter();
+
 		return $custom->format_fields( $post_value, $field, $old_value );
 	}
 
@@ -117,6 +125,7 @@ class SixTenPressSanitizeSwitcher {
 		foreach ( $post_value as $key => $value ) {
 			$post_value[ $key ] = $this->one_zero( $value );
 		}
+
 		return $post_value;
 	}
 
@@ -131,17 +140,20 @@ class SixTenPressSanitizeSwitcher {
 		$new = array();
 		foreach ( $post_value as $value ) {
 			if ( $value ) {
-				$new[] = is_numeric( $value ) ? (int) $value : esc_attr( $value );
+				$new[] = is_numeric( $value ) ? (int) $value : sanitize_text_field( $value );
 			}
 		}
+
 		return $new;
 	}
 
 	/**
-	 * Check the numeric value against the allowed range. If it's within the range, return it; otherwise, return the old value.
+	 * Check the numeric value against the allowed range. If it's within the range, return it; otherwise, return the
+	 * old value.
+	 *
 	 * @param $new_value int new submitted value
 	 * @param $old_value int old setting value
-	 * @param $field array
+	 * @param $field     array
 	 *
 	 * @return int
 	 */
@@ -161,6 +173,7 @@ class SixTenPressSanitizeSwitcher {
 		if ( $new_value >= $min && $new_value <= $max ) {
 			return (int) $new_value;
 		}
+
 		return $old_value;
 	}
 
@@ -204,7 +217,7 @@ class SixTenPressSanitizeSwitcher {
 	 */
 	protected function get_group_field( $group, $key ) {
 		foreach ( $group as $field ) {
-			if ( $key === $field['setting'] ) {
+			if ( ( isset( $field['setting'] ) && $key === $field['setting'] ) || ( isset( $field['id'] ) && $key === $field['id'] ) ) {
 				return $field;
 			}
 		}
@@ -216,8 +229,8 @@ class SixTenPressSanitizeSwitcher {
 	 * Returns previous value for image if not correct file type/size
 	 *
 	 * @param  string $new_value New value
-	 * @param $old_value
-	 * @param $label
+	 * @param         $old_value
+	 * @param         $label
 	 *
 	 * @return string New or previous value, depending on allowed image size.
 	 * @since  1.0.0
@@ -232,7 +245,7 @@ class SixTenPressSanitizeSwitcher {
 		$source = wp_get_attachment_image_src( $new_value, 'full' );
 		$valid  = $this->is_valid_img_ext( $source[0] );
 		/* translators: the placeholder is the label for whatever the image is. */
-		$reset  = sprintf( __( ' The %s has been reset to the last valid setting.', 'sixtenpress' ), $label );
+		$reset = sprintf( __( ' The %s has been reset to the last valid setting.', 'sixtenpress' ), $label );
 
 		if ( $valid ) {
 			return (int) $new_value;
@@ -263,6 +276,7 @@ class SixTenPressSanitizeSwitcher {
 	 */
 	protected function is_valid_img_ext( $file ) {
 		$valid = wp_check_filetype( $file );
+
 		return (bool) in_array( $valid['ext'], $this->allowed_file_types(), true );
 	}
 
@@ -273,6 +287,7 @@ class SixTenPressSanitizeSwitcher {
 	 */
 	protected function allowed_file_types() {
 		$allowed = apply_filters( 'sixtenpress_valid_img_types', array( 'jpg', 'jpeg', 'png', 'gif', 'svg' ) );
+
 		return is_array( $allowed ) ? $allowed : explode( ',', $allowed );
 	}
 
