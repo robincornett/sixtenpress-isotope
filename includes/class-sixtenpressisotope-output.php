@@ -187,8 +187,14 @@ class SixTenPressIsotopeOutput {
 	 * Check the current post type.
 	 * @return false|mixed|string
 	 */
-	protected function get_current_post_type() {
-		return get_query_var( 'post_type' );
+	private function get_current_post_type() {
+		$post_type = get_post_type();
+		if ( ! is_post_type_archive() ) {
+			return $post_type;
+		}
+		$post_type = get_queried_object();
+
+		return $post_type->name;
 	}
 
 	/**
