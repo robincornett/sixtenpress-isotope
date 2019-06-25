@@ -82,7 +82,7 @@
 			function ( newItems ) {
 				var _newItems = $( newItems ).css( {opacity: 0} );
 				_newItems.imagesLoaded( function () {
-					_container.isotope( 'insert', _newItems );
+					_container.isotope( 'appended', _newItems );
 					_newItems.animate( {opacity: 1} );
 				} );
 			}
@@ -117,6 +117,14 @@
 		$( '.' + SixTen.params.container ).isotope( {
 			filter: _selector
 		} );
+		_debounce( function () {
+			var stylesheet = 'sixtenpress-isotope-dynamic';
+			$( '#' + stylesheet ).remove();
+			if ( _selector ) {
+				var item = '.' + SixTen.params.container + ' ' + SixTen.params.selector;
+				$( 'head' ).append( '<style id="' + stylesheet + '" type="text/css">' + item + ':not(' + _selector + ') { display: none; }</style>' );
+			}
+		}, 400 );
 
 		return false;
 	}
