@@ -16,8 +16,8 @@ gulp.task( 'sass', function () {
 		processors    = [
 			atImport,
 			autoprefixer( {
-				browsers: ['last 5 versions'],
-				cascade: false
+				cascade: false,
+				remove: false
 			} ),
 			mqpacker( {sort: true} ),
 			perfectionist( {
