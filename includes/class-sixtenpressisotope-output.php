@@ -131,8 +131,7 @@ class SixTenPressIsotopeOutput {
 	 * Localize the script for isotope output.
 	 */
 	public function localize() {
-		$options = $this->get_isotope_options();
-		wp_localize_script( 'sixtenpress-isotope-set', 'SixTenPressIsotope', $options );
+		wp_localize_script( 'sixtenpress-isotope-set', 'SixTenPressIsotope', $this->get_isotope_options() );
 	}
 
 	/**
@@ -175,7 +174,10 @@ class SixTenPressIsotopeOutput {
 	private function get_gutter() {
 		$object         = get_queried_object();
 		$post_type_name = $object->name;
-		$gutter         = 0;
+		if ( is_tax() || is_tag() || is_category() ) {
+			$post_type_name = get_post_type();
+		}
+		$gutter = 0;
 		if ( ! empty( $this->setting[ $post_type_name ]['gutter'] ) ) {
 			$gutter = $this->setting[ $post_type_name ]['gutter'];
 		}
