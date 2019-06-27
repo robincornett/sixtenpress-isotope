@@ -8,7 +8,7 @@ This plugin doesn't do anything until you tell it to. Go to Settings > 6/10 Pres
 
 
 ## Requirements
-* WordPress 4.3, tested up to 5.0alpha
+* WordPress 4.9, tested up to 5.2
 
 ## Installation
 
@@ -41,6 +41,11 @@ Then go to your Plugins screen and click __Activate__.
 If you are intending to use this plugin on a commercial project (for a client), you need to [purchase a commercial license for Isotope](http://isotope.metafizzy.co/license.html). It's easy, takes just a moment, and is worth every penny. _Note: I have no affiliation with Metafizzy.
 
 ## Changelog
+
+### 1.4.0
+* improved CSS
+* updated infinite scroll and isotope scripts
+* improved behavior of isotope on non post type archives
 
 ### 1.3.1
 * updated: settings library (fixes settings for users not also using 6/10 Press)

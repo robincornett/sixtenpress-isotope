@@ -1,4 +1,4 @@
-# Copyright (C) 2018 Six/Ten Press Isotope
+# Copyright (C) 2019 Six/Ten Press Isotope
 # This file is distributed under the same license as the Six/Ten Press Isotope package.
 msgid ""
 msgstr ""
@@ -8,15 +8,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: includes/class-sixtenpressisotope-help.php:40, includes/class-sixtenpressisotope-settings-page.php:169
+#: includes/class-sixtenpressisotope-help.php:40, includes/class-sixtenpressisotope-settings-page.php:140
 msgid "General Settings"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-help.php:45, includes/class-sixtenpressisotope-settings-page.php:186
+#: includes/class-sixtenpressisotope-help.php:45, includes/class-sixtenpressisotope-settings-page.php:155
 msgid "Isotope Settings for Content Types"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-help.php:53, includes/class-sixtenpressisotope-settings-page.php:205
+#: includes/class-sixtenpressisotope-help.php:53, includes/class-sixtenpressisotope-settings-page.php:174
 msgid "Number of Posts to Show on Isotope Archives"
 msgstr ""
 
@@ -28,7 +28,7 @@ msgstr ""
 msgid "If you enable infinite scroll, set a smaller/standard number for the number of posts."
 msgstr ""
 
-#: includes/class-sixtenpressisotope-help.php:57, includes/class-sixtenpressisotope-settings-page.php:223
+#: includes/class-sixtenpressisotope-help.php:57, includes/class-sixtenpressisotope-settings-page.php:190
 msgid "Plugin Stylesheet"
 msgstr ""
 
@@ -40,158 +40,158 @@ msgstr ""
 msgid "Each content type on your site will be handled uniquely. Enable Isotope, set the gutter width, and enable filters as you like."
 msgstr ""
 
-#: includes/class-sixtenpressisotope-output.php:147
+#: includes/class-sixtenpressisotope-output.php:163
 msgid "No more items to load."
 msgstr ""
 
-#: includes/class-sixtenpressisotope-output.php:314
+#: includes/class-sixtenpressisotope-output.php:351
 msgid "Search"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-output.php:384
+#: includes/class-sixtenpressisotope-output.php:428
 msgid "Filter %s By:"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-output.php:410
+#: includes/class-sixtenpressisotope-output.php:455
 msgid "All %s"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-output.php:467
+#: includes/class-sixtenpressisotope-output.php:514
 msgid "Filter By: "
 msgstr ""
 
-#: includes/class-sixtenpressisotope-output.php:469
+#: includes/class-sixtenpressisotope-output.php:516
 msgid "All"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:56
+#: includes/class-sixtenpressisotope-settings-page.php:34
 msgid "6/10 Press Isotope Settings"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:57
+#: includes/class-sixtenpressisotope-settings-page.php:35
 msgid "6/10 Press Isotope"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:100
+#: includes/class-sixtenpressisotope-settings-page.php:73
 msgid "Isotope"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:177
+#: includes/class-sixtenpressisotope-settings-page.php:148
 msgid "Genesis Framework Settings"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:211
+#: includes/class-sixtenpressisotope-settings-page.php:179
 msgid "Posts per Page"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:216
+#: includes/class-sixtenpressisotope-settings-page.php:183
 msgid "Infinite Scroll"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:219
+#: includes/class-sixtenpressisotope-settings-page.php:186
 msgid "Enable infinite scroll?"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:226
+#: includes/class-sixtenpressisotope-settings-page.php:193
 msgid "Use the plugin styles?"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:230
+#: includes/class-sixtenpressisotope-settings-page.php:197
 msgid "Columns (Larger Screens)"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:259
+#: includes/class-sixtenpressisotope-settings-page.php:236
 msgid "Layout"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:262
+#: includes/class-sixtenpressisotope-settings-page.php:239
 msgid "Force layout to full width on archives?"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:266
+#: includes/class-sixtenpressisotope-settings-page.php:243
 msgid "Move Featured Image"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:269
+#: includes/class-sixtenpressisotope-settings-page.php:246
 msgid "Move the featured image to before the post title?"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:273
+#: includes/class-sixtenpressisotope-settings-page.php:250
 msgid "Featured Image Size"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:282
+#: includes/class-sixtenpressisotope-settings-page.php:259
 msgid "Featured Image Alignment"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:291
+#: includes/class-sixtenpressisotope-settings-page.php:268
 msgid "Remove Entry Elements"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:296
+#: includes/class-sixtenpressisotope-settings-page.php:273
 msgid "Remove Entry Content"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:297
+#: includes/class-sixtenpressisotope-settings-page.php:274
 msgid "Remove Entry Info"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:298
+#: includes/class-sixtenpressisotope-settings-page.php:275
 msgid "Remove Entry Meta"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:309
+#: includes/class-sixtenpressisotope-settings-page.php:286
 msgid "You can set the default isotope settings here."
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:316
+#: includes/class-sixtenpressisotope-settings-page.php:293
 msgid "These settings enhance the plugin options for the Genesis Framework."
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:323
+#: includes/class-sixtenpressisotope-settings-page.php:300
 msgid "Set the isotope settings for each content type."
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:388
+#: includes/class-sixtenpressisotope-settings-page.php:366
 msgid "Theme Default"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:389
+#: includes/class-sixtenpressisotope-settings-page.php:367
 msgid "Left"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:390
+#: includes/class-sixtenpressisotope-settings-page.php:368
 msgid "Right"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:391
+#: includes/class-sixtenpressisotope-settings-page.php:369
 msgid "Center"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:392
+#: includes/class-sixtenpressisotope-settings-page.php:370
 msgid "None"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:407
+#: includes/class-sixtenpressisotope-settings-page.php:386
 msgid "Enable Isotope for this post type?"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:412
+#: includes/class-sixtenpressisotope-settings-page.php:391
 msgid "Add a search input?"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:424
+#: includes/class-sixtenpressisotope-settings-page.php:403
 msgid "Gutter Width"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:437
+#: includes/class-sixtenpressisotope-settings-page.php:416
 msgid "Add a filter for %s"
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:461
+#: includes/class-sixtenpressisotope-settings-page.php:442
 msgid "Combine infinite scroll with filtering with great caution."
 msgstr ""
 
-#: includes/class-sixtenpressisotope-settings-page.php:469
+#: includes/class-sixtenpressisotope-settings-page.php:450
 msgid "Leave this setting unchecked to use the site's default layout, or select a specific layout on the archive settings page."
 msgstr ""
