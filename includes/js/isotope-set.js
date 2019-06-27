@@ -4,7 +4,7 @@
  */
 ;(function ( document, $, undefined ) {
 	'use strict';
-	var SixTen  = {};
+	var SixTen = {};
 	var filters = {};
 	var qsRegex;
 
@@ -66,7 +66,7 @@
 	 */
 	function _doInfiniteScroll() {
 		var _container   = $( '.' + SixTen.params.container ),
-			_navSelector = SixTen.params.navigation;
+		    _navSelector = SixTen.params.navigation;
 		$( _navSelector ).css( 'display', 'none' );
 		_container.infinitescroll( {
 				navSelector: _navSelector,
@@ -97,7 +97,7 @@
 	 */
 	function _doFilter( $select ) {
 		var selector = $select.attr( 'data-filter' );
-		$( '.' + SixTen.params.container ).isotope( { filter: selector } );
+		$( '.' + SixTen.params.container ).isotope( {filter: selector} );
 		$select.parents( 'ul' ).find( 'button' ).removeClass( 'active' );
 		$select.addClass( 'active' );
 		return false;
@@ -110,23 +110,34 @@
 	 * @private
 	 */
 	function _doSelect( $select ) {
-		var group        = $select.attr( 'data-filter-group' );
-		filters[ group ] = $select.find( ':selected' ).attr( 'data-filter-value' );
-
-		var _selector = _combineFilters( filters );
 		$( '.' + SixTen.params.container ).isotope( {
-			filter: _selector
+			filter: _getSelect( $select )
 		} );
-		_debounce( function () {
-			var stylesheet = 'sixtenpress-isotope-dynamic';
-			$( '#' + stylesheet ).remove();
-			if ( _selector ) {
-				var item = '.' + SixTen.params.container + ' ' + SixTen.params.selector;
-				$( 'head' ).append( '<style id="' + stylesheet + '" type="text/css">' + item + ':not(' + _selector + ') { display: none; }</style>' );
-			}
-		}, 400 );
 
 		return false;
+	}
+
+	function _doStylesheet( $select ) {
+		var _selector  = _getSelect( $select ),
+		    stylesheet = 'sixtenpress-isotope-dynamic';
+		$( '#' + stylesheet ).remove();
+		if ( _selector ) {
+			var item = '.' + SixTen.params.container + ' ' + SixTen.params.selector;
+			$( 'head' ).append( '<style id="' + stylesheet + '" type="text/css">' + item + ':not(' + _selector + ') { display: none; }</style>' );
+		}
+	}
+
+	/**
+	 * Get the select class for the filter.
+	 * @param $select
+	 * @return {string}
+	 * @private
+	 */
+	function _getSelect( $select ) {
+		var group = $select.attr( 'data-filter-group' );
+		filters[group] = $select.find( ':selected' ).attr( 'data-filter-value' );
+
+		return _combineFilters( filters );
 	}
 
 	/**
@@ -153,15 +164,15 @@
 	 */
 	function _debounce( func, wait, immediate ) {
 		var timeout;
-		return function() {
+		return function () {
 			var context = this, args = arguments;
-			var later   = function () {
+			var later = function () {
 				timeout = null;
-				if ( ! immediate ) {
+				if ( !immediate ) {
 					func.apply( context, args );
 				}
 			};
-			var callNow = immediate && ! timeout;
+			var callNow = immediate && !timeout;
 			clearTimeout( timeout );
 			timeout = setTimeout( later, wait );
 			if ( callNow ) {
@@ -170,11 +181,9 @@
 		};
 	}
 
-	$( document ).ready( function () {
-		SixTen.params = typeof SixTenPressIsotope === 'undefined' ? '' : SixTenPressIsotope;
+	SixTen.params = typeof SixTenPressIsotope === 'undefined' ? '' : SixTenPressIsotope;
 
-		if ( typeof SixTen.params !== 'undefined' ) {
-			SixTen.init();
-		}
-	} );
+	if ( typeof SixTen.params !== 'undefined' ) {
+		SixTen.init();
+	}
 })( document, jQuery );
