@@ -4,9 +4,10 @@
  */
 ;(function ( document, $, undefined ) {
 	'use strict';
-	var SixTen = {};
-	var filters = {};
-	var qsRegex;
+	var SixTen     = {},
+	    filters    = {},
+	    stylesheet = 'sixtenpress-isotope-dynamic',
+	    qsRegex;
 
 	SixTen.init = function () {
 
@@ -110,17 +111,23 @@
 	 * @private
 	 */
 	function _doSelect( $select ) {
-		$( '.' + SixTen.params.container ).isotope( {
-			filter: _getSelect( $select )
+		var $container = $( '.' + SixTen.params.container ),
+		selector = _getSelect( $select );
+		$container.isotope( {
+			filter: selector
 		} );
+		// $( '#' + stylesheet ).remove();
+		// $container.on( 'arrangeComplete', function ( event, filteredItems ) {
+		// 	console.log( selector );
+		// 	_doStylesheet( $select );
+		// } );
 
 		return false;
 	}
 
 	function _doStylesheet( $select ) {
-		var _selector  = _getSelect( $select ),
-		    stylesheet = 'sixtenpress-isotope-dynamic';
 		$( '#' + stylesheet ).remove();
+		var _selector = _getSelect( $select );
 		if ( _selector ) {
 			var item = '.' + SixTen.params.container + ' ' + SixTen.params.selector;
 			$( 'head' ).append( '<style id="' + stylesheet + '" type="text/css">' + item + ':not(' + _selector + ') { display: none; }</style>' );
