@@ -119,7 +119,7 @@ class SixTenPressIsotopeOutput {
 		}
 		$dependent_scripts = array( 'sixtenpress-isotope', 'imagesloaded' );
 		if ( $this->setting['infinite'] ) {
-			wp_register_script( 'infinite-scroll', plugin_dir_url( __FILE__ ) . 'js/jquery.infinitescroll.min.js', array(), '2.1.0', true );
+			wp_register_script( 'infinite-scroll', plugin_dir_url( __FILE__ ) . 'js/infinitescroll.min.js', array(), '3.0.6', true );
 			$dependent_scripts[] = 'infinite-scroll';
 		}
 		wp_enqueue_script( 'sixtenpress-isotope-set', plugin_dir_url( __FILE__ ) . "js/isotope-set{$minify}.js", $dependent_scripts, $version, true );

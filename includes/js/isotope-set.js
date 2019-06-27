@@ -1,26 +1,38 @@
 /**
  * Set up the isotope script and filters.
- * @copyright 2016 Robin Cornett
+ * @copyright 2016-2019 Robin Cornett
  */
 ;(function ( document, $, undefined ) {
 	'use strict';
 	var SixTen     = {},
 	    filters    = {},
-	    stylesheet = 'sixtenpress-isotope-dynamic',
 	    qsRegex;
 
 	SixTen.init = function () {
-
 		var _container = $( '.' + SixTen.params.container );
 		_container.imagesLoaded( function () {
 			_container.isotope( SixTen.params.isotopeRules );
-		} );
 
-		var _function = _doIsotope;
-		if ( SixTen.params.infinite ) {
-			_function = _doInfiniteScroll;
-		}
-		$( window ).on( 'resize.stp', _function ).triggerHandler( 'resize.stp' );
+			if ( SixTen.params.infinite ) {
+				var _navSelector = SixTen.params.navigation,
+				    instance     = _container.data( 'isotope' );
+				_container.infiniteScroll( {
+						path: _navSelector + ' ' + SixTen.params.link,
+						append: '.' + SixTen.params.container + ' ' + SixTen.params.selector,
+						outlayer: instance,
+						hideNav: _navSelector,
+					},
+					function ( newItems ) {
+						var _newItems = $( newItems ).css( {opacity: 0} );
+						_newItems.imagesLoaded( function () {
+							_container.isotope( 'appended', _newItems );
+							_newItems.animate( {opacity: 1} );
+						} );
+					}
+				);
+			}
+			$( window ).on( 'resize.stp', _doIsotope ).triggerHandler( 'resize.stp' );
+		} );
 
 		/**
 		 * Filter using an unordered list.
@@ -62,43 +74,15 @@
 	}
 
 	/**
-	 * Do infinite scroll
-	 * @private
-	 */
-	function _doInfiniteScroll() {
-		var _container   = $( '.' + SixTen.params.container ),
-		    _navSelector = SixTen.params.navigation;
-		$( _navSelector ).css( 'display', 'none' );
-		_container.infinitescroll( {
-				navSelector: _navSelector,
-				nextSelector: _navSelector + ' ' + SixTen.params.link,
-				itemSelector: '.' + SixTen.params.container + ' ' + SixTen.params.selector,
-				loading: {
-					finishedMsg: SixTen.params.finished,
-					img: SixTen.params.loading,
-					msgText: '<em>' + SixTen.params.msg + '</em>',
-					speed: 'fast'
-				}
-			},
-			function ( newItems ) {
-				var _newItems = $( newItems ).css( {opacity: 0} );
-				_newItems.imagesLoaded( function () {
-					_container.isotope( 'appended', _newItems );
-					_newItems.animate( {opacity: 1} );
-				} );
-			}
-		);
-	}
-
-	/**
 	 * Filter using an unordered list (buttons)
 	 * @param $select
 	 * @returns {boolean}
 	 * @private
 	 */
 	function _doFilter( $select ) {
-		var selector = $select.attr( 'data-filter' );
-		$( '.' + SixTen.params.container ).isotope( {filter: selector} );
+		var _container = $( '.' + SixTen.params.container ),
+		    selector   = $select.attr( 'data-filter' );
+		$( _container ).isotope( {filter: selector} );
 		$select.parents( 'ul' ).find( 'button' ).removeClass( 'active' );
 		$select.addClass( 'active' );
 		return false;
@@ -111,27 +95,13 @@
 	 * @private
 	 */
 	function _doSelect( $select ) {
-		var $container = $( '.' + SixTen.params.container ),
-		selector = _getSelect( $select );
-		$container.isotope( {
+		var _container = $( '.' + SixTen.params.container ),
+		    selector   = _getSelect( $select );
+		_container.isotope( {
 			filter: selector
 		} );
-		// $( '#' + stylesheet ).remove();
-		// $container.on( 'arrangeComplete', function ( event, filteredItems ) {
-		// 	console.log( selector );
-		// 	_doStylesheet( $select );
-		// } );
 
 		return false;
-	}
-
-	function _doStylesheet( $select ) {
-		$( '#' + stylesheet ).remove();
-		var _selector = _getSelect( $select );
-		if ( _selector ) {
-			var item = '.' + SixTen.params.container + ' ' + SixTen.params.selector;
-			$( 'head' ).append( '<style id="' + stylesheet + '" type="text/css">' + item + ':not(' + _selector + ') { display: none; }</style>' );
-		}
 	}
 
 	/**
