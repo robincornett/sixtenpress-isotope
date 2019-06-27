@@ -277,8 +277,9 @@ class SixTenPressIsotopeOutput {
 			'.js .%4$s { opacity: 0; }
 			.%3$s { clear: both; margin: 0 auto 40px; overflow: visible; display: flex; flex-wrap: wrap; }
 			.%3$s %4$s { margin: 0 0 %2$spx; %1$s }
-			.main-filter { margin-bottom: 40px; overflow: auto; }
-			.main-filter ul { text-align: center; }
+			.main-filter { margin-bottom: 16px; overflow: auto; }
+			.main-filter ul { text-align: center; margin-bottom: 24px; }
+			.main-filter select { margin-bottom: 24px; }
 			.main-filter li { display: inline-block; margin: 1px; }
 			.isotope-search-form { margin-bottom: 40px; }
 			div#infscr-loading { position: absolute; right: 0; bottom: 0; left: 0; text-align: center; }
