@@ -2,31 +2,35 @@
  * Set up the isotope script and filters.
  * @copyright 2016-2019 Robin Cornett
  */
-;(function ( document, $, undefined ) {
+; ( function ( document, $, undefined ) {
 	'use strict';
-	var SixTen     = {},
-	    filters    = {},
-	    qsRegex;
+	var SixTen = {},
+		filters = {},
+		qsRegex;
 
 	SixTen.init = function () {
 		var _container = $( '.' + SixTen.params.container );
 		_container.imagesLoaded( function () {
+			$.each( $( 'select.filter' ), function () {
+				$( this ).val( 'all' );
+			} );
+
 			_container.isotope( SixTen.params.isotopeRules );
 
 			if ( SixTen.params.infinite ) {
 				var _navSelector = SixTen.params.navigation,
-				    instance     = _container.data( 'isotope' );
+					instance = _container.data( 'isotope' );
 				_container.infiniteScroll( {
-						path: _navSelector + ' ' + SixTen.params.link,
-						append: '.' + SixTen.params.container + ' ' + SixTen.params.selector,
-						outlayer: instance,
-						hideNav: _navSelector,
-					},
+					path: _navSelector + ' ' + SixTen.params.link,
+					append: '.' + SixTen.params.container + ' ' + SixTen.params.selector,
+					outlayer: instance,
+					hideNav: _navSelector,
+				},
 					function ( newItems ) {
-						var _newItems = $( newItems ).css( {opacity: 0} );
+						var _newItems = $( newItems ).css( { opacity: 0 } );
 						_newItems.imagesLoaded( function () {
 							_container.isotope( 'appended', _newItems );
-							_newItems.animate( {opacity: 1} );
+							_newItems.animate( { opacity: 1 } );
 						} );
 					}
 				);
@@ -65,11 +69,11 @@
 	 * Do the isotope functions.
 	 * @private
 	 */
-	function _doIsotope() {
+	function _doIsotope () {
 		var _container = $( '.' + SixTen.params.container );
 		_container.imagesLoaded( function () {
 			_container.isotope( 'layout' );
-			$( SixTen.params.selector ).animate( {opacity: 1} );
+			$( SixTen.params.selector ).animate( { opacity: 1 } );
 		} );
 	}
 
@@ -79,10 +83,10 @@
 	 * @returns {boolean}
 	 * @private
 	 */
-	function _doFilter( $select ) {
+	function _doFilter ( $select ) {
 		var _container = $( '.' + SixTen.params.container ),
-		    selector   = $select.attr( 'data-filter' );
-		$( _container ).isotope( {filter: selector} );
+			selector = $select.attr( 'data-filter' );
+		$( _container ).isotope( { filter: selector } );
 		$select.parents( 'ul' ).find( 'button' ).removeClass( 'active' );
 		$select.addClass( 'active' );
 		return false;
@@ -94,9 +98,9 @@
 	 * @returns {boolean}
 	 * @private
 	 */
-	function _doSelect( $select ) {
+	function _doSelect ( $select ) {
 		var _container = $( '.' + SixTen.params.container ),
-		    selector   = _getSelect( $select );
+			selector = _getSelect( $select );
 		_container.isotope( {
 			filter: selector
 		} );
@@ -110,9 +114,9 @@
 	 * @return {string}
 	 * @private
 	 */
-	function _getSelect( $select ) {
+	function _getSelect ( $select ) {
 		var group = $select.attr( 'data-filter-group' );
-		filters[group] = $select.find( ':selected' ).attr( 'data-filter-value' );
+		filters[ group ] = $select.find( ':selected' ).attr( 'data-filter-value' );
 
 		return _combineFilters( filters );
 	}
@@ -123,10 +127,10 @@
 	 * @returns {string}
 	 * @private
 	 */
-	function _combineFilters( filters ) {
+	function _combineFilters ( filters ) {
 		var _selector = [];
 		for ( var prop in filters ) {
-			_selector.push( filters[prop] );
+			_selector.push( filters[ prop ] );
 		}
 		return _selector.join( '' );
 	}
@@ -139,7 +143,7 @@
 	 * @returns {Function}
 	 * @private
 	 */
-	function _debounce( func, wait, immediate ) {
+	function _debounce ( func, wait, immediate ) {
 		var timeout;
 		return function () {
 			var context = this, args = arguments;
@@ -163,4 +167,4 @@
 	if ( typeof SixTen.params !== 'undefined' ) {
 		SixTen.init();
 	}
-})( document, jQuery );
+} )( document, jQuery );
