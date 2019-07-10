@@ -2,7 +2,7 @@
 Contributors: littler.chicken
 Requires at least: 4.9
 Tested up to: 5.2
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -28,6 +28,9 @@ If you are intending to use this plugin on a commercial project (for a client), 
 1.3.0 new setting for moving featured images
 
 == Changelog ==
+
+= 1.4.1 =
+* fixed select inputs showing a value when the back button is used
 
 = 1.4.0 =
 * improved CSS

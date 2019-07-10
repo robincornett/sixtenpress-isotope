@@ -42,6 +42,9 @@ If you are intending to use this plugin on a commercial project (for a client), 
 
 ## Changelog
 
+### 1.4.1
+* fixed select inputs showing a value when the back button is used
+
 ### 1.4.0
 * improved CSS
 * updated infinite scroll and isotope scripts
