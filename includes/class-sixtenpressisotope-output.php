@@ -47,8 +47,7 @@ class SixTenPressIsotopeOutput {
 	 * @return bool
 	 */
 	private function can_add_search() {
-		$object    = get_queried_object();
-		$post_type = $object->name;
+		$post_type = $this->get_current_post_type();
 		if ( ! empty( $this->setting[ $post_type ]['search'] ) ) {
 			return true;
 		}
@@ -67,12 +66,12 @@ class SixTenPressIsotopeOutput {
 		if ( $this->setting['remove']['content'] ) {
 			remove_action( 'genesis_entry_content', 'genesis_do_post_content' );
 		}
-		$object = get_queried_object();
+		$post_type = $this->get_current_post_type();
 		if ( $this->setting['remove']['before'] ) {
-			remove_post_type_support( $object->name, 'genesis-entry-meta-before-content' );
+			remove_post_type_support( $post_type, 'genesis-entry-meta-before-content' );
 		}
 		if ( $this->setting['remove']['after'] ) {
-			remove_post_type_support( $object->name, 'genesis-entry-meta-after-content' );
+			remove_post_type_support( $post_type, 'genesis-entry-meta-after-content' );
 		}
 		if ( $this->setting['image_move'] ) {
 			remove_action( 'genesis_entry_content', 'genesis_do_post_image', 8 );
@@ -178,8 +177,7 @@ class SixTenPressIsotopeOutput {
 	 * @return int|mixed
 	 */
 	private function get_gutter() {
-		$object         = get_queried_object();
-		$post_type_name = $object->name;
+		$post_type_name = $this->get_current_post_type();
 		if ( is_tax() || is_tag() || is_category() ) {
 			$post_type_name = get_post_type();
 		}
@@ -355,7 +353,8 @@ class SixTenPressIsotopeOutput {
 	 * Add a text based search input.
 	 */
 	public function add_search_input() {
-		$object = get_queried_object();
+		$post_type = $this->get_current_post_type();
+		$object    = get_post_type_object( $post_type );
 
 		printf( '<div class="isotope-search-form"><input type="text" aria-label="%1$s %2$s" class="isotope-search" name="isotope-search" placeholder="%1$s %2$s"></div>', esc_html__( 'Search', 'sixtenpress-isotope' ), esc_html( $object->label ) );
 	}
@@ -368,8 +367,7 @@ class SixTenPressIsotopeOutput {
 	 * @return array|string
 	 */
 	public function build_filter_array( $tax_filters = array() ) {
-		$object     = get_queried_object();
-		$post_type  = $object->name;
+		$post_type  = $this->get_current_post_type();
 		$taxonomies = get_object_taxonomies( $post_type, 'names' );
 		$taxonomies = 'post' === $post_type ? array( 'category' ) : $taxonomies;
 		if ( $taxonomies ) {
@@ -433,7 +431,7 @@ class SixTenPressIsotopeOutput {
 		$count        = count( $select_options );
 		$column_class = $this->select_class( $count );
 		$output       = '<div class="main-filter">';
-		$object       = get_queried_object();
+		$object       = get_post_type_object( $this->get_current_post_type() );
 		/* translators: the name of the content type */
 		$filter_text = sprintf( __( 'Filter %s By:', 'sixtenpress-isotope' ), esc_attr( $object->labels->name ) );
 		$output     .= sprintf( '<h4>%s</h4>', esc_html( $filter_text ) );
